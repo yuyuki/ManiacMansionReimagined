@@ -1,0 +1,85 @@
+// room script file
+// ============================= FadeObject ===========================================
+// objectnum, object to fade in or out.
+// speed , 1 = fastest, 5 = slowest
+// rate (transparency), 1 = slower, 20 = faster, 100 = immediate
+
+function FadeObjectIn (int objnum, int speed, int rate){
+  int trans = 100; // object initially invisible
+  while (trans > 0)
+  {
+    // as long as object hasn't fully faded in
+    trans = trans - rate; // subtract from transparency percentage
+    if (trans < 0) trans = 0;              // guarantee exact at finish.
+    SetObjectTransparency (objnum, trans); // change the object's transparency
+    Wait (speed); // pause.
+  }
+}
+
+function FadeObjectOut (int objnum, int speed, int rate){
+  int trans = 0; // object initially visible
+  while (trans < 100)
+  {
+    // as long as object hasn't fully faded out
+    trans = trans + rate; // subtract from transparency percentage
+    if (trans > 100) trans = 100;          // guarantee exact at finish.
+    SetObjectTransparency (objnum, trans); // change the object's transparency
+    Wait (speed); // pause.
+  }
+}
+
+function room_a() {
+  // script for room: Player enters screen (after fadein)
+BeginCutscene (NO_CHAR);
+Wait(10);
+DisplaySpeech (SIMON, "Willkommen, Freunde der virtuellen Zeitverschwendung!");
+DisplaySpeech (SIMON, "Ich bin Bimon Bätschmer und hier ist...");
+DisplaySpeech (SIMON, "...live und garantiert ungeprobt,...");
+FadeObjectOut (0, 1, 5);
+DisplaySpeech (SIMON, "...eine weitere Episode unserer...");
+DisplaySpeech (SIMON, "...kleinen Spiele-Soap GIGA GAMES!");
+Wait(20);
+SetObjectGraphic(0,1049);
+FadeObjectIn (0, 1, 5);
+DisplaySpeech (SIMON, "Unser heutiges Highlight - aus dem Hause LucasFilm Games...");
+DisplaySpeech (SIMON, "...mit dem vielversprechenden Namen MANIAC MANSION!");
+Wait(20); 
+DisplaySpeech (SIMON, "Ausserdem in der Sendung:");
+DisplaySpeech (SIMON, "Ein ausführlicher Test der besten...");
+DisplaySpeech (SIMON, "...Spiele-Automaten im Konsolenbereich...");
+DisplaySpeech (SIMON, "...bei den PClern Teil 5 unseres großen Specials 'Cheaten beim Schach'...");
+FadeObjectOut (0, 1, 5);
+SetObjectGraphic(0,1084);
+DisplaySpeech (SIMON, "...der Maxx-Bereich stellt Euch die besten Mods...");
+FadeObjectIn (0, 1, 5);
+DisplaySpeech (SIMON, "...für Nibbles, Tetris und Pacman vor...");
+DisplaySpeech (SIMON, "...und der eSports-Bereich beglückt euch...");
+DisplaySpeech (SIMON, "...mit einer weiteren spannenden Runde...");
+DisplaySpeech (SIMON, "...aus unserer Play-per-Mail-Liga.");
+FadeObjectOut (0, 1, 5);
+Wait(20);
+DisplaySpeech (SIMON, "Also verbarrikardiert Euch mit der Fernbedienung...");
+DisplaySpeech (SIMON, "...und bleibt dran!");
+ReleaseCharacterView (GetPlayerCharacter ());
+FaceDirection (GetPlayerCharacter (), DIR_UP);
+GUIOn(10);
+FinishCutscene (0);
+NewRoom (8);
+}
+
+
+
+
+
+
+function room_b() {
+  // script for room: Player enters screen (before fadein)
+GUIOff(10);
+ObjectOn(0);
+SetCharacterView (GetPlayerCharacter (), 105);
+}
+
+function room_c() {
+  // script for room: First time player enters screen
+SetGlobalInt(146,0190);  
+}

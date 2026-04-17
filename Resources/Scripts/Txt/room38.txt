@@ -1,0 +1,73 @@
+// room script file
+
+function room_b (){
+  // script for room: Player enters screen (before fadein)
+  // METEOR is PC
+  SetMusicVolume (2);
+  PlayMusic (17);
+  SetCharacterView (METEOR, 79);
+  character [METEOR].talkview = 68;
+  character [METEOR].room = 38;
+  character [METEOR].x = 380;
+  character [METEOR].y = 148;
+  ReleaseCharacterView (SANDY);
+  character [SANDY].room = 38;
+  character [SANDY].x = 111;
+  character [SANDY].y = 135;
+  FaceLocation (SANDY, 111, 136);
+  int charid = GetGlobalInt (154);
+  if (GetGlobalInt (223) == 0) charid = DAVE;
+  character [charid].room = 38;
+  character [charid].x = 82;
+  character [charid].y = 135;
+  ChangeCharacterView (charid, ((charid - DAVE) * 2) + 1);
+  FaceDirection (charid, DIR_RIGHT);
+}
+
+function room_a (){
+  // script for room: Player enters screen (after fadein)
+  // METEOR is PC
+  Wait (15);
+  DisplaySpeech (WINK, "Welcome back from our break.");
+  DisplaySpeech (WINK, "We've been talking with the celebrity rock...");
+  DisplaySpeech (WINK, "...who gave up a life of crime...");
+  DisplaySpeech (WINK, "...for a career as a writer.");
+  Wait (10);
+  FaceCharacter (WINK, METEOR);
+  Wait (10);
+  DisplaySpeech (WINK, "So, Mr. Meteor, how does it feel...");
+  DisplaySpeech (WINK, "...to be famous instead of infamous?");
+  DisplaySpeech (METEOR, "Well, Wink, it feels great.");
+  DisplaySpeech (METEOR, "But, I couldn't have done it alone...");
+  SetPlayerCharacter (DUMMY);
+  MoveCharacterBlocking (GetPlayerCharacter (), 20, 120, 0);
+  Wait (30);
+  if (GetGlobalInt (160) == 1)
+  {
+    character [POLICE].x = 47;
+    character [POLICE].y = 142;
+    FaceLocation (POLICE, 100, 142);
+    character [POLICE].room = 38;
+    SetPlayerCharacter (POLICE);
+    PlaySound (42);
+    Wait (40);
+    MoveCharacterBlocking (GetPlayerCharacter (), 345, 142, 0);
+    Wait (15);
+    DisplaySpeech (POLICE, "I don't care if you've reformed...");
+    DisplaySpeech (POLICE, "...you're still coming with me!");
+    Wait (35);
+    PlaySound (42);
+    ChangeCharacterView (POLICE, 105);
+    ChangeCharacterView (METEOR, 105);
+    Wait (30);
+  }
+  SetLabelColor (0, 0, 8);
+  PlayMusic (1);
+  SeekMIDIPosition (31);
+  Wait (40);
+  SetGlobalInt (315, 1);
+  SetGlobalInt (1, FINAL_SCENE);
+  NewRoom (49);
+}
+
+

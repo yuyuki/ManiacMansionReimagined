@@ -1,0 +1,79 @@
+// room script file
+
+function room_b (){
+  // script for room: Player enters screen (before fadein)
+  SetObjectClickable (0, 0);
+  character [GetPlayerCharacter ()].x = 100;
+  character [GetPlayerCharacter ()].y = 100;
+  if (GetGlobalInt (244) == 0)
+  {
+    SetMusicVolume (2);
+    SetMusicRepeat (1);
+    PlayMusic (17);
+    EnableHotspot (1);
+    DisableHotspot (2);
+    SetBackgroundFrame (0);
+    SetWalkBehindBase (3, 1);
+  }
+  else
+  {
+    SetCharacterView (GetPlayerCharacter (), 105);
+    SetObjectView (0, 82);
+    AnimateObject (0, 0, 0, 1);
+  }
+}
+
+function room_a (){
+  // script for room: Player enters screen (after fadein)
+  if (GetGlobalInt (244) == 0)
+  {
+    RemoveWalkableArea (1);
+  }
+  if (GetGlobalInt (244) == 1)
+  {
+    PlayAmbientSound (1, 76, 255, 150, 100);
+    Wait (30);
+    SetGlobalInt (244, 0);
+    MoveObject (0, 126, 1, 1);
+    while (IsObjectMoving (0) == 1) Wait (1);
+    Wait (10);
+    if (GetGlobalInt (243) == 0)
+    {
+      FinishCutscene (0);
+      SetGlobalInt (245, 1);
+      ReleaseCharacterView (GetPlayerCharacter ());
+      NewRoomEx (30, 50, 135);
+    }
+    else NewRoom (48);
+  }
+}
+
+function hotspot1_a (){
+  // script for hotspot1: Any click on hotspot
+  NewRoomEx (24, 225, 126);
+  FaceLocation (GetPlayerCharacter (), 225, 127);
+  GUIOn (0);
+  GUIOn (1);
+}
+
+function hotspot2_a (){
+  // script for hotspot2: Any click on hotspot
+  NewRoomEx (24, 225, 126);
+  FaceLocation (GetPlayerCharacter (), 225, 127);
+  GUIOn (0);
+  GUIOn (1);
+}
+
+function room_c (){
+  // script for room: First time player enters screen
+}
+
+function hotspot3_a (){
+  // script for hotspot3: Any click on hotspot
+  NewRoomEx (53, 170, 155);
+  FaceLocation (GetPlayerCharacter (), 170, 156);
+  GUIOn (0);
+  GUIOn (1);
+}
+
+

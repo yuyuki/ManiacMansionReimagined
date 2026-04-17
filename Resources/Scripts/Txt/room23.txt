@@ -1,0 +1,405 @@
+// room script file
+
+function room_a (){
+  // script for room: Player enters screen (before fadein)
+  SetMusicVolume (2);
+  SetMusicRepeat (1);
+  PlayMusic (8);
+  SetObjectClickable (0, 0);
+  SetObjectClickable (1, 0);
+  SetObjectClickable (2, 0);
+  SetObjectClickable (3, 0);
+  AlarmSound ();
+}
+
+function hotspot2_a (){
+  // script for hotspot2: Any click on hotspot
+  SetDoorStrings ("", "", "");
+  if (any_click_on_door_special (140, 0, 243, 140, DIR_RIGHT, 22, 280, 25, DIR_DOWN, 72, 84, -1, 0) == 0) Unhandled ();
+}
+
+function hotspot8_a (){
+  // script for hotspot8: Any click on hotspot
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (77, 137))
+    {
+      FaceLocation (GetPlayerCharacter (), 77, 136);
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (77, 137))
+    {
+      FaceLocation (GetPlayerCharacter (), 77, 136);
+      Wait (5);
+      if (GetGlobalInt (199) == 0)
+      {
+        DisplaySpeech (GetPlayerCharacter (), "It's too dark to read.");
+      }
+      else
+      {
+        DisplaySpeech (GetPlayerCharacter (), "It shows the trajectory of a meteorite impacting Earth.");
+      }
+    }
+  }
+}
+
+function hotspot4_a (){
+  // script for hotspot4: Any click on hotspot
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (43, 137))
+    {
+      FaceLocation (GetPlayerCharacter (), 42, 137);
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (43, 137))
+    {
+      FaceLocation (GetPlayerCharacter (), 42, 137);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "Rotate right.");
+    }
+  }
+  else if ((UsedAction (A_PUSH)) || (UsedAction (A_USE)))
+  {
+    if (GetGlobalInt (35) == 0)
+    {
+      if (MovePlayer (43, 137))
+      {
+        FaceLocation (GetPlayerCharacter (), 42, 137);
+        Wait (5);
+        PlaySound (94);
+        DisplaySpeech (GetPlayerCharacter (), "It's not rotating.");
+      }
+    }
+    else if ((GetGlobalInt (35) >= 1) && (GetGlobalInt (36) == 1))
+    {
+      if (MovePlayer (43, 137))
+      {
+        FaceLocation (GetPlayerCharacter (), 42, 137);
+        Wait (5);
+        PlaySound (94);
+        Wait (9);
+        PlaySound (49);
+        ShakeScreen (1);
+        MoveObjectDirect (1, 194, 25, 1);
+        MoveObjectDirect (2, 220, 72, 1);
+        DisplaySpeech (GetPlayerCharacter (), "It's rotating.");
+        SetGlobalInt (35, GetGlobalInt (35) - 1);
+        SetGlobalInt (36, 2);
+      }
+    }
+    else if ((GetGlobalInt (35) >= 1) && (GetGlobalInt (36) == 2))
+    {
+      if (MovePlayer (43, 137))
+      {
+        FaceLocation (GetPlayerCharacter (), 42, 137);
+        Wait (5);
+        PlaySound (94);
+        Wait (9);
+        PlaySound (49);
+        ShakeScreen (1);
+        MoveObjectDirect (1, 197, 25, 1);
+        MoveObjectDirect (2, 223, 72, 1);
+        DisplaySpeech (GetPlayerCharacter (), "It's rotating.");
+        SetGlobalInt (35, GetGlobalInt (35) - 1);
+        SetGlobalInt (36, 3);
+      }
+    }
+    else if ((GetGlobalInt (35) >= 1) && (GetGlobalInt (36) == 3))
+    {
+      if (MovePlayer (43, 137))
+      {
+        FaceLocation (GetPlayerCharacter (), 42, 137);
+        Wait (5);
+        PlaySound (94);
+        Wait (9);
+        PlaySound (49);
+        ShakeScreen (1);
+        MoveObjectDirect (1, 201, 25, 1);
+        MoveObjectDirect (2, 226, 72, 1);
+        DisplaySpeech (GetPlayerCharacter (), "It's rotating.");
+        SetGlobalInt (35, GetGlobalInt (35) - 1);
+        SetGlobalInt (36, 4);
+      }
+    }
+    else if ((GetGlobalInt (35) >= 1) && (GetGlobalInt (36) == 4))
+    {
+      if (MovePlayer (43, 137))
+      {
+        FaceLocation (GetPlayerCharacter (), 42, 137);
+        Wait (5);
+        PlaySound (94);
+        DisplaySpeech (GetPlayerCharacter (), "It's not rotating.");
+      }
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot1_a (){
+  // script for hotspot1: Any click on hotspot
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (43, 137))
+    {
+      FaceLocation (GetPlayerCharacter (), 42, 137);
+    }
+  }
+  else if (UsedAction (A_USE_INV))
+  {
+    if ((character [GetPlayerCharacter ()].activeinv == 44))
+    {
+      if (MovePlayer (43, 137))
+      {
+        FaceLocation (GetPlayerCharacter (), 42, 137);
+        Wait (5);
+        PlaySound (64);
+        LoseInventory (44);
+        SetGlobalInt (35, GetGlobalInt (35) + 1);
+      }
+    }
+    else if ((character [GetPlayerCharacter ()].activeinv == 45))
+    {
+      if (MovePlayer (43, 137))
+      {
+        FaceLocation (GetPlayerCharacter (), 42, 137);
+        Wait (5);
+        PlaySound (64);
+        LoseInventory (45);
+        SetGlobalInt (35, GetGlobalInt (35) + 1);
+      }
+    }
+    else if ((character [GetPlayerCharacter ()].activeinv == 46))
+    {
+      if (MovePlayer (43, 137))
+      {
+        FaceLocation (GetPlayerCharacter (), 42, 137);
+        Wait (5);
+        PlaySound (64);
+        LoseInventory (46);
+        SetGlobalInt (35, GetGlobalInt (35) + 1);
+      }
+    }
+    else if ((character [GetPlayerCharacter ()].activeinv == 47))
+    {
+      if (MovePlayer (43, 137))
+      {
+        FaceLocation (GetPlayerCharacter (), 42, 137);
+        Wait (5);
+        PlaySound (64);
+        LoseInventory (47);
+        SetGlobalInt (35, GetGlobalInt (35) + 1);
+      }
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (43, 137))
+    {
+      FaceLocation (GetPlayerCharacter (), 42, 137);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "'Donations kindly accepted.'");
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot3_a (){
+  // script for hotspot3: Any click on hotspot
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (43, 137))
+    {
+      FaceLocation (GetPlayerCharacter (), 42, 137);
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (43, 137))
+    {
+      FaceLocation (GetPlayerCharacter (), 42, 137);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "Rotate left.");
+    }
+  }
+  else if ((UsedAction (A_PUSH)) || (UsedAction (A_USE)))
+  {
+    if (GetGlobalInt (35) == 0)
+    {
+      if (MovePlayer (43, 137))
+      {
+        FaceLocation (GetPlayerCharacter (), 42, 137);
+        Wait (5);
+        PlaySound (94);
+        DisplaySpeech (GetPlayerCharacter (), "It's not rotating.");
+      }
+    }
+    else if ((GetGlobalInt (35) >= 1) && (GetGlobalInt (36) == 4))
+    {
+      if (MovePlayer (43, 137))
+      {
+        FaceLocation (GetPlayerCharacter (), 42, 137);
+        Wait (5);
+        PlaySound (94);
+        Wait (9);
+        PlaySound (49);
+        ShakeScreen (1);
+        MoveObjectDirect (1, 197, 25, 1);
+        MoveObjectDirect (2, 223, 72, 1);
+        DisplaySpeech (GetPlayerCharacter (), "It's rotating.");
+        SetGlobalInt (35, GetGlobalInt (35) - 1);
+        SetGlobalInt (36, 3);
+      }
+    }
+    else if ((GetGlobalInt (35) >= 1) && (GetGlobalInt (36) == 3))
+    {
+      if (MovePlayer (43, 137))
+      {
+        FaceLocation (GetPlayerCharacter (), 42, 137);
+        Wait (5);
+        PlaySound (94);
+        Wait (9);
+        PlaySound (49);
+        ShakeScreen (1);
+        MoveObjectDirect (1, 194, 25, 1);
+        MoveObjectDirect (2, 220, 72, 1);
+        DisplaySpeech (GetPlayerCharacter (), "It's rotating.");
+        SetGlobalInt (35, GetGlobalInt (35) - 1);
+        SetGlobalInt (36, 2);
+      }
+    }
+    else if ((GetGlobalInt (35) >= 1) && (GetGlobalInt (36) == 2))
+    {
+      if (MovePlayer (43, 137))
+      {
+        FaceLocation (GetPlayerCharacter (), 42, 137);
+        Wait (5);
+        PlaySound (94);
+        Wait (9);
+        PlaySound (49);
+        ShakeScreen (1);
+        MoveObjectDirect (1, 191, 25, 1);
+        MoveObjectDirect (2, 217, 72, 1);
+        DisplaySpeech (GetPlayerCharacter (), "It's rotating.");
+        SetGlobalInt (35, GetGlobalInt (35) - 1);
+        SetGlobalInt (36, 1);
+      }
+    }
+    else if ((GetGlobalInt (35) >= 1) && (GetGlobalInt (36) == 1))
+    {
+      if (MovePlayer (43, 137))
+      {
+        FaceLocation (GetPlayerCharacter (), 42, 137);
+        Wait (5);
+        PlaySound (94);
+        DisplaySpeech (GetPlayerCharacter (), "It's not rotating.");
+      }
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot6_a (){
+  // script for hotspot6: Any click on hotspot
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (100, 129))
+    {
+      FaceLocation (GetPlayerCharacter (), 111, 129);
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    DisplaySpeech (GetPlayerCharacter (), "That's the second biggest telescope I've ever seen.");
+  }
+  else if ((UsedAction (A_USE)) && (GetPlayerCharacter () == DAVE))
+  {
+    if (MovePlayer (110, 129))
+    {
+      FaceLocation (GetPlayerCharacter (), 111, 129);
+      Wait (15);
+      NewRoom (41);
+    }
+  }
+  else if ((UsedAction (A_USE)) && (GetPlayerCharacter () == SYD))
+  {
+    if (MovePlayer (109, 129))
+    {
+      FaceLocation (GetPlayerCharacter (), 110, 129);
+      Wait (15);
+      NewRoom (41);
+    }
+  }
+  else if ((UsedAction (A_USE)) && (GetPlayerCharacter () == MICHAEL))
+  {
+    if (MovePlayer (110, 129))
+    {
+      FaceLocation (GetPlayerCharacter (), 111, 129);
+      Wait (15);
+      NewRoom (41);
+    }
+  }
+  else if ((UsedAction (A_USE)) && (GetPlayerCharacter () == RAZOR))
+  {
+    if (MovePlayer (108, 129))
+    {
+      FaceLocation (GetPlayerCharacter (), 110, 129);
+      Wait (15);
+      NewRoom (41);
+    }
+  }
+  else if ((UsedAction (A_USE)) && (GetPlayerCharacter () == WENDY))
+  {
+    if (MovePlayer (110, 127))
+    {
+      FaceLocation (GetPlayerCharacter (), 111, 127);
+      Wait (15);
+      NewRoom (41);
+    }
+  }
+  else if ((UsedAction (A_USE)) && (GetPlayerCharacter () == JEFF))
+  {
+    if (MovePlayer (109, 129))
+    {
+      FaceLocation (GetPlayerCharacter (), 110, 129);
+      Wait (15);
+      NewRoom (41);
+    }
+  }
+  else if ((UsedAction (A_USE)) && (GetPlayerCharacter () == BERNHARD))
+  {
+    if (MovePlayer (110, 129))
+    {
+      FaceLocation (GetPlayerCharacter (), 111, 129);
+      Wait (15);
+      NewRoom (41);
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot5_a (){
+  // script for hotspot5: Any click on hotspot
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (43, 137))
+    {
+      FaceLocation (GetPlayerCharacter (), 42, 137);
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (43, 137))
+    {
+      FaceLocation (GetPlayerCharacter (), 42, 137);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "It's the telescope control panel.");
+    }
+  }
+}
+
+

@@ -1,0 +1,26 @@
+// room script file
+
+function room_a (){
+  // script for room: Player enters screen (before fadein)
+  character [GetPlayerCharacter ()].x = 100;
+  character [GetPlayerCharacter ()].y = 100;
+  character [METEOR].room = 48;
+  character [METEOR].x = 197;
+  character [METEOR].y = 53;
+  SetCharacterView (METEOR, 105);
+  character [METEOR].talkview = 104;
+}
+
+function room_b (){
+  // script for room: Player enters screen (after fadein)
+  if (GetGlobalInt (243) == 1)
+  {
+    Wait (20);
+    DisplaySpeech (METEOR, "Wheeeee!");
+    Wait (80);
+    SetGlobalInt (245, 1);
+    FinalScene ();
+  }
+}
+
+

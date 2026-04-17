@@ -1,0 +1,203 @@
+// room script file
+
+function room_a (){
+  // script for room: Player enters screen (before fadein)
+  SetObjectClickable (0, 0);
+  SetObjectClickable (1, 0);
+  SetMusicVolume (3);
+  SetMusicRepeat (1);
+  PlayMusic (6);
+  if (GetGlobalInt (275) == 1)
+  {
+    SetGlobalInt (275, 2);
+    SetOwnTimer (4, 11750);
+  }
+  init_object (106, 0);
+  init_object (107, 1);
+  AlarmSound ();
+}
+
+function hotspot1_a (){
+  // script for hotspot1: Any click on hotspot
+  if (any_click_on_door (106, 0, 50, 128, DIR_LEFT, 25, 577, 136, DIR_LEFT) == 0) Unhandled ();
+}
+
+function hotspot2_a (){
+  // script for hotspot2: Any click on hotspot
+  if (any_click_on_door (107, 1, 925, 128, DIR_RIGHT, 27, 40, 130, DIR_RIGHT) == 0) Unhandled ();
+}
+
+function object2_a (){
+  // script for object2: Any click on object
+  if (UsedAction (A_PICK_UP))
+  {
+    if (MovePlayer (380, 130))
+    {
+      FaceLocation (GetPlayerCharacter (), 380, 131);
+      Wait (5);
+      PlaySound (4);
+      ObjectOff (2);
+      AddInventory (32);
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (380, 130))
+    {
+      FaceLocation (GetPlayerCharacter (), 380, 131);
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (380, 130))
+    {
+      FaceLocation (GetPlayerCharacter (), 380, 131);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "I wouldn't be surprised...");
+      DisplaySpeech (GetPlayerCharacter (), "...if this was leftover from Thanksgiving dinner.");
+    }
+  }
+  else Unhandled ();
+}
+
+function object3_a (){
+  // script for object3: Any click on object
+  if (UsedAction (A_PICK_UP))
+  {
+    if (MovePlayer (460, 130))
+    {
+      FaceLocation (GetPlayerCharacter (), 460, 131);
+      Wait (5);
+      PlaySound (4);
+      ObjectOff (3);
+      AddInventory (33);
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (460, 130))
+    {
+      FaceLocation (GetPlayerCharacter (), 460, 131);
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (460, 130))
+    {
+      FaceLocation (GetPlayerCharacter (), 460, 131);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "Ewww.");
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot5_a (){
+  // script for hotspot5: Any click on hotspot
+  if (UsedAction (A_PICK_UP))
+  {
+    if (MovePlayer (628, 130))
+    {
+      FaceLocation (GetPlayerCharacter (), 628, 131);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "I don't do table cloths.");
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (628, 130))
+    {
+      FaceLocation (GetPlayerCharacter (), 628, 131);
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot4_a (){
+  // script for hotspot4: Any click on hotspot
+  if (UsedAction (A_PICK_UP))
+  {
+    if (MovePlayer (199, 130))
+    {
+      FaceLocation (GetPlayerCharacter (), 199, 131);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "It's too heavy!");
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (199, 130))
+    {
+      FaceLocation (GetPlayerCharacter (), 199, 131);
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot6_a (){
+  // script for hotspot6: Any click on hotspot
+  if (UsedAction (A_PICK_UP))
+  {
+    if (MovePlayer (544, 130))
+    {
+      FaceLocation (GetPlayerCharacter (), 544, 131);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "It's too heavy!");
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (544, 130))
+    {
+      FaceLocation (GetPlayerCharacter (), 544, 131);
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot8_a (){
+  // script for hotspot8: Any click on hotspot
+  if (UsedAction (A_PICK_UP))
+  {
+    if (MovePlayer (760, 130))
+    {
+      FaceLocation (GetPlayerCharacter (), 760, 131);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "It's too heavy!");
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (760, 130))
+    {
+      FaceLocation (GetPlayerCharacter (), 760, 131);
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot3_a (){
+  // script for hotspot3: Any click on hotspot
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (85, 130))
+    {
+      FaceLocation (GetPlayerCharacter (), 86, 130);
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot7_a (){
+  // script for hotspot7: Any click on hotspot
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (881, 130))
+    {
+      FaceLocation (GetPlayerCharacter (), 880, 130);
+    }
+  }
+  else Unhandled ();
+}
+
+

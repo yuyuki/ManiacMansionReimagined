@@ -1,0 +1,438 @@
+// room script file
+
+function room_a (){
+  // script for room: Player enters screen (before fadein)
+  SetObjectClickable (0, 0);
+  SetMusicVolume (2);
+  SetMusicRepeat (1);
+  PlayMusic (14);
+  init_object (117, 0);
+  AlarmSound ();
+}
+
+function hotspot1_a (){
+  // script for hotspot1: Any click on hotspot
+  if (any_click_on_door (117, 0, 295, 130, DIR_RIGHT, 12, 218, 126, DIR_DOWN) == 0) Unhandled ();
+}
+
+function hotspot5_a (){
+  // script for hotspot5: Any click on hotspot
+  if (UsedAction (A_OPEN))
+  {
+    if (MovePlayer (217, 129))
+    {
+      FaceLocation (GetPlayerCharacter (), 217, 128);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "They're locked.");
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (217, 129))
+    {
+      FaceLocation (GetPlayerCharacter (), 217, 128);
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (217, 129))
+    {
+      FaceLocation (GetPlayerCharacter (), 217, 128);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "I wonder if photos of experiments are kept in here.");
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot4_a (){
+  // script for hotspot4: Any click on hotspot
+  if (any_click_on_light_switch (4, 79, 139, DIR_DOWN) == 0) Unhandled ();
+}
+
+function hotspot2_c (){
+  // script for hotspot2: Any click on hotspot
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (45, 139))
+    {
+      FaceLocation (GetPlayerCharacter (), 45, 140);
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (45, 139))
+    {
+      FaceLocation (GetPlayerCharacter (), 45, 140);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "It's a tray to develop film.");
+    }
+  }
+  else if (UsedAction (A_USE_INV))
+  {
+    if (character [GetPlayerCharacter ()].activeinv == 43)
+    {
+      // sponge with dev + tray
+      if (GetGlobalInt (162) == 0)
+      {
+        if (MovePlayer (45, 139))
+        {
+          FaceLocation (GetPlayerCharacter (), 45, 140);
+          Wait (10);
+          PlaySound (25);
+          LoseInventory (43);
+          AddInventory (41);
+          SetGlobalInt (162, 1);
+        }
+      }
+      else if (GetGlobalInt (162) == 2)
+      {
+        if (MovePlayer (45, 139))
+        {
+          FaceLocation (GetPlayerCharacter (), 45, 140);
+          Wait (10);
+          DisplaySpeech (GetPlayerCharacter (), "The tray is already full.");
+        }
+      }
+    }
+    else if (character [GetPlayerCharacter ()].activeinv == 42)
+    {
+      // sponge with water + tray
+      if (GetGlobalInt (162) == 0)
+      {
+        if (MovePlayer (45, 139))
+        {
+          FaceLocation (GetPlayerCharacter (), 45, 140);
+          Wait (10);
+          PlaySound (25);
+          LoseInventory (42);
+          AddInventory (41);
+          SetGlobalInt (162, 2);
+        }
+      }
+      else if (GetGlobalInt (162) == 1)
+      {
+        if (MovePlayer (45, 139))
+        {
+          FaceLocation (GetPlayerCharacter (), 45, 140);
+          Wait (10);
+          DisplaySpeech (GetPlayerCharacter (), "The tray is already full.");
+        }
+      }
+    }
+    else if (character [GetPlayerCharacter ()].activeinv == 41)
+    {
+      if (GetGlobalInt (162) == 1)
+      {
+        // sponge + tray with dev
+        if (MovePlayer (45, 139))
+        {
+          FaceLocation (GetPlayerCharacter (), 45, 140);
+          Wait (10);
+          LoseInventory (41);
+          AddInventory (43);
+          SetGlobalInt (162, 0);
+        }
+      }
+      else if (GetGlobalInt (162) == 2)
+      {
+        // sponge + tray with water
+        if (MovePlayer (45, 139))
+        {
+          FaceLocation (GetPlayerCharacter (), 45, 140);
+          Wait (10);
+          LoseInventory (41);
+          AddInventory (42);
+          SetGlobalInt (162, 0);
+        }
+      }
+    }
+    else if (character [GetPlayerCharacter ()].activeinv == 38)
+    {
+      if (GetGlobalInt (162) == 1)
+      {
+        // jar + tray with dev
+        if (MovePlayer (45, 139))
+        {
+          FaceLocation (GetPlayerCharacter (), 45, 140);
+          Wait (10);
+          PlaySound (32);
+          LoseInventory (38);
+          AddInventory (40);
+          SetGlobalInt (162, 0);
+        }
+      }
+      else if (GetGlobalInt (162) == 2)
+      {
+        // jar + tray with water
+        if (MovePlayer (45, 139))
+        {
+          FaceLocation (GetPlayerCharacter (), 45, 140);
+          Wait (10);
+          PlaySound (32);
+          LoseInventory (38);
+          AddInventory (39);
+          SetGlobalInt (162, 0);
+        }
+      }
+    }
+    else if (character [GetPlayerCharacter ()].activeinv == 39)
+    {
+      if (GetGlobalInt (162) == 0)
+      {
+        // water jar + tray
+        if (MovePlayer (45, 139))
+        {
+          FaceLocation (GetPlayerCharacter (), 45, 140);
+          Wait (10);
+          PlaySound (25);
+          LoseInventory (39);
+          AddInventory (38);
+          SetGlobalInt (162, 2);
+        }
+      }
+      else if (GetGlobalInt (162) == 1)
+      {
+        // water jar + tray with dev
+        if (MovePlayer (45, 139))
+        {
+          FaceLocation (GetPlayerCharacter (), 45, 140);
+          Wait (10);
+          DisplaySpeech (GetPlayerCharacter (), "The tray is already full.");
+        }
+      }
+    }
+    else if (character [GetPlayerCharacter ()].activeinv == 40)
+    {
+      if (GetGlobalInt (162) == 0)
+      {
+        // dev jar + tray
+        if (MovePlayer (45, 139))
+        {
+          FaceLocation (GetPlayerCharacter (), 45, 140);
+          Wait (10);
+          PlaySound (25);
+          LoseInventory (40);
+          AddInventory (38);
+          SetGlobalInt (162, 1);
+        }
+      }
+      else if (GetGlobalInt (162) == 2)
+      {
+        // dev jar + tray with water
+        if (MovePlayer (45, 139))
+        {
+          FaceLocation (GetPlayerCharacter (), 45, 140);
+          Wait (10);
+          DisplaySpeech (GetPlayerCharacter (), "The tray is already full.");
+        }
+      }
+    }
+    else if ((character [GetPlayerCharacter ()].activeinv == 25))
+    {
+      if ((GetPlayerCharacter () == MICHAEL) && (GetGlobalInt (162) == 0))
+      {
+        if (MovePlayer (45, 139))
+        {
+          FaceLocation (GetPlayerCharacter (), 45, 140);
+          Wait (10);
+          DisplaySpeech (GetPlayerCharacter (), "I need some developer solution first.");
+        }
+      }
+      else if ((GetPlayerCharacter () == MICHAEL) && (GetGlobalInt (162) == 2))
+      {
+        if (MovePlayer (45, 139))
+        {
+          FaceLocation (GetPlayerCharacter (), 45, 140);
+          Wait (10);
+          DisplaySpeech (GetPlayerCharacter (), "Water's not going to work!");
+        }
+      }
+      else if ((GetPlayerCharacter () == MICHAEL) && (GetGlobalInt (162) == 1) && (GetGlobalInt (163) == 0) && (GetGlobalInt (117) == 1))
+      {
+        BeginCutscene (NO_CHAR);
+        MoveCharacter (GetPlayerCharacter (), 45, 139);
+        while (character [GetPlayerCharacter ()].walking) Wait (1);
+        FaceLocation (GetPlayerCharacter (), 45, 140);
+        Wait (10);
+        MoveCharacter (GetPlayerCharacter (), 295, 130);
+        while (character [GetPlayerCharacter ()].walking) Wait (1);
+        FaceLocation (GetPlayerCharacter (), 296, 130);
+        Wait (5);
+        PlaySound (3);
+        ObjectOff (0);
+        SetGlobalInt (117, 0);
+        Wait (10);
+        MoveCharacter (GetPlayerCharacter (), 45, 139);
+        while (character [GetPlayerCharacter ()].walking) Wait (1);
+        FaceLocation (GetPlayerCharacter (), 45, 140);
+        PlaySound (25);
+        Wait (50);
+        MoveCharacter (GetPlayerCharacter (), 90, 139);
+        while (character [GetPlayerCharacter ()].walking) Wait (1);
+        FaceLocation (GetPlayerCharacter (), 90, 140);
+        Wait (30);
+        MoveCharacter (GetPlayerCharacter (), 45, 139);
+        while (character [GetPlayerCharacter ()].walking) Wait (1);
+        FaceLocation (GetPlayerCharacter (), 45, 140);
+        PlaySound (25);
+        Wait (50);
+        MoveCharacter (GetPlayerCharacter (), 90, 139);
+        while (character [GetPlayerCharacter ()].walking) Wait (1);
+        FaceLocation (GetPlayerCharacter (), 90, 140);
+        Wait (30);
+        MoveCharacter (GetPlayerCharacter (), 45, 139);
+        while (character [GetPlayerCharacter ()].walking) Wait (1);
+        FaceLocation (GetPlayerCharacter (), 45, 140);
+        Wait (10);
+        DisplaySpeech (GetPlayerCharacter (), "Perfect.");
+        SetGlobalInt (241, 1);
+        Wait (10);
+        LoseInventory (25);
+        AddInventory (60);
+        FinishCutscene (0);
+      }
+      else if ((GetPlayerCharacter () == MICHAEL) && (GetGlobalInt (162) == 1) && (GetGlobalInt (163) == 0) && (GetGlobalInt (117) == 0))
+      {
+        BeginCutscene (NO_CHAR);
+        MoveCharacter (GetPlayerCharacter (), 45, 139);
+        while (character [GetPlayerCharacter ()].walking) Wait (1);
+        FaceLocation (GetPlayerCharacter (), 45, 140);
+        PlaySound (25);
+        Wait (50);
+        MoveCharacter (GetPlayerCharacter (), 90, 139);
+        while (character [GetPlayerCharacter ()].walking) Wait (1);
+        FaceLocation (GetPlayerCharacter (), 90, 140);
+        Wait (30);
+        MoveCharacter (GetPlayerCharacter (), 45, 139);
+        while (character [GetPlayerCharacter ()].walking) Wait (1);
+        FaceLocation (GetPlayerCharacter (), 45, 140);
+        PlaySound (25);
+        Wait (50);
+        MoveCharacter (GetPlayerCharacter (), 90, 139);
+        while (character [GetPlayerCharacter ()].walking) Wait (1);
+        FaceLocation (GetPlayerCharacter (), 90, 140);
+        Wait (30);
+        MoveCharacter (GetPlayerCharacter (), 45, 139);
+        while (character [GetPlayerCharacter ()].walking) Wait (1);
+        FaceLocation (GetPlayerCharacter (), 45, 140);
+        Wait (10);
+        DisplaySpeech (GetPlayerCharacter (), "Perfect.");
+        SetGlobalInt (241, 1);
+        Wait (10);
+        LoseInventory (25);
+        AddInventory (60);
+        FinishCutscene (0);
+      }
+      else if ((GetPlayerCharacter () == MICHAEL) && (GetGlobalInt (162) == 1) && (GetGlobalInt (163) == 1) && (GetGlobalInt (117) == 1))
+      {
+        BeginCutscene (NO_CHAR);
+        MoveCharacter (GetPlayerCharacter (), 45, 139);
+        while (character [GetPlayerCharacter ()].walking) Wait (1);
+        FaceLocation (GetPlayerCharacter (), 45, 140);
+        Wait (10);
+        MoveCharacter (GetPlayerCharacter (), 295, 130);
+        while (character [GetPlayerCharacter ()].walking) Wait (1);
+        FaceLocation (GetPlayerCharacter (), 296, 130);
+        Wait (5);
+        PlaySound (3);
+        ObjectOff (0);
+        SetGlobalInt (117, 0);
+        Wait (10);
+        MoveCharacter (GetPlayerCharacter (), 45, 139);
+        while (character [GetPlayerCharacter ()].walking) Wait (1);
+        FaceLocation (GetPlayerCharacter (), 45, 140);
+        PlaySound (25);
+        Wait (50);
+        MoveCharacter (GetPlayerCharacter (), 90, 139);
+        while (character [GetPlayerCharacter ()].walking) Wait (1);
+        FaceLocation (GetPlayerCharacter (), 90, 140);
+        Wait (30);
+        MoveCharacter (GetPlayerCharacter (), 45, 139);
+        while (character [GetPlayerCharacter ()].walking) Wait (1);
+        FaceLocation (GetPlayerCharacter (), 45, 140);
+        PlaySound (25);
+        Wait (50);
+        MoveCharacter (GetPlayerCharacter (), 90, 139);
+        while (character [GetPlayerCharacter ()].walking) Wait (1);
+        FaceLocation (GetPlayerCharacter (), 90, 140);
+        Wait (30);
+        MoveCharacter (GetPlayerCharacter (), 45, 139);
+        while (character [GetPlayerCharacter ()].walking) Wait (1);
+        FaceLocation (GetPlayerCharacter (), 45, 140);
+        Wait (10);
+        DisplaySpeech (GetPlayerCharacter (), "Nobody's going to want ruined prints!");
+        SetGlobalInt (241, 2);
+        Wait (10);
+        LoseInventory (25);
+        AddInventory (60);
+        FinishCutscene (0);
+      }
+      else if ((GetPlayerCharacter () == MICHAEL) && (GetGlobalInt (162) == 1) && (GetGlobalInt (163) == 1) && (GetGlobalInt (117) == 0))
+      {
+        BeginCutscene (NO_CHAR);
+        MoveCharacter (GetPlayerCharacter (), 45, 139);
+        while (character [GetPlayerCharacter ()].walking) Wait (1);
+        FaceLocation (GetPlayerCharacter (), 45, 140);
+        PlaySound (25);
+        Wait (50);
+        MoveCharacter (GetPlayerCharacter (), 90, 139);
+        while (character [GetPlayerCharacter ()].walking) Wait (1);
+        FaceLocation (GetPlayerCharacter (), 90, 140);
+        Wait (30);
+        MoveCharacter (GetPlayerCharacter (), 45, 139);
+        while (character [GetPlayerCharacter ()].walking) Wait (1);
+        FaceLocation (GetPlayerCharacter (), 45, 140);
+        PlaySound (25);
+        Wait (50);
+        MoveCharacter (GetPlayerCharacter (), 90, 139);
+        while (character [GetPlayerCharacter ()].walking) Wait (1);
+        FaceLocation (GetPlayerCharacter (), 90, 140);
+        Wait (30);
+        MoveCharacter (GetPlayerCharacter (), 45, 139);
+        while (character [GetPlayerCharacter ()].walking) Wait (1);
+        FaceLocation (GetPlayerCharacter (), 45, 140);
+        Wait (10);
+        DisplaySpeech (GetPlayerCharacter (), "Nobody's going to want ruined prints!");
+        SetGlobalInt (241, 2);
+        Wait (10);
+        LoseInventory (25);
+        AddInventory (60);
+        FinishCutscene (0);
+      }
+      else if (GetPlayerCharacter () != MICHAEL)
+      {
+        if (MovePlayer (45, 139))
+        {
+          FaceLocation (GetPlayerCharacter (), 45, 140);
+          Wait (5);
+          DisplaySpeech (GetPlayerCharacter (), "I don't know how!");
+        }
+      }
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot3_b (){
+  // script for hotspot3: Any click on hotspot
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (89, 139))
+    {
+      FaceLocation (GetPlayerCharacter (), 89, 140);
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (89, 139))
+    {
+      FaceLocation (GetPlayerCharacter (), 89, 140);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "It's an enlarger for photographs.");
+    }
+  }
+  else Unhandled ();
+}
+
+

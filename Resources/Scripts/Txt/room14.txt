@@ -1,0 +1,228 @@
+// room script file
+
+import function BeamEdBackIntoHisRoom (int ignoreRoom14);
+import function BeamEdnaBackIntoHerRoom (int ignoreRoom14);
+
+int EdnaTimer;
+
+#sectionstart room_a  // DO NOT EDIT OR REMOVE THIS LINE
+function room_a (){
+  // script for room: Player enters screen (before fadein)
+  SetObjectClickable (0, 0);
+  SetObjectClickable (1, 0);
+  SetObjectClickable (2, 0);
+  SetObjectClickable (3, 0);
+  SetObjectClickable (4, 0);
+  SetMusicVolume (2);
+  SetMusicRepeat (1);
+  PlayMusic (8);
+  init_object (118, 0);
+  init_object (119, 1);
+  init_object (120, 2);
+  init_object (121, 3);
+  init_object (122, 4);
+  if ((GetGlobalInt (1) == NO_CUTSCENE) && (character [GetPlayerCharacter ()].prevroom == 17) && (character [EDNA].room == 17)) EdnaTimer = 200;
+  else EdnaTimer = -1;
+  AlarmSound ();
+}
+#sectionend room_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart room_c  // DO NOT EDIT OR REMOVE THIS LINE
+function room_c (){
+  // script for room: First time player enters screen
+  SetOwnTimer (5, 7050);
+// SetGlobalInt (235, 2);
+}
+#sectionend room_c  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart room_d  // DO NOT EDIT OR REMOVE THIS LINE
+function room_d() {
+  // script for room: Repeatedly execute
+  if (EdnaTimer == 0) 
+  {
+    if (GetGlobalInt (119) == 0)
+    {
+      PlaySound (2);
+      ObjectOn (1);
+      SetGlobalInt (119, 1);
+      Wait (10);
+    }
+    PlaceCharacter (EDNA, 260, 126, DIR_DOWN);
+    ReleaseCharacterView (EDNA);
+    character [EDNA].room = 14;
+    Wait (10);
+    if (GetGlobalInt (119) == 1)
+    {
+      PlaySound (3);
+      ObjectOff (1);
+      SetGlobalInt (119, 0);
+      Wait (10);
+    }
+    StartHunting (EDNA);
+  }  
+  if (EdnaTimer >= 0) EdnaTimer--;
+}
+#sectionend room_d  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+function OpenDoor (){
+  if (GetGlobalInt (120) == 0)
+  {
+    PlaySound (2);
+    ObjectOn (2);
+    SetGlobalInt (120, 1);
+  }
+}
+
+function CloseDoor (){
+  if (GetGlobalInt (120) == 1)
+  {
+    PlaySound (3);
+    ObjectOff (2);
+    SetGlobalInt (120, 0);
+  }
+}
+
+function EdEntersRoom (int reason){
+  if (reason == ED_ON_WAY_DOWN)
+  {  
+    // Ed is on his way down from r19
+    Wait (5);
+    OpenDoor ();
+    Wait (20);
+    ReleaseCharacterView (ED);
+    Wait (20);
+    CloseDoor ();
+    Wait (10);
+  }
+  else
+  {
+    // Ed is on his way back into r19
+    if (reason == ED_ON_WAY_UP)
+    {
+      character [ED].x = 45;
+      character [ED].y = 134;
+      FaceDirection (ED, DIR_RIGHT);
+      character [ED].room = 14;
+      ReleaseCharacterView (ED);
+    }
+    if ((character [ED].inv [23] == 0) && (reason == ED_ON_WAY_UP)) StartHunting (ED);
+    else
+    {
+      BeginCutscene (ED);
+      MoveCharacterBlocking (GetPlayerCharacter (), 380, 126, 0);
+      FaceDirection (ED, DIR_UP);
+      Wait (5);
+      // Ed opens door
+      OpenDoor ();
+      Wait (20);
+      SetCharacterView (GetPlayerCharacter (), 105);
+      Wait (10);
+      CloseDoor ();
+      FinishCutscene (0);
+      BeamEdBackIntoHisRoom (1);
+    }
+  }
+}
+
+#sectionstart room_b  // DO NOT EDIT OR REMOVE THIS LINE
+function room_b() {
+  // script for room: Player enters screen (after fadein)
+  if (GetGlobalInt (1) == ED_CAPTURES_KID) EdEntersRoom (ED_ON_WAY_DOWN);
+  else 
+  {
+    if ((character [ED].inv [23] == 0) && (character [ED].room == 14)) StartHunting (ED);
+    if (character [EDNA].room == 14) StartHunting (EDNA);
+  }
+}
+#sectionend room_b  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+function EdnaEntersRoom (){
+  character [EDNA].x = 45;
+  character [EDNA].y = 134;
+  FaceDirection (EDNA, DIR_RIGHT);
+  character [EDNA].room = 14;
+  ReleaseCharacterView (EDNA);
+  StartHunting (EDNA);
+}
+
+function on_call (int value){
+  if ((value == ED_ON_WAY_DOWN) || (value == ED_ON_WAY_UP) || (value == ED_ENTERS_ROOM_19)) EdEntersRoom (value);
+  else if (value == EDNA_ENTERS_ROOM) EdnaEntersRoom ();
+}
+
+function LeaveRoom (int new_room){
+  if ((character [ED].room == 14) && (new_room != 19)) BeamEdBackIntoHisRoom (1);
+  if ((character [EDNA].room == 14) && (new_room != 17)) BeamEdnaBackIntoHerRoom (1);
+}
+
+#sectionstart region1_a  // DO NOT EDIT OR REMOVE THIS LINE
+function region1_a (){
+  // script for region1: Player walks onto region
+  LeaveRoom (12);
+  SetGlobalInt (1, NORMAL_ENTER_ROOM);
+  NewRoom (12);
+}
+#sectionend region1_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot1_a  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot1_a (){
+  // script for hotspot1: Any click on hotspot
+  int result = any_click_on_door (118, 0, 139, 126, DIR_UP, 15, 320, 131, DIR_LEFT);
+  if (result == 2) LeaveRoom (15);
+  else if (result == 0) Unhandled ();
+}
+#sectionend hotspot1_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot2_a  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot2_a (){
+  // script for hotspot2: Any click on hotspot
+  int result = any_click_on_door (119, 1, 260, 126, DIR_UP, 17, 30, 133, DIR_RIGHT);
+  if (result == 2) LeaveRoom (17);
+  else if (result == 0) Unhandled ();
+}
+#sectionend hotspot2_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot3_a  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot3_a (){
+  // script for hotspot3: Any click on hotspot
+  int result = any_click_on_door (120, 2, 380, 126, DIR_UP, 19, 235, 116, DIR_DOWN);
+  if (result == 2) LeaveRoom (19);
+  else if (result == 0) Unhandled ();
+}
+#sectionend hotspot3_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot4_a  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot4_a (){
+  // script for hotspot4: Any click on hotspot
+  int result = any_click_on_door (121, 3, 500, 126, DIR_UP, 20, 45, 131, DIR_RIGHT);
+  if (result == 2) LeaveRoom (20);
+  else if (result == 0) Unhandled ();
+}
+#sectionend hotspot4_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot5_a  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot5_a (){
+  // script for hotspot5: Any click on hotspot
+  int result = any_click_on_door (122, 4, 585, 135, DIR_RIGHT, 22, 50, 132, DIR_RIGHT);
+  if (result == 2) LeaveRoom (22);
+  else if (result == 0) Unhandled ();
+}
+#sectionend hotspot5_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot6_a  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot6_a (){
+  // script for hotspot6: Any click on hotspot
+  any_click_walk (44, 135, DIR_LEFT);
+}
+#sectionend hotspot6_a  // DO NOT EDIT OR REMOVE THIS LINE
+

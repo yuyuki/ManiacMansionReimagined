@@ -1,0 +1,148 @@
+// room script file
+
+#sectionstart room_b  // DO NOT EDIT OR REMOVE THIS LINE
+function room_b (){
+  // script for room: Player enters screen (before fadein)
+  SetObjectClickable (0, 0);
+  SetObjectClickable (1, 0);
+  SetObjectClickable (2, 0);
+  SetCharacterView (GetPlayerCharacter (), 105);
+  GUIOff (0);
+  GUIOff (1);
+  int cutscene = GetGlobalInt (1);
+  if (cutscene == INTRO) PlacePC (639, 25, DIR_DOWN);
+  else if (cutscene == OUTRO_EXPLOSION) PlacePC (1, 1, DIR_DOWN);
+  else if (cutscene == OUTRO_ALLKIDSDEAD) PlacePC (1, 1, DIR_DOWN);
+}
+#sectionend room_b  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart room_a  // DO NOT EDIT OR REMOVE THIS LINE
+function room_a (){
+  // script for room: Player enters screen (after fadein)
+  int cutscene = GetGlobalInt (1);
+  string translation;
+  GetTranslationName (translation);
+  if (cutscene == INTRO)
+  {
+    StartCutscene (5);
+    SetCharacterSpeed (GetPlayerCharacter (), 2);
+    SetCharacterView (GetPlayerCharacter (), 101);
+    Wait (60);
+    SetLabelText (13, 0, "Twenty years ago today...");
+    Wait (205);
+    SetLabelText (13, 0, "");
+    MoveCharacterBlocking (GetPlayerCharacter (), 260, 120, 0);
+    SetCharacterView (GetPlayerCharacter (), 105);
+    SetObjectView (1, 103);
+    AnimateObject (1, 0, 0, 0);
+    PlaySound (98);
+    ObjectOn (1);
+    MoveCharacterBlocking (GetPlayerCharacter (), 10, 120, 0);
+    Wait (15);
+    SetObjectGraphic (0, 384);
+    Wait (15);
+    SetObjectGraphic (0, 385);
+    Wait (15);
+    SetObjectGraphic (0, 386);
+    Wait (15);
+    SetObjectGraphic (0, 387);
+    Wait (15);
+    SetObjectGraphic (0, 388);
+    Wait (15);
+    SetLabelText (13, 0, "A Lucasfilm Games Production");
+    Wait (100);
+    SetLabelText (13, 0, "Designed and written by");
+    SetLabelText (13, 1, "Ron Gilbert and Gary Winnick");
+    Wait (75);
+    SetLabelText (13, 0, "Scripted by");
+    SetLabelText (13, 1, "Ron Gilbert and David Fox");
+    Wait (75);
+    SetLabelText (13, 0, "Programmed by");
+    SetLabelText (13, 1, "Aric Wilmunder and Ron Gilbert");
+    Wait (75);
+    SetLabelText (13, 0, "Art and animation by");
+    SetLabelText (13, 1, "Gary Winnick");
+    Wait (75);
+    SetLabelText (13, 0, "IBM sounds by");
+    SetLabelText (13, 1, "Dave Warhol and David Hayes");
+    Wait (75);
+    SetLabelText (13, 0, "Original music by");
+    SetLabelText (13, 1, "Chris Grigg and David Lawrence");
+    Wait (75);
+    if (IsTranslationAvailable () == 1)
+    {
+      if (StrCaseComp (translation, "german") == 0)
+      {
+        SetLabelText (13, 0, "Deutsche Version von");
+        SetLabelText (13, 1, "Boris Schneider");
+        Wait (75);
+      }
+    }
+    SetLabelText (13, 0, "");
+    SetLabelText (13, 1, "");
+    Wait (25);
+   
+    NewRoom (49);
+  }
+  else if (cutscene == OUTRO_EXPLOSION)
+  {
+    SetGlobalInt (315, 1);
+    SetObjectView (2, 77);
+    AnimateObject (2, 0, 3, 0);
+    Wait (40);
+    ObjectOn (2);
+    PlaySound (98);
+    PlayMusic (1);
+    SeekMIDIPosition (31);
+    Wait (200);
+    GUIOn (13);
+    SetGUIPosition (13, 1, 150);
+    SetLabelText (13, 0, "The house and everyone within a");
+    SetLabelText (13, 1, "5 mile radius have been destroyed");
+    SetLabelText (13, 2, "in a massive nuclear meltdown.");
+    Wait (300);
+    SetLabelText (13, 0, "THE GAME IS OVER");
+    SetLabelText (13, 1, "Press F8 to play again.");
+    SetLabelText (13, 2, "");
+    RemoveWalkableArea (1);
+  }
+  else if (cutscene == OUTRO_ALLKIDSDEAD)
+  { 
+    StartCutscene(5);
+    PlayMusic (1);
+    SeekMIDIPosition (31);
+    Wait(150);
+    SetGUIPosition (13, 1, 150);
+    GUIOn(13);
+    SetLabelText (13, 0, "All the kids have died.");
+    Wait(200);
+    SetLabelText (13, 0, "");
+    Wait(20);
+    SetLabelText (13, 0, "The rescue attempt has failed.");
+    Wait(200);
+    SetLabelText (13, 0, "");
+    Wait(20);
+    SetLabelText (13, 0, "Dr. Fred, still under the evil meteor's");
+    SetLabelText (13, 1, "influence, is destined to take over the");
+    SetLabelText (13, 2, "world and a small part of the galaxy.");
+    Wait(300);
+    SetLabelText (13, 0, "");
+    SetLabelText (13, 1, "");
+    SetLabelText (13, 2, "");
+    Wait(50);
+    SetLabelText (13, 0, "Hope you like purple...");
+    SetLabelText (13, 1, "Heh, heh, heh.");
+    Wait(250);
+    SetLabelText (13, 0, "");
+    SetLabelText (13, 1, "");
+    Wait(20);
+    EndCutscene();
+    SetLabelText (13, 0, "THE GAME IS OVER");
+    SetLabelText (13, 1, "Press F8 to play again.");
+  }
+}
+#sectionend room_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+

@@ -1,0 +1,31 @@
+// room script file
+
+function room_a (){
+  // script for room: Player enters screen (before fadein)
+  SetCharacterView (GetPlayerCharacter (), 105);
+  GUIOff (0);
+  GUIOff (1);
+  if (GetGlobalInt (145) <= 0)
+  {
+    int ran = Random (3);
+    SetObjectGraphic (0, 674 + ran);
+    if (ran == 0)      SetGlobalInt (145, 7572);
+    else if (ran == 1) SetGlobalInt (145, 5858);
+    else if (ran == 2) SetGlobalInt (145, 3301);
+    else               SetGlobalInt (145, 8640);
+  }
+  AlarmSound ();
+}
+
+function room_b (){
+  // script for room: Player enters screen (after fadein)
+  Wait (95);
+  SetGlobalInt (1, BACK_FROM_HIGHSCORE);
+  ReleaseCharacterView (GetPlayerCharacter ());
+  FaceLocation (GetPlayerCharacter (), 415, 120);
+  GUIOn (0);
+  GUIOn (1);
+  NewRoom (11);
+}
+
+

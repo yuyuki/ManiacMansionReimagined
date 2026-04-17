@@ -1,0 +1,167 @@
+// room script file
+// ============================= FadeObject ===========================================
+// objectnum, object to fade in or out.
+// speed , 1 = fastest, 5 = slowest
+// rate (transparency), 1 = slower, 20 = faster, 100 = immediate
+
+function FadeObjectIn (int objnum, int speed, int rate){
+  int trans = 100; // object initially invisible
+  while (trans > 0)
+  {
+    // as long as object hasn't fully faded in
+    trans = trans - rate; // subtract from transparency percentage
+    if (trans < 0) trans = 0;              // guarantee exact at finish.
+    SetObjectTransparency (objnum, trans); // change the object's transparency
+    Wait (speed); // pause.
+  }
+}
+
+function FadeObjectOut (int objnum, int speed, int rate){
+  int trans = 0; // object initially visible
+  while (trans < 100)
+  {
+    // as long as object hasn't fully faded out
+    trans = trans + rate; // subtract from transparency percentage
+    if (trans > 100) trans = 100;          // guarantee exact at finish.
+    SetObjectTransparency (objnum, trans); // change the object's transparency
+    Wait (speed); // pause.
+  }
+}
+// ============================= translator credits ===========================================
+int otc = 0;
+
+function DisplayTranslator (string ti){
+  string s;
+  StrCopy (s, GetTranslation (ti));
+  int tn = getInteger (s);
+  int tc = getInteger (s);
+  if (otc > 0)
+  {
+    if (tc != otc)
+    {
+      FadeObjectOut (3, 1, 5);
+      Wait (5);
+    }
+    FadeObjectOut (0, 1, 5);
+    Wait (25);
+  }
+  if (tn > 0)
+  {
+    SetObjectGraphic (0, tn);
+    FadeObjectIn (0, 1, 5);
+    if (tc != otc)
+    {
+      Wait (5);
+      SetObjectGraphic (3, tc);
+      FadeObjectIn (3, 1, 5);
+    }
+    Wait (150);
+  }
+  otc = tc;
+}
+
+function DisplayTranslators (){
+  string s;
+  StrCopy (s, GetTranslation ("Translation"));
+  if (StrLen (s) > 1)
+  {
+    SetLabelText (15, 0, s);
+    DisplayTranslator ("translator1");
+    DisplayTranslator ("translator2");
+    DisplayTranslator ("translator3");
+    DisplayTranslator ("translator4");
+    DisplayTranslator ("translator5");
+    DisplayTranslator ("translator6");
+  }
+  SetLabelText (15, 0, "");
+  Wait (25);
+  GUIOff (15);
+  GUIOn (10);
+}
+// ============================= room functions ===========================================
+
+#sectionstart room_a  // DO NOT EDIT OR REMOVE THIS LINE
+function room_a (){
+  // script for room: Player enters screen (after fadein)
+  string translation;
+  GetTranslationName (translation);
+  FadeObjectOut (1, 1, 100);
+  FadeObjectOut (2, 1, 100);
+  FadeObjectOut (3, 1, 100);
+  FadeObjectOut (4, 1, 100);
+  SetObjectGraphic (0, 772);
+  FadeObjectIn (0, 1, 5);
+  Wait (5);
+  SetObjectGraphic (1, 886);
+  FadeObjectIn (1, 1, 5);
+  Wait (150);
+  FadeObjectOut (1, 1, 5);
+  Wait (5);
+  FadeObjectOut (0, 1, 5);
+  Wait (25);
+  SetObjectGraphic (0, 773);
+  FadeObjectIn (0, 1, 5);
+  Wait (5);
+  SetObjectGraphic (2, 887);
+  FadeObjectIn (2, 1, 5);
+  Wait (150);
+  FadeObjectOut (0, 1, 5);
+  Wait (25);
+  SetLabelText (15, 0, "Art");
+  SetObjectGraphic (0, 774);
+  FadeObjectIn (0, 1, 5);
+  Wait (150);
+  FadeObjectOut (2, 1, 5);
+  Wait (5);
+  FadeObjectOut (0, 1, 5);
+  Wait (25);
+  SetLabelText (15, 0, "Music");
+  SetObjectGraphic (0, 771);
+  FadeObjectIn (0, 1, 5);
+  Wait (5);
+  SetObjectGraphic (4, 889);
+  FadeObjectIn (4, 1, 5);
+  Wait (150);
+  FadeObjectOut (0, 1, 5);
+  Wait (25);
+  SetLabelText (15, 0, "Design");
+  SetObjectGraphic (0, 890);
+  FadeObjectIn (0, 1, 5);
+  Wait (5);
+  Wait (150);
+  FadeObjectOut (4, 1, 5);
+  Wait (5);
+  FadeObjectOut (0, 1, 5);
+
+  if (IsTranslationAvailable () == 0)
+  {
+    SetLabelText (15, 0, "");
+    Wait (25);
+    GUIOff (15);
+    GUIOn (10);
+  }
+  else DisplayTranslators ();
+  NewRoom (1);
+}
+#sectionend room_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart room_b  // DO NOT EDIT OR REMOVE THIS LINE
+function room_b (){
+  // script for room: Player enters screen (before fadein)
+  SetObjectGraphic (0, 26);
+  SetObjectGraphic (1, 26);
+  SetObjectGraphic (2, 26);
+  SetObjectGraphic (3, 26);
+  SetObjectGraphic (4, 26);
+  GUIOff (0);
+  GUIOff (1);
+  GUIOff (10);
+  GUIOn (15);
+  PlacePC (200, 137, DIR_DOWN);
+  SetCharacterView (GetPlayerCharacter (), 105);
+}
+#sectionend room_b  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+

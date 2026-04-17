@@ -1,0 +1,576 @@
+// room script file
+
+import function EdPutsHamsterIntoCage ();
+
+function room_a (){
+  // script for room: Player enters screen (before fadein)
+  SetMusicVolume (1);
+  SetMusicRepeat (1);
+  PlayMusic (8);
+  SetObjectClickable (0, 0);
+  init_object (120, 0);
+  init_object (81, 2);
+  int cutscene = GetGlobalInt (1);
+  if ((cutscene == ED_IS_HUNGRY) || (cutscene == ED_HEARS_DOORBELL))
+  {
+    SetViewport (1, 1);
+    character [ED].x = 51;
+    character [ED].y = 118;
+    FaceDirection (ED, DIR_DOWN);
+  }
+  else if (cutscene == ED_AND_FRED_HAMSTER)
+  {
+    SetViewport (1, 1);
+    character [ED].x = 57;
+    character [ED].y = 141;
+    FaceDirection (ED, DIR_DOWN);
+  }
+  else if (cutscene == ED_ORDERS_PLANS)
+  {
+    character [GetPlayerCharacter ()].x = 91;
+    character [GetPlayerCharacter ()].y = 118;
+    character [ED].room = 19;
+    character [ED].x = 51;
+    character [ED].y = 118;
+    FaceCharacter (GetPlayerCharacter (), ED);
+    FaceCharacter (ED, GetPlayerCharacter ());
+  }
+  else if (character [ED].room == 19)
+  {
+    if (character [ED].inv [23] == 0) PlaceCharacter (ED, 51, 118, DIR_RIGHT);
+    else                              PlaceCharacter (ED, 70, 118, DIR_UP);
+  }
+  AlarmSound ();
+}
+
+function OpenDoor (){
+  if (GetGlobalInt (120) == 0)
+  {
+    PlaySound (2);
+    ObjectOn (0);
+    SetGlobalInt (120, 1);
+  }
+}
+
+function CloseDoor (){
+  if (GetGlobalInt (120) == 1)
+  {
+    PlaySound (3);
+    ObjectOff (0);
+    SetGlobalInt (120, 0);
+  }
+}
+
+function EdEntersRoom (){
+  // Ed opens door
+  OpenDoor ();
+  Wait (10);
+  FaceDirection (ED, DIR_DOWN);
+  character [ED].x = 235;
+  character [ED].y = 116;
+  character [ED].room = 19;
+  ReleaseCharacterView (ED);
+  Wait (10);
+  CloseDoor ();
+  Wait (15);
+  EdPutsHamsterIntoCage ();
+  if (character [ED].inv [23] == 0) StartHunting (ED);
+  else
+  {
+    MoveCharacterBlocking (ED, 70, 118, 0);
+    FaceDirection (ED, DIR_UP);
+  }
+}
+
+function EdLeavesRoom (){
+  MoveCharacterBlocking (GetPlayerCharacter (), 235, 119, 0);
+  FaceDirection (GetPlayerCharacter (), DIR_UP);
+  Wait (10);
+  OpenDoor ();
+  Wait (15);
+  character [GetPlayerCharacter ()].room = -1;
+  Wait (15);
+  CloseDoor ();
+  Wait (15);
+}
+
+function EdOrdersPlans (){
+  Wait (10);
+  DisplaySpeech (ED, "Now you have to find me my plans.");
+  DisplaySpeech (ED, "I lost them somewhere!");
+  DisplaySpeech (ED, "You see, the evil meteor has turned my father into a madman.");
+  DisplaySpeech (ED, "I must break into the lab and save him.");
+  DisplaySpeech (ED, "I need my commando package and plans, but I lost them.");
+  DisplaySpeech (ED, "Come back when you have what I need!");
+  Wait (5);
+  MoveCharacterBlocking (ED, 70, 118, 0);
+  FaceDirection (ED, DIR_UP);
+  SetGlobalInt (237, 1);
+  SetGlobalInt (1, NO_CUTSCENE);
+  FinishCutscene (0);
+}
+
+function room_c (){
+  // script for room: Player enters screen (after fadein)
+  int cutscene = GetGlobalInt (1);
+  if (cutscene == ED_IS_HUNGRY)
+  {
+    PlayMusic (16);
+    Wait (30);
+    DisplaySpeech (ED, "Gee, I'm hungry!");
+    Wait (10);
+    EdLeavesRoom ();
+    Wait (30);
+    SetGlobalInt (1, NO_CUTSCENE);
+    FinishCutscene (0);
+    SetOwnTimer (3, 1200);
+  }
+  else if (cutscene == ED_HEARS_DOORBELL)
+  {
+    // Ed is actor
+    int actor = GetPlayerCharacter ();
+    PlayMusic (16);
+    Wait (30);
+    DisplaySpeech (GetPlayerCharacter (), "Oh, the doorbell!");
+    DisplaySpeech (GetPlayerCharacter (), "I wonder if that's my package?");
+    Wait (10);
+    EdLeavesRoom ();
+    Wait (30);
+    SetGlobalInt (1, NO_CUTSCENE);
+    FinishCutscene (0);
+    SetOwnTimer(7,1200);
+  }
+  else if (cutscene == ED_AND_FRED_HAMSTER)
+  {
+    // ED is PC
+    PlayMusic (16);
+    Wait (30);
+    OpenDoor ();
+    Wait (15);
+    character [FRED].x = 235;
+    character [FRED].y = 116;
+    character [FRED].room = 19;
+    FaceDirection (FRED, DIR_DOWN);
+    Wait (15);
+    FaceCharacter (ED, FRED);
+    DisplaySpeech (FRED, "Hey Ed!");
+    Wait (15);
+    MoveCharacterBlocking (FRED, 97, 141, 0);
+    FaceCharacter (FRED, ED);
+    Wait (10);
+    DisplaySpeech (FRED, "The meteor wants to borrow your hamster and electric cattle prod.");
+    DisplaySpeech (ED, "My hamster! NOBODY touches my HAMSTER!");
+    DisplaySpeech (FRED, "Better watch it, Ed you're going to piss-off the meteor.");
+    DisplaySpeech (FRED, "It already thinks you stole my purple card key.");
+    DisplaySpeech (ED, "Er...");
+    DisplaySpeech (ED, "I don't know what you're talking about!");
+    DisplaySpeech (FRED, "I can't get to the meteor without it.");
+    MoveCharacterBlocking (FRED, 235, 116, 0);
+    FaceDirection (FRED, DIR_UP);
+    DisplaySpeech (ED, "Oh, really?");
+    Wait (10);
+    FaceDirection (FRED, DIR_DOWN);
+    Wait (5);
+    DisplaySpeech (FRED, "Shape up, kid!");
+    Wait (10);
+    FaceDirection (FRED, DIR_UP);
+    Wait (15);
+    character [FRED].room = 33;
+    character [FRED].x = 136;
+    character [FRED].y = 133;
+    Wait (10);
+    CloseDoor ();
+    Wait (20);
+    SetGlobalInt (1, NO_CUTSCENE);
+    FinishCutscene (0);
+    SetOwnTimer (12, 2350);
+  }
+  else if (cutscene == ED_ORDERS_PLANS) EdOrdersPlans ();
+  else if (character [ED].room == 19)
+    {
+      if (character [ED].inv [23] == 0) StartHunting (ED);
+      else
+      {
+        if (GetGlobalInt (240) < 2)
+        {
+          Wait (10);
+          FaceCharacter (ED, GetPlayerCharacter ());
+          DisplaySpeech (ED, "Hello.");
+          DisplaySpeech (ED, "Come see me when you have the plans.");
+          Wait (5);
+          FaceDirection (ED, DIR_UP);
+        }
+        else if (GetGlobalInt (240) == 2)
+        {
+          Wait (10);
+          FaceCharacter (ED, GetPlayerCharacter ());
+          DisplaySpeech (ED, "Hello.");
+          DisplaySpeech (ED, "Getting ready for the big raid?");
+          Wait (5);
+          FaceDirection (ED, DIR_UP);
+        }
+      }
+    }
+}
+
+function hotspot1_a (){
+  // script for hotspot1: Any click on hotspot
+  int result = any_click_on_door (120, 0, 235, 116, DIR_UP, 14, 380, 126, DIR_DOWN);
+  if (result == 0) Unhandled ();
+}
+
+function hotspot2_a (){
+  // script for hotspot2: Any click on hotspot
+  if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (92, 118))
+    {
+      FaceLocation (GetPlayerCharacter (), 92, 117);
+      Wait (5);
+      if (GetGlobalInt (199) == 0) DisplaySpeech (GetPlayerCharacter (), "It's too dark to read.");
+      else DisplaySpeech (GetPlayerCharacter (), "Hmm. It doesn't make any sense.");
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (92, 118))
+    {
+      FaceLocation (GetPlayerCharacter (), 92, 117);
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot3_a (){
+  // script for hotspot3: Any click on hotspot
+  if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (186, 121))
+    {
+      FaceLocation (GetPlayerCharacter (), 186, 120);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "'L.F.L.U. Rah!'");
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (186, 121))
+    {
+      FaceLocation (GetPlayerCharacter (), 186, 120);
+    }
+  }
+  else Unhandled ();
+}
+
+function object2_a (){
+  // script for object2: Any click on object
+  if ((UsedAction (A_OPEN)) || (UsedAction (A_PICK_UP)))
+  {
+    if (MovePlayer (186, 121))
+    {
+      FaceLocation (GetPlayerCharacter (), 186, 120);
+      Wait (5);
+      if (character [ED].room == 19)
+      {
+        BeginCutscene (NO_CHAR);
+        FaceCharacter (ED, GetPlayerCharacter ());
+        Wait (5);
+        DisplaySpeech (ED, "What are you doing!");
+        MoveCharacterBlocking (ED, 150, 137, 0);
+        FaceCharacter (ED, GetPlayerCharacter ());
+        DisplaySpeech (ED, "You're not supposed to touch that!");
+        ToDungeon (ED);
+      }
+      else
+      {
+        PlaySound (4);
+        ObjectOff (2);
+        SetGlobalInt (81, 0);
+        AddInventory (59);
+      }
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (186, 121))
+    {
+      FaceLocation (GetPlayerCharacter (), 186, 120);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "Oh, how cute!");
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (186, 121))
+    {
+      FaceLocation (GetPlayerCharacter (), 186, 120);
+    }
+  }
+  else Unhandled ();
+}
+
+function object3_a (){
+  // script for object3: Any click on object
+  if ((UsedAction (A_OPEN)) || (UsedAction (A_PICK_UP)))
+  {
+    if (MovePlayer (186, 121))
+    {
+      FaceLocation (GetPlayerCharacter (), 186, 120);
+      Wait (5);
+      if (character [ED].room == 19)
+      {
+        BeginCutscene (NO_CHAR);
+        FaceCharacter (ED, GetPlayerCharacter ());
+        Wait (5);
+        DisplaySpeech (ED, "What are you doing!");
+        MoveCharacterBlocking (ED, 150, 137, 0);
+        FaceCharacter (ED, GetPlayerCharacter ());
+        DisplaySpeech (ED, "You're not supposed to touch that!");
+        ToDungeon (ED);
+      }
+      else
+      {
+        PlaySound (4);
+        ObjectOff (3);
+        AddInventory (4);
+      }
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (186, 121))
+    {
+      FaceLocation (GetPlayerCharacter (), 186, 120);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "'This side up.'");
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (186, 121))
+    {
+      FaceLocation (GetPlayerCharacter (), 186, 120);
+    }
+  }
+  else Unhandled ();
+}
+
+function object1_a (){
+  // script for object1: Any click on object
+  if ((UsedAction (A_OPEN)) || (UsedAction (A_PICK_UP)))
+  {
+    if (GetGlobalInt (316) == 0)
+    {
+      if (MovePlayer (244, 137))
+      {
+        FaceLocation (GetPlayerCharacter (), 244, 138);
+        Wait (5);
+        SetObjectGraphic (1, 653);
+        ObjectOn (4);
+        ObjectOn (5);
+        ObjectOn (6);
+        PlaySound (26);
+        DisplaySpeech (GetPlayerCharacter (), "Damn! I broke it!");
+        SetGlobalInt (316, 1);
+        if (character [ED].room == 19)
+        {
+          BeginCutscene (NO_CHAR);
+          FaceCharacter (ED, GetPlayerCharacter ());
+          Wait (5);
+          DisplaySpeech (ED, "What are you doing!");
+          MoveCharacterBlocking (ED, 210, 137, 0);
+          FaceCharacter (ED, GetPlayerCharacter ());
+          DisplaySpeech (ED, "You're not supposed to touch that!");
+          ToDungeon (ED);
+        }
+      }
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (244, 137))
+    {
+      FaceLocation (GetPlayerCharacter (), 244, 138);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "It's a glass piggy bank.");
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (244, 137))
+    {
+      FaceLocation (GetPlayerCharacter (), 244, 138);
+    }
+  }
+  else Unhandled ();
+}
+
+function object4_a (){
+  // script for object4: Any click on object
+  if (UsedAction (A_PICK_UP))
+  {
+    if (MovePlayer (244, 137))
+    {
+      FaceLocation (GetPlayerCharacter (), 244, 138);
+      Wait (5);
+      PlaySound (4);
+      ObjectOff (4);
+      AddInventory (45);
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (244, 137))
+    {
+      FaceLocation (GetPlayerCharacter (), 244, 138);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "'1944'");
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (244, 137))
+    {
+      FaceLocation (GetPlayerCharacter (), 244, 138);
+    }
+  }
+  else Unhandled ();
+}
+
+function object5_a (){
+  // script for object5: Any click on object
+  if (UsedAction (A_PICK_UP))
+  {
+    if (MovePlayer (244, 137))
+    {
+      FaceLocation (GetPlayerCharacter (), 244, 138);
+      Wait (5);
+      PlaySound (4);
+      ObjectOff (5);
+      AddInventory (46);
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (244, 137))
+    {
+      FaceLocation (GetPlayerCharacter (), 244, 138);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "'1966'");
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (244, 137))
+    {
+      FaceLocation (GetPlayerCharacter (), 244, 138);
+    }
+  }
+  else Unhandled ();
+}
+
+function object6_a (){
+  // script for object6: Any click on object
+  if (UsedAction (A_PICK_UP))
+  {
+    if (MovePlayer (244, 137))
+    {
+      FaceLocation (GetPlayerCharacter (), 244, 138);
+      Wait (5);
+      PlaySound (4);
+      ObjectOff (6);
+      AddInventory (47);
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (244, 137))
+    {
+      FaceLocation (GetPlayerCharacter (), 244, 138);
+      Wait (10);
+      DisplaySpeech (GetPlayerCharacter (), "'1982'");
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (244, 137))
+    {
+      FaceLocation (GetPlayerCharacter (), 244, 138);
+    }
+  }
+  else Unhandled ();
+}
+
+function on_call (int value){
+  if (GetGlobalInt (1) == ED_ORDERS_PLANS) EdOrdersPlans ();
+  else if (value == ED_ON_WAY_UP) EdEntersRoom ();
+}
+
+function hotspot4_a (){
+  // script for hotspot4: Any click on hotspot
+  if (any_click_walk_look (64, 141, DIR_UP, "") != 0)
+  {  }
+  else Unhandled ();
+}
+
+function hotspot5_b (){
+  // script for hotspot5: Any click on hotspot
+  if (any_click_walk_look (80, 118, DIR_UP, "Cool model.") != 0)
+  {  }
+  else Unhandled ();
+}
+
+function hotspot6_b (){
+  // script for hotspot6: Any click on hotspot
+  string translation;
+  GetTranslationName (translation);
+  if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (125, 118))
+    {
+      FaceLocation (GetPlayerCharacter (), 125, 117);
+      Wait (5);
+      if ((StrCaseComp (translation, "german") == 0) && (GetPlayerCharacter () == BERNHARD))
+      {
+        DisplaySpeech (BERNHARD, "&9 Wau!  Aus meinem Lieblingsfilm!");
+      }
+      else
+      {
+        DisplaySpeech (GetPlayerCharacter (), "I wish I had one of those.");
+      }
+    }
+  }
+  else if (UsedAction (A_PICK_UP))
+  {
+    if (MovePlayer (125, 118))
+    {
+      FaceLocation (GetPlayerCharacter (), 125, 117);
+      Wait (5);
+      if ((StrCaseComp (translation, "german") == 0) && (GetPlayerCharacter () == BERNHARD))
+      {
+        DisplaySpeech (BERNHARD, "&10 Ich habe davon drei Stück zu Hause.");
+      }
+      else
+      {
+        Unhandled ();
+      }
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (125, 118))
+    {
+      FaceLocation (GetPlayerCharacter (), 125, 117);
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot7_b (){
+  // script for hotspot7: Any click on hotspot
+  if (any_click_walk_look (285, 122, DIR_RIGHT, "") != 0)
+  {  }
+  else Unhandled ();
+}
+
+

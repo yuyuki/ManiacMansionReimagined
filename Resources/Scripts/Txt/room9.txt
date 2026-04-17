@@ -1,0 +1,200 @@
+// room script file
+
+function room_a (){
+  // script for room: Player enters screen (before fadein)
+  SetObjectClickable (0, 0);
+  SetObjectClickable (1, 0);
+  SetObjectClickable (2, 0);
+  SetMusicVolume (2);
+  SetMusicRepeat (1);
+  PlayMusic (14);
+  init_object (115, 0);
+  init_object (116, 1);
+  AlarmSound ();
+}
+
+function hotspot1_a (){
+  // script for hotspot1: Any click on hotspot
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (144, 127))
+    {
+      FaceLocation (GetPlayerCharacter (), 144, 126);
+      Wait (5);
+      SetScreenTransition (TRANSITION_CROSSFADE);
+      NewRoomEx (6, 308, 118);
+      FaceLocation (GetPlayerCharacter (), 308, 119);
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot2_a (){
+  // script for hotspot2: Any click on hotspot
+  if (UsedAction (A_CLOSE))
+  {
+    if (GetGlobalInt (115) == 1)
+    {
+      if (MovePlayer (274, 127))
+      {
+        FaceLocation (GetPlayerCharacter (), 274, 126);
+        Wait (5);
+        PlaySound (3);
+        ObjectOff (0);
+        SetGlobalInt (115, 0);
+      }
+    }
+  }
+  else if (UsedAction (A_OPEN))
+  {
+    if (GetGlobalInt (115) == 0)
+    {
+      if (MovePlayer (274, 127))
+      {
+        FaceLocation (GetPlayerCharacter (), 274, 126);
+        Wait (5);
+        PlaySound (2);
+        ObjectOn (0);
+        SetGlobalInt (115, 1);
+      }
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (GetGlobalInt (115) == 1)
+    {
+      if (MovePlayer (274, 127))
+      {
+        FaceLocation (GetPlayerCharacter (), 274, 126);
+        Wait (5);
+        SetScreenTransition (TRANSITION_CROSSFADE);
+        NewRoomEx (10, 244, 115);
+        FaceLocation (GetPlayerCharacter (), 244, 116);
+      }
+    }
+    else
+    {
+      if (MovePlayer (274, 127))
+      {
+        FaceLocation (GetPlayerCharacter (), 274, 126);
+      }
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot3_a (){
+  // script for hotspot3: Any click on hotspot
+  if (UsedAction (A_CLOSE))
+  {
+    if (GetGlobalInt (116) == 1)
+    {
+      if (MovePlayer (475, 127))
+      {
+        FaceLocation (GetPlayerCharacter (), 475, 126);
+        Wait (5);
+        PlaySound (3);
+        ObjectOff (1);
+        SetGlobalInt (116, 0);
+      }
+    }
+  }
+  else if (UsedAction (A_OPEN))
+  {
+    if (GetGlobalInt (116) == 0)
+    {
+      if (MovePlayer (475, 127))
+      {
+        FaceLocation (GetPlayerCharacter (), 475, 126);
+        Wait (5);
+        PlaySound (2);
+        ObjectOn (1);
+        SetGlobalInt (116, 1);
+      }
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (GetGlobalInt (116) == 1)
+    {
+      if (MovePlayer (475, 127))
+      {
+        FaceLocation (GetPlayerCharacter (), 475, 126);
+        Wait (5);
+        SetScreenTransition (TRANSITION_CROSSFADE);
+        NewRoomEx (11, 121, 117);
+        FaceLocation (GetPlayerCharacter (), 121, 118);
+      }
+    }
+    else
+    {
+      if (MovePlayer (475, 127))
+      {
+        FaceLocation (GetPlayerCharacter (), 475, 126);
+      }
+    }
+  }
+  else Unhandled ();
+}
+
+function region1_a (){
+  // script for region1: Player walks onto region
+  NewRoomEx (12, 440, 129);
+  FaceLocation (GetPlayerCharacter (), 439, 129);
+}
+
+function hotspot4_a (){
+  // script for hotspot4: Any click on hotspot
+  if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (130, 138))
+    {
+      FaceLocation (GetPlayerCharacter (), 129, 138);
+      Wait (5);
+      if (GetGlobalInt (199) == 0) DisplaySpeech (GetPlayerCharacter (), "It's too dark to read.");
+      else DisplaySpeech (GetPlayerCharacter (), "'Si trouve, envoyez-le au Louvre, poste paye.'");
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (130, 138))
+    {
+      FaceLocation (GetPlayerCharacter (), 129, 138);
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot5_b (){
+  // script for hotspot5: Any click on hotspot
+  if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (130, 138))
+    {
+      FaceLocation (GetPlayerCharacter (), 129, 138);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "Maybe there's a plaque somehwere.");
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (130, 138))
+    {
+      FaceLocation (GetPlayerCharacter (), 129, 138);
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot6_a (){
+  // script for hotspot6: Any click on hotspot
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (572, 31))
+    {
+      //
+    }
+  }
+  else Unhandled ();
+}
+

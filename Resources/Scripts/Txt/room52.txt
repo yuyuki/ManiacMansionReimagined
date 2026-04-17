@@ -1,0 +1,65 @@
+// room script file
+
+function room_a (){
+  // script for room: Player enters screen (after fadein)
+  Wait (20);
+  DisplaySpeech (MICHA, "...und sobald unser Patrick das Krankenhaus wieder verlassen hat...");
+  DisplaySpeech (MICHA, "...wird er nochmal versuchen, einen C64 auf 2,5 GHz zu übertakten.");
+  DisplaySpeech (MICHA, "Diesmal dann hoffentlich mit etwas mehr Erfolg.");
+  Wait (25);
+  SetCharacterView (MICHA, 58);
+  DisplaySpeech (BIMON, "Also mir hat das Feuerwerk gefallen.");
+  Wait (40);
+  ReleaseCharacterView (MICHA);
+  Wait (15);
+  SetCharacterView (MICHA, 57);
+  Wait (30);
+  ReleaseCharacterView (MICHA);
+  Wait (20);
+  DisplaySpeech (MICHA, "Na ja...");
+  Wait (20);
+  DisplaySpeech (MICHA, "...kommen wir zu unserem nächsten Thema:");
+  DisplaySpeech (MICHA, "Das neue King's Quest 3 für die A-Box.");
+  Wait (25);
+  DisplaySpeech (FELIX, "Mensch, hab ich vielleicht Hunger!");
+  character [FELIX].talkview = 54;
+  DisplaySpeech (FELIX, "Wo bleibt Ade bloß mit dem Essen?!");
+  character [FELIX].talkview = 59;
+  Wait (20);
+  PlaySound (86);
+  SetCharacterView (MICHA, 58);
+  SetCharacterView (BIMON, 56);
+  Wait (40);
+  PlaySound (86);
+  Wait (60);
+  DisplaySpeech (MICHA, "Was soll denn das jetzt?");
+  PlaySound (86);
+  Wait (20);
+  ReleaseCharacterView (BIMON);
+  MoveCharacterBlocking (BIMON, 28, 137, 1);
+  Wait (20);
+  ObjectOn (0);
+  DisplaySpeech (BIMON, "Hallo, wer stört denn da?");
+  DisplaySpeech (BIMON, "Wir versuchen hier eine seriöse Sendung zu machen!");
+  Wait (15);
+  DisplaySpeech (FELIX, "Verdammt, ich brauche was zu essen!");
+  Wait (15);
+  DisplaySpeech (BIMON, "Benzin? Was denn für Benzin?");
+  DisplaySpeech (BIMON, "Nein, ich habe kein Benzin!");
+  Wait (20);
+  ObjectOff (0);
+  PlaySound (89);
+  Wait (15);
+  FaceLocation (BIMON, 35, 200);
+  Wait (15);
+  DisplaySpeech (BIMON, "Ständig diese verrückten Anrufer!");
+  SetGlobalInt(146,-1);
+  SetGlobalInt(20,1);
+  FinishCutscene (0);
+}
+
+function room_b() {
+  // script for room: Player enters screen (before fadein)
+SetMusicVolume (1);
+PlayMusic (17);
+}

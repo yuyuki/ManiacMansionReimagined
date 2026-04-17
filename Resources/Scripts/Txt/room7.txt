@@ -1,0 +1,241 @@
+// room script file
+
+function room_a (){
+  // script for room: Player enters screen (before fadein)
+  SetObjectClickable (0, 0);
+  SetObjectClickable (4, 0);
+  SetObjectClickable (5, 0);
+  SetMusicVolume (3);
+  SetMusicRepeat (1);
+  PlayMusic (6);
+  init_object (111, 0);
+  AlarmSound ();
+}
+
+function hotspot1_a (){
+  // script for hotspot1: Any click on hotspot
+  if (any_click_on_door (111, 0, 77, 109, DIR_UP, 6, 60, 127, DIR_RIGHT) == 0) Unhandled ();
+}
+
+function hotspot2_b (){
+  // script for hotspot2: Any click on hotspot
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (155, 142))
+    {
+      FaceLocation (GetPlayerCharacter (), 155, 141);
+    }
+  }
+  else if (UsedAction (A_USE_INV))
+  {
+    if (character [GetPlayerCharacter ()].activeinv == 16)
+    {
+      if (GetGlobalInt (47) == 1)
+      {
+        // Pinsel hat Farbentferner
+        if (MovePlayer (155, 142))
+        {
+          FaceLocation (GetPlayerCharacter (), 155, 141);
+          Wait (5);
+          PlaySound (65);
+          Wait (15);
+          SetGlobalInt (47, 0);
+          SetInvItemPic (16, 101);
+          ObjectOn (4);
+        }
+      }
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (155, 142))
+    {
+      FaceLocation (GetPlayerCharacter (), 155, 141);
+      Unhandled ();
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot3_b (){
+  // script for hotspot3: Any click on hotspot
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (155, 142))
+    {
+      FaceLocation (GetPlayerCharacter (), 77, 107);
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot4_b (){
+  // script for hotspot4: Any click on hotspot
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (250, 117))
+    {
+      FaceLocation (GetPlayerCharacter (), 250, 116);
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot5_c (){
+  // script for hotspot5: Any click on hotspot
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (280, 116))
+    {
+      FaceLocation (GetPlayerCharacter (), 281, 116);
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (280, 116))
+    {
+      FaceLocation (GetPlayerCharacter (), 281, 116);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "It sure is spooky.");
+    }
+  }
+  else if (UsedAction (A_USE_INV))
+  {
+    if (character [GetPlayerCharacter ()].activeinv == 16)
+    {
+      if (GetGlobalInt (47) == 1)
+      {
+        if (MovePlayer (280, 116))
+        {
+          FaceLocation (GetPlayerCharacter (), 281, 116);
+          Wait (5);
+          PlaySound (65);
+          Wait (15);
+          SetGlobalInt (47, 0);
+          SetInvItemPic (16, 101);
+          ObjectOn (5);
+        }
+      }
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot7_c (){
+  // script for hotspot7: Any click on hotspot
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (217, 124))
+    {
+      FaceLocation (GetPlayerCharacter (), 217, 123);
+    }
+  }
+  else if ((UsedAction (A_LOOK_AT)) || (UsedAction (A_PICK_UP)))
+  {
+    if (MovePlayer (217, 124))
+    {
+      FaceLocation (GetPlayerCharacter (), 217, 123);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "I'M not going to touch that slime!");
+    }
+  }
+  else Unhandled ();
+}
+
+function object1_c (){
+  // script for object1: Any click on object
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (36, 132))
+    {
+      FaceLocation (GetPlayerCharacter (), 36, 133);
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (36, 132))
+    {
+      FaceLocation (GetPlayerCharacter (), 36, 133);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "It's a bowl of wax fruit.");
+    }
+  }
+  else if (UsedAction (A_PICK_UP))
+  {
+    if (MovePlayer (36, 132))
+    {
+      FaceLocation (GetPlayerCharacter (), 36, 133);
+      Wait (5);
+      PlaySound (4);
+      ObjectOff (1);
+      AddInventory (17);
+    }
+  }
+  else Unhandled ();
+}
+
+function object2_c (){
+  // script for object2: Any click on object
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (72, 123))
+    {
+      FaceLocation (GetPlayerCharacter (), 72, 124);
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (72, 123))
+    {
+      FaceLocation (GetPlayerCharacter (), 72, 124);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "It's an old paint brush.");
+    }
+  }
+  else if (UsedAction (A_PICK_UP))
+  {
+    if (MovePlayer (72, 123))
+    {
+      FaceLocation (GetPlayerCharacter (), 72, 124);
+      Wait (5);
+      PlaySound (4);
+      ObjectOff (2);
+      AddInventory (16);
+    }
+  }
+  else Unhandled ();
+}
+
+function object3_c (){
+  // script for object3: Any click on object
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (98, 130))
+    {
+      FaceLocation (GetPlayerCharacter (), 98, 131);
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (98, 130))
+    {
+      FaceLocation (GetPlayerCharacter (), 98, 131);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "It's a large can of paint remover.");
+    }
+  }
+  else if (UsedAction (A_PICK_UP))
+  {
+    if (MovePlayer (98, 130))
+    {
+      FaceLocation (GetPlayerCharacter (), 98, 131);
+      Wait (5);
+      PlaySound (4);
+      ObjectOff (3);
+      AddInventory (15);
+    }
+  }
+  else Unhandled ();
+}
+
+

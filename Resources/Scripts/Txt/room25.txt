@@ -1,0 +1,890 @@
+// room script file
+
+function SilentlyCloseRefrigerator (){
+  ObjectOff (4);
+  ObjectOff (7);
+  ObjectOff (8);
+  ObjectOff (9);
+  ObjectOff (10);
+  ObjectOff (11);
+  SetGlobalInt (133, 0);
+}
+
+function CloseRefrigerator (){
+  PlaySound (5);
+  SilentlyCloseRefrigerator ();
+}
+
+function SilentlyOpenRefrigerator (){
+  ObjectOn (4);
+  if (GetGlobalInt (5) == 0) ObjectOn (7);
+  if (GetGlobalInt (6) == 0) ObjectOn (8);
+  if (GetGlobalInt (7) == 0) ObjectOn (9);
+  if (GetGlobalInt (8) == 0) ObjectOn (10);
+  if (GetGlobalInt (9) == 0) ObjectOn (11);
+  SetGlobalInt (133, 1);
+}
+
+function OpenRefrigerator (){
+  if (GetGlobalInt (133) == 0)
+  {
+    PlaySound (85);
+    SilentlyOpenRefrigerator ();
+  }
+}
+
+#sectionstart room_a  // DO NOT EDIT OR REMOVE THIS LINE
+function room_a (){
+  // script for room: Player enters screen (before fadein)
+  SetObjectClickable (0, 0);
+  SetObjectClickable (1, 0);
+  SetObjectClickable (2, 0);
+  SetObjectClickable (4, 0);
+  SetObjectClickable (6, 0);
+  SetMusicVolume (3);
+  SetMusicRepeat (1);
+  PlayMusic (6);
+  init_object (105, 0);
+  init_object (106, 1);
+  int cutscene = GetGlobalInt (1);
+  if (cutscene == NO_CUTSCENE)
+  {
+    // shall Edna come here?
+    if (GetGlobalInt (184) == 0)
+    {
+      character [EDNA].room = 25;
+      character [EDNA].x = 518;
+      character [EDNA].y = 135;
+      FaceDirection (EDNA, DIR_UP);
+      SilentlyOpenRefrigerator ();
+    }
+  }
+  else if (cutscene == ED_IN_KITCHEN)
+  {
+    character [ED].room = 25;
+    character [ED].x = 65;
+    character [ED].y = 136;
+    FaceDirection (ED, DIR_RIGHT);
+  }
+  AlarmSound ();
+}
+#sectionend room_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart room_c  // DO NOT EDIT OR REMOVE THIS LINE
+function room_c (){
+  // script for room: Player enters screen (after fadein)
+  int cutscene = GetGlobalInt (1);
+  if (cutscene == ED_IN_KITCHEN)
+  {
+    int charid = NearestKid (GetPlayerCharacter ());
+    if (charid == NO_CHAR)
+    {
+      SetMusicVolume (-1);
+      PlayMusic (16);
+      DisplaySpeechBackground(ED,"Tum te tum. Dum de dum.");
+      MoveCharacterBlocking (GetPlayerCharacter (), 490, 136, 0);
+      FaceDirection (GetPlayerCharacter (), DIR_UP);
+      Wait (5);
+      OpenRefrigerator ();
+      Wait (20);
+      if (GetGlobalInt (5) == 0)
+      {
+        DisplaySpeech (ED, "Oh boy! Cheese for my hamster and me!");
+        Wait (20);
+        PlaySound (4);
+        // take cheese
+        ObjectOff (7);
+        SetGlobalInt (5, 1);
+      }
+      else DisplaySpeech (ED, "Where's the cheese!?");
+      Wait (20);
+      CloseRefrigerator ();
+      Wait (10);
+      MoveCharacterBlocking (GetPlayerCharacter (), 65, 136, 0);
+      SetGlobalInt (1, NO_CUTSCENE);
+      FinishCutscene (0);
+      SendEdBackIntoHisRoom ();
+    }
+    else
+    {
+      GoToCharacter (charid, 0, 1, 1);
+      Wait (20);
+      DisplaySpeech (ED, "I got you! To the dungeon, intruder!");
+      Wait (10);
+      ToDungeon (charid);
+    }
+  }
+}
+#sectionend room_c  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart region1_a  // DO NOT EDIT OR REMOVE THIS LINE
+function region1_a (){
+  // script for region1: Player walks onto region
+  if (character [EDNA].room == 25)
+  {
+    // Edna starts hunting
+    SetGlobalInt (184, 1);  // don't move Edna here again
+    DisableRegion (1);
+    DisplaySpeechBackground (EDNA, "Want some food? Come here dearie!");
+    CloseRefrigerator ();
+    StartHunting (EDNA);
+  }
+}
+#sectionend region1_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot4_a  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot4_a (){
+  // script for hotspot4: Any click on hotspot
+  int result = any_click_on_door (105, 0, 65, 136, DIR_LEFT, 3, 180, 125, DIR_DOWN);
+  if (result == 0) Unhandled ();
+}
+#sectionend hotspot4_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot1_a  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot1_a (){
+  // script for hotspot1: Any click on hotspot
+  int result = any_click_on_door (106, 1, 577, 136, DIR_RIGHT, 26, 50, 128, DIR_RIGHT);
+  if (result == 0) Unhandled ();
+}
+#sectionend hotspot1_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot2_a  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot2_a (){
+  // script for hotspot2: Any click on hotspot
+  if (any_click_walk_look (270, 136, DIR_UP, "These things are powerful.") != 0)
+  {  }
+  else if (UsedAction (A_CLOSE))
+  {
+    if (GetGlobalInt (132) == 1)
+    {
+      if (any_click_move (270, 136, DIR_UP))
+      {
+        PlaySound (83);
+        ObjectOff (2);
+        SetGlobalInt (132, 0);
+        SetObjectClickable (12, 0);
+        SetObjectClickable (13, 0);
+        SetObjectClickable (14, 0);
+        SetCharacterClickable (HAMSTER, 0);
+      }
+    }
+  }
+  else if (UsedAction (A_OPEN))
+  {
+    if (GetGlobalInt (132) == 0)
+    {
+      if (any_click_move (270, 136, DIR_UP))
+      {
+        PlaySound (83);
+        ObjectOn (2);
+        SetGlobalInt (132, 1);
+        SetObjectClickable (12, 1);
+        SetObjectClickable (13, 1);
+        SetObjectClickable (14, 1);
+        SetCharacterClickable (HAMSTER, 1);
+        if (GetGlobalInt (220) == 2)
+        {
+          BeginCutscene (NO_CHAR);
+          DisplaySpeech (GetPlayerCharacter (), "Oh no!");
+          DisplaySpeech (GetPlayerCharacter (), "Radioactive steam!");
+          DisplaySpeech (GetPlayerCharacter (), "Ahheee");
+          SetGlobalInt (220, 0);
+          PlayerDies ();
+        }
+      }
+    }
+  }
+  else if (UsedAction (A_USE_INV))
+  {
+    if (GetGlobalInt (132) == 1)
+    {
+      if (character [GetPlayerCharacter ()].activeinv == 38)
+      {
+        if (any_click_move (270, 136, DIR_UP))
+        {
+          DisplaySpeech (GetPlayerCharacter (), "I'd better fill it first.");
+        }
+      }
+      else if ((character [GetPlayerCharacter ()].activeinv == 39) && (GetGlobalInt (218) == 0))
+      {
+        if (any_click_move (270, 136, DIR_UP))
+        {
+          SetObjectGraphic (12, 684);
+          PlaySound (77);
+          ObjectOn (12);
+          LoseInventory (39);
+          SetGlobalInt (216, 1);
+        }
+      }
+      else if ((character [GetPlayerCharacter ()].activeinv == 56) && (GetGlobalInt (218) == 0))
+      {
+        if (any_click_move (270, 136, DIR_UP))
+        {
+          SetObjectGraphic (12, 950);
+          PlaySound (77);
+          ObjectOn (12);
+          LoseInventory (56);
+          SetGlobalInt (219, 1);
+        }
+      }
+      else if ((character [GetPlayerCharacter ()].activeinv == 48) && (GetGlobalInt (218) == 0))
+      {
+        if (any_click_move (270, 136, DIR_UP))
+        {
+          PlaySound (77);
+          ObjectOn (13);
+          LoseInventory (48);
+          SetGlobalInt (217, 1);
+        }
+      }
+      else if ((character [GetPlayerCharacter ()].activeinv == 59) && (GetGlobalInt (216) == 0) && (GetGlobalInt (217) == 0) && (GetGlobalInt (219) == 0))
+      {
+        if (any_click_move (270, 136, DIR_UP))
+        {
+          if ((GetPlayerCharacter () == RAZOR) || (GetPlayerCharacter () == SYD))
+          {
+            PlaySound (77);
+            ObjectOn (14);
+            LoseInventory (59);
+            SetGlobalInt (218, 1);
+          }
+          else
+          {
+            DisplaySpeech (GetPlayerCharacter (), "How sick!");
+          }
+        }
+      }
+    }
+    else if (GetGlobalInt (132) == 0)
+    {
+      if (any_click_move (270, 136, DIR_UP))
+      {
+        DisplaySpeech (GetPlayerCharacter (), "The door is closed.");
+      }
+    }
+  }
+  else if (UsedAction (A_USE))
+  {
+    if (any_click_move (270, 136, DIR_UP))
+    {
+      if (GetGlobalInt (199) == 1)
+      {
+        if ((GetGlobalInt (216) == 0) && (GetGlobalInt (217) == 0) && (GetGlobalInt (218) == 0) && (GetGlobalInt (219) == 0))
+        {
+          DisplaySpeech (GetPlayerCharacter (), "I shouldn't turn on an empty microwave.");
+        }
+        else if ((GetGlobalInt (216) == 1) && (GetGlobalInt (217) == 0) && (GetGlobalInt (218) == 0) && (GetGlobalInt (219) == 0))
+        {
+          ObjectOff (2);
+          PlaySound (83);
+          SetGlobalInt (132, 0);
+          Wait (80);
+          PlaySound (90);
+          SetGlobalInt (220, 1);
+          SetOwnTimer (9, 700);
+        }
+        else if ((GetGlobalInt (216) == 0) && (GetGlobalInt (217) == 1) && (GetGlobalInt (218) == 0) && (GetGlobalInt (219) == 0))
+        {
+          ObjectOff (2);
+          PlaySound (83);
+          SetGlobalInt (132, 0);
+          Wait (80);
+          PlaySound (90);
+        }
+        else if ((GetGlobalInt (216) == 1) && (GetGlobalInt (217) == 1) && (GetGlobalInt (218) == 0) && (GetGlobalInt (219) == 0))
+        {
+          ObjectOff (2);
+          PlaySound (83);
+          SetGlobalInt (132, 0);
+          Wait (80);
+          PlaySound (90);
+          SetGlobalInt (220, 1);
+          SetGlobalInt (221, 1);
+          SetOwnTimer (9, 700);
+        }
+        else if ((GetGlobalInt (216) == 0) && (GetGlobalInt (217) == 0) && (GetGlobalInt (218) == 0) && (GetGlobalInt (219) == 1))
+        {
+          ObjectOff (2);
+          PlaySound (83);
+          SetGlobalInt (132, 0);
+          Wait (80);
+          PlaySound (90);
+          SetGlobalInt (220, 2);
+        }
+        else if ((GetGlobalInt (216) == 0) && (GetGlobalInt (217) == 1) && (GetGlobalInt (218) == 0) && (GetGlobalInt (219) == 1))
+        {
+          ObjectOff (2);
+          PlaySound (83);
+          SetGlobalInt (132, 0);
+          Wait (80);
+          PlaySound (90);
+          SetGlobalInt (220, 2);
+        }
+        else if ((GetGlobalInt (216) == 0) && (GetGlobalInt (217) == 0) && (GetGlobalInt (218) == 1) && (GetGlobalInt (219) == 0))
+        {
+          ObjectOff (2);
+          PlaySound (83);
+          SetGlobalInt (132, 0);
+          Wait (80);
+          ObjectOff (14);
+          character [HAMSTER].room = 25;
+          SetCharacterBaseline (HAMSTER, 80);
+          SetCharacterClickable (HAMSTER, 0);
+          Wait (5);
+          PlaySound (90);
+        }
+      }
+      else
+      {
+        DisplaySpeech (GetPlayerCharacter (), "I guess the power's out.");
+      }
+    }
+  }
+}
+#sectionend hotspot2_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart object3_a  // DO NOT EDIT OR REMOVE THIS LINE
+function object3_a (){
+  // script for object3: Any click on object
+  if (any_click_walk_look (344, 136, DIR_UP, "Heh, heh, heh.") != 0)
+  {  }
+  else if (UsedAction (A_PICK_UP))
+  {
+    if (any_click_move (344, 136, DIR_UP))
+    {
+      PlaySound (4);
+      ObjectOff (3);
+      AddInventory (28);
+    }
+  }
+  else Unhandled ();
+}
+#sectionend object3_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot3_a  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot3_a (){
+  // script for hotspot3: Any click on hotspot
+  if (any_click_walk_look (490, 136, DIR_UP, "There's red stuff oozing out of it.") != 0)
+  {  }
+  else if (UsedAction (A_CLOSE))
+  {
+    if (any_click_move (490, 136, DIR_UP))
+    {
+      if (GetGlobalInt (133) == 1) CloseRefrigerator ();
+      else DisplaySpeech (GetPlayerCharacter (), "It's already closed.");
+    }
+  }
+  else if (UsedAction (A_OPEN))
+  {
+    if (any_click_move (490, 136, DIR_UP))
+    {
+      if (GetGlobalInt (272) == 0)
+      {
+        SetOwnTimer (2, 2350);
+        SetGlobalInt (272, 1);
+      }
+      if (GetGlobalInt (133) == 0) OpenRefrigerator ();
+      else DisplaySpeech (GetPlayerCharacter (), "It's already opened.");
+    }
+  }
+  else if (UsedAction (A_USE_INV))
+  {
+    if (character [GetPlayerCharacter ()].activeinv == 29)
+    {
+      if (GetGlobalInt (133) == 1)
+      {
+        if (any_click_move (506, 136, DIR_UP))
+        {
+          PlaySound (77);
+          ObjectOn (7);
+          LoseInventory (29);
+          MoveCharacterBlocking (GetPlayerCharacter (), 490, 136, 0);
+          FaceDirection (GetPlayerCharacter (), DIR_UP);
+          SetGlobalInt (5, 0);
+        }
+      }
+    }
+    else if (character [GetPlayerCharacter ()].activeinv == 10)
+    {
+      if (GetGlobalInt (133) == 1)
+      {
+        if (any_click_move (520, 136, DIR_UP))
+        {
+          PlaySound (77);
+          ObjectOn (8);
+          LoseInventory (10);
+          MoveCharacterBlocking (GetPlayerCharacter (), 490, 136, 0);
+          FaceDirection (GetPlayerCharacter (), DIR_UP);
+          SetGlobalInt (6, 0);
+        }
+      }
+    }
+    else if (character [GetPlayerCharacter ()].activeinv == 30)
+    {
+      if (GetGlobalInt (133) == 1)
+      {
+        if (any_click_move (506, 136, DIR_UP))
+        {
+          PlaySound (77);
+          ObjectOn (9);
+          LoseInventory (30);
+          MoveCharacterBlocking (GetPlayerCharacter (), 490, 136, 0);
+          FaceDirection (GetPlayerCharacter (), DIR_UP);
+          SetGlobalInt (7, 0);
+        }
+      }
+    }
+    else if (character [GetPlayerCharacter ()].activeinv == 11)
+    {
+      if (GetGlobalInt (133) == 1)
+      {
+        if (any_click_move (506, 136, DIR_UP))
+        {
+          PlaySound (77);
+          ObjectOn (10);
+          LoseInventory (11);
+          MoveCharacterBlocking (GetPlayerCharacter (), 490, 136, 0);
+          FaceDirection (GetPlayerCharacter (), DIR_UP);
+          SetGlobalInt (8, 0);
+        }
+      }
+    }
+    else if (character [GetPlayerCharacter ()].activeinv == 31)
+    {
+      if (GetGlobalInt (133) == 1)
+      {
+        if (any_click_move (512, 136, DIR_UP))
+        {
+          PlaySound (77);
+          ObjectOn (11);
+          LoseInventory (31);
+          MoveCharacterBlocking (GetPlayerCharacter (), 490, 136, 0);
+          FaceDirection (GetPlayerCharacter (), DIR_UP);
+          SetGlobalInt (9, 0);
+        }
+      }
+    }
+  }
+  else Unhandled ();
+}
+#sectionend hotspot3_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart object5_a  // DO NOT EDIT OR REMOVE THIS LINE
+function object5_a (){
+  // script for object5: Any click on object
+  if (any_click_walk_look (196, 136, DIR_UP, "It needs batteries.") != 0)
+  {  }
+  else if (UsedAction (A_PICK_UP))
+  {
+    if (any_click_move (196, 136, DIR_UP))
+    {
+      PlaySound (4);
+      ObjectOff (5);
+      AddInventory (8);
+    }
+  }
+  else Unhandled ();
+}
+#sectionend object5_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot5_a  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot5_a (){
+  // script for hotspot5: Any click on hotspot
+  if (any_click_walk_look (270, 136, DIR_UP, "I don't think it's been used for awhile.") != 0)
+  {  }
+  else if (UsedAction (A_USE) || UsedAction (A_OPEN))
+  {
+    if (any_click_move (270, 136, DIR_UP))
+    {
+      DisplaySpeech (GetPlayerCharacter (), "I'd rather use the microwave.");
+    }
+  }
+  else Unhandled ();
+}
+#sectionend hotspot5_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot7_a  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot7_a (){
+  // script for hotspot7: Any click on hotspot
+  if (any_click_walk_look (320, 136, DIR_UP, "They're very dull.") != 0)
+  {  }
+  else if (UsedAction (A_PICK_UP))
+  {
+    if (any_click_move (320, 136, DIR_UP))
+    {
+      DisplaySpeech (GetPlayerCharacter (), "They're glued to the wall.");
+    }
+  }
+  else Unhandled ();
+}
+#sectionend hotspot7_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot8_a  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot8_a (){
+  // script for hotspot8: Any click on hotspot
+  if (any_click_walk_look (409, 136, DIR_UP, "") != 0)
+  {  }
+  else if (UsedAction (A_CLOSE))
+  {
+    if (GetGlobalInt (4) == 1)
+    {
+      if (any_click_move (409, 136, DIR_UP))
+      {
+        ObjectOff (6);
+        StopAmbientSound (1);
+        SetGlobalInt (4, 0);
+      }
+    }
+    else if (GetGlobalInt (4) == 0)
+    {
+      if (any_click_move (409, 136, DIR_UP))
+      {
+        DisplaySpeech (GetPlayerCharacter (), "It's already closed.");
+      }
+    }
+  }
+  else if (UsedAction (A_OPEN))
+  {
+    if (GetGlobalInt (4) == 1)
+    {
+      if (any_click_move (409, 136, DIR_UP))
+      {
+        DisplaySpeech (GetPlayerCharacter (), "It's already opened.");
+      }
+    }
+    else if (GetGlobalInt (4) == 0)
+    {
+      if (any_click_move (409, 136, DIR_UP))
+      {
+        ObjectOn (6);
+        PlayAmbientSound (1, 95, 150, 403, 84);
+        SetGlobalInt (4, 1);
+      }
+    }
+  }
+  else if (UsedAction (A_USE_INV))
+  {
+    if ((character [GetPlayerCharacter ()].activeinv == 38) && (GetGlobalInt (4) == 1))
+    {
+      if (any_click_move (409, 136, DIR_UP))
+      {
+        PlaySound (34);
+        LoseInventory (38);
+        AddInventory (39);
+      }
+    }
+    else if ((character [GetPlayerCharacter ()].activeinv == 38) && (GetGlobalInt (4) == 0))
+    {
+      any_click_move (409, 136, DIR_UP);
+    }
+    else Unhandled ();
+  }
+  else if (UsedAction (A_USE))
+  {
+    if (GetGlobalInt (4) == 1)
+    {
+      if (any_click_move (409, 136, DIR_UP))
+      {
+        ObjectOff (6);
+        StopAmbientSound (1);
+        SetGlobalInt (4, 0);
+      }
+    }
+    else if (GetGlobalInt (4) == 0)
+    {
+      if (any_click_move (409, 136, DIR_UP))
+      {
+        ObjectOn (6);
+        PlayAmbientSound (1, 95, 150, 403, 84);
+        SetGlobalInt (4, 1);
+      }
+    }
+  }
+  else Unhandled ();
+}
+#sectionend hotspot8_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart object7_a  // DO NOT EDIT OR REMOVE THIS LINE
+function object7_a (){
+  // script for object7: Any click on object
+  if (any_click_walk_look (490, 136, DIR_UP, "It's quite moldy.") != 0)
+  {  }
+  else if (UsedAction (A_PICK_UP))
+  {
+    if (any_click_move (506, 136, DIR_UP))
+    {
+      PlaySound (4);
+      ObjectOff (7);
+      AddInventory (29);
+      Wait (5);
+      MoveCharacterBlocking (GetPlayerCharacter (), 490, 136, 0);
+      FaceDirection (GetPlayerCharacter (), DIR_UP);
+      SetGlobalInt (5, 1);
+    }
+  }
+  else Unhandled ();
+}
+#sectionend object7_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart object8_a  // DO NOT EDIT OR REMOVE THIS LINE
+function object8_a (){
+  // script for object8: Any click on object
+  if (any_click_walk_look (490, 136, DIR_UP, "I doubt these would last long.") != 0)
+  {  }
+  else if (UsedAction (A_PICK_UP))
+  {
+    if (any_click_move (520, 136, DIR_UP))
+    {
+      PlaySound (4);
+      ObjectOff (8);
+      AddInventory (10);
+      Wait (5);
+      MoveCharacterBlocking (GetPlayerCharacter (), 490, 136, 0);
+      FaceDirection (GetPlayerCharacter (), DIR_UP);
+      SetGlobalInt (6, 1);
+    }
+  }
+  else Unhandled ();
+}
+#sectionend object8_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart object9_a  // DO NOT EDIT OR REMOVE THIS LINE
+function object9_a (){
+  // script for object9: Any click on object
+  if (any_click_walk_look (490, 136, DIR_UP, "It's very dirty.") != 0)
+  {  }
+  else if (UsedAction (A_PICK_UP))
+  {
+    if (any_click_move (506, 136, DIR_UP))
+    {
+      PlaySound (4);
+      ObjectOff (9);
+      AddInventory (30);
+      Wait (5);
+      MoveCharacterBlocking (GetPlayerCharacter (), 490, 136, 0);
+      FaceDirection (GetPlayerCharacter (), DIR_UP);
+      SetGlobalInt (7, 1);
+    }
+  }
+  else Unhandled ();
+}
+#sectionend object9_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart object10_a  // DO NOT EDIT OR REMOVE THIS LINE
+function object10_a (){
+  // script for object10: Any click on object
+  if (any_click_walk_look (490, 136, DIR_UP, "'12 fluid ounces (354 ml)'") != 0)
+  {  }
+  else if (UsedAction (A_PICK_UP))
+  {
+    if (any_click_move (520, 136, DIR_UP))
+    {
+      PlaySound (4);
+      ObjectOff (10);
+      AddInventory (11);
+      Wait (5);
+      MoveCharacterBlocking (GetPlayerCharacter (), 490, 136, 0);
+      FaceDirection (GetPlayerCharacter (), DIR_UP);
+      SetGlobalInt (8, 1);
+    }
+  }
+  else Unhandled ();
+}
+#sectionend object10_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart object11_a  // DO NOT EDIT OR REMOVE THIS LINE
+function object11_a (){
+  // script for object11: Any click on object
+  if (any_click_walk_look (490, 136, DIR_UP, "What a mess!") != 0)
+  {  }
+  else if (UsedAction (A_PICK_UP))
+  {
+    if (any_click_move (512, 136, DIR_UP))
+    {
+      PlaySound (4);
+      ObjectOff (11);
+      AddInventory (31);
+      Wait (5);
+      MoveCharacter (GetPlayerCharacter (), 490, 136);
+      while (character [GetPlayerCharacter ()].walking) Wait (1);
+      FaceLocation (GetPlayerCharacter (), 490, 135);
+      SetGlobalInt (9, 1);
+    }
+  }
+  else Unhandled ();
+}
+#sectionend object11_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart object12_b  // DO NOT EDIT OR REMOVE THIS LINE
+function object12_b (){
+  // script for object12: Any click on object
+  if (any_click_walk (270, 136, DIR_UP) != 0)
+  {  }
+  else if (UsedAction (A_PICK_UP))
+  {
+    if (GetGlobalInt (132) == 1)
+    {
+      if (any_click_move (270, 136, DIR_UP))
+      {
+        if (GetGlobalInt (219) == 1)
+        {
+          PlaySound (4);
+          ObjectOff (12);
+          AddInventory (56);
+          SetGlobalInt (219, 0);
+        }
+        else if ((GetGlobalInt (216) == 1) && (GetGlobalInt (220) == 0))
+        {
+          PlaySound (4);
+          ObjectOff (12);
+          AddInventory (39);
+          SetGlobalInt (216, 0);
+        }
+        else if ((GetGlobalInt (216) == 1) && (GetGlobalInt (220) == 1))
+        {
+          DisplaySpeech (GetPlayerCharacter (), "Ouch! It's still too hot!");
+        }
+      }
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    if (any_click_move (270, 136, DIR_UP))
+    {
+      if (GetGlobalInt (216) == 1)
+      {
+        DisplaySpeech (GetPlayerCharacter (), "The jar is filled with tap water.");
+      }
+      else if (GetGlobalInt (219) == 1)
+      {
+        DisplaySpeech (GetPlayerCharacter (), "The jar is filled with radioactive pool water.");
+      }
+    }
+  }
+  else Unhandled ();
+}
+#sectionend object12_b  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart object13_b  // DO NOT EDIT OR REMOVE THIS LINE
+function object13_b (){
+  // script for object13: Any click on object
+  if (any_click_walk (270, 136, DIR_UP) != 0)
+  {  }
+  else if (UsedAction (A_PICK_UP))
+  {
+    if (GetGlobalInt (132) == 1)
+    {
+      if (any_click_move (270, 136, DIR_UP))
+      {
+        if ((GetGlobalInt (217) == 1) && (GetGlobalInt (221) == 0))
+        {
+          ObjectOff (13);
+          PlaySound (4);
+          AddInventory (48);
+          SetGlobalInt (217, 0);
+        }
+        else if ((GetGlobalInt (217) == 1) && (GetGlobalInt (221) == 1))
+        {
+          ObjectOff (13);
+          PlaySound (4);
+          AddInventory (50);
+          AddInventory (27);
+          SetGlobalInt (217, 0);
+        }
+      }
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    if (any_click_move (270, 136, DIR_UP))
+    {
+      Wait (5);
+      if (GetGlobalInt (39) == 0)
+      {
+        DisplaySpeech (GetPlayerCharacter (), "It's a blank envelope.");
+      }
+      else if (GetGlobalInt (39) == 1)
+      {
+        DisplaySpeech (GetPlayerCharacter (), "It's addressed to: 222 Skyscraper Way.");
+      }
+    }
+  }
+  else Unhandled ();
+}
+#sectionend object13_b  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart object14_b  // DO NOT EDIT OR REMOVE THIS LINE
+function object14_b (){
+  // script for object14: Any click on object
+  if (any_click_walk_look (270, 136, DIR_UP, "Oh, how cute!") != 0)
+  {  }
+  else if (UsedAction (A_PICK_UP))
+  {
+    if (GetGlobalInt (132) == 1)
+    {
+      if (any_click_move (270, 136, DIR_UP))
+      {
+        PlaySound (4);
+        ObjectOff (14);
+        AddInventory (59);
+        SetGlobalInt (218, 0);
+      }
+    }
+  }
+  else Unhandled ();
+}
+#sectionend object14_b  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot6_a  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot6_a (){
+  // script for hotspot6: Any click on hotspot
+  if (any_click_walk_look (409, 136, DIR_UP, "") != 0)
+  {  }
+  else Unhandled ();
+}
+#sectionend hotspot6_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+
+#sectionstart room_b  // DO NOT EDIT OR REMOVE THIS LINE
+function room_b() {
+  // script for room: Player leaves screen
+  if (character [EDNA].room == 25)
+  {
+    // left kitchen
+    SilentlyCloseRefrigerator ();
+  }
+}
+#sectionend room_b  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+
+#sectionstart hotspot9_a  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot9_a() {
+  // script for hotspot9: Any click on hotspot
+  if (any_click_walk_look (320, 136, DIR_UP, "Yuck!") != 0)
+  {  }
+  else Unhandled ();  
+}
+#sectionend hotspot9_a  // DO NOT EDIT OR REMOVE THIS LINE
+

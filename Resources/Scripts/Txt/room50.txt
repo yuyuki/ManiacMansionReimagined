@@ -1,0 +1,191 @@
+// room script file
+#define b_mod  971
+#define b_sel  974
+#define bern   4
+int timer = 0;
+int face = -1;
+import int GSotherplayerup, GSotherplayerdown;
+int players = 0;
+
+function OtherPlayer (int charid, int objnumber, string description){
+  PlaySound (8);
+  if (IsObjectOn (objnumber) == 0)
+  {
+    if (GSotherplayerup < 0)          GSotherplayerup = charid;
+    else if (GSotherplayerdown < 0)   GSotherplayerdown = charid;
+    else                              charid = -1;
+    SetLabelText (12, 0, description);
+    if (charid >= 0)
+    {
+      ObjectOn (objnumber);
+      if (charid == bern)
+      {
+        SetObjectGraphic (7 + bern, b_sel);
+        ObjectOn (7 + bern);
+        if (face == bern) face = -1;
+      }
+      players++;
+    }
+  }
+  else
+  {
+    ObjectOff (objnumber);
+    SetLabelText (12, 0, "");
+    if (GSotherplayerup == charid)        GSotherplayerup = -1;
+    else if (GSotherplayerdown == charid) GSotherplayerdown = -1;
+    else                                  charid = -1;
+    if (charid == bern)
+    {
+      ObjectOff (7 + bern);
+      SetObjectGraphic (7 + bern, b_mod);
+    }
+    players--;
+  }
+}
+
+#sectionstart room_a  // DO NOT EDIT OR REMOVE THIS LINE
+function room_a (){
+  // script for room: Player enters screen (before fadein)
+  // StopMusic();
+  SetOwnTimer(30,2250);
+  SetBackgroundFrame(0);
+
+  string translation;
+  GetTranslationName(translation);
+  if (IsTranslationAvailable()==1) { 
+    if (StrCaseComp(translation, "russian")==0) {
+      SetBackgroundFrame (1);
+    }
+  }
+
+  SetSpeechStyle (SPEECH_SIERRA);
+  ChangeCharacterView (DAVE, 105);
+  character [DAVE].talkview = 104;
+  GUIOff (0);
+  GUIOff (1);
+  SetObjectClickable (0, 0);
+  SetObjectClickable (1, 0);
+  SetObjectClickable (2, 0);
+  SetObjectClickable (3, 0);
+  SetObjectClickable (4, 0);
+  SetObjectClickable (5, 0);
+  SetObjectClickable (6, 0);
+  SetObjectClickable (7, 0);
+  SetObjectClickable (8, 0);
+  SetObjectClickable (9, 0);
+  SetObjectClickable (10, 0);
+  SetObjectClickable (11, 0);
+  SetObjectClickable (12, 0);
+  SetObjectClickable (13, 0);
+  GSotherplayerup = -1;
+  GSotherplayerdown = -1;
+}
+#sectionend room_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot2_a  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot2_a (){
+  // script for hotspot2: Any click on hotspot
+  OtherPlayer (SYD, 1, "Syd - an aspiring musician trying to start his own new-wave band.");
+}
+#sectionend hotspot2_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot3_a  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot3_a (){
+  // script for hotspot3: Any click on hotspot
+  OtherPlayer (MICHAEL, 2, "Michael - award winning photographer for the college newspaper.");
+}
+#sectionend hotspot3_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot4_a  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot4_a (){
+  // script for hotspot4: Any click on hotspot
+  OtherPlayer (WENDY, 3, "Wendy - wants to be a famous novelist and is waiting for a big break.");
+}
+#sectionend hotspot4_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot5_a  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot5_a (){
+  // script for hotspot5: Any click on hotspot
+  OtherPlayer (BERNHARD, 4, "Bernard - president of the physics club and winner of the college's Geek Award.");
+}
+#sectionend hotspot5_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot6_a  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot6_a (){
+  // script for hotspot6: Any click on hotspot
+  OtherPlayer (RAZOR, 5, "Razor - lead singer for the punk band, Razor and the Scummettes.");
+}
+#sectionend hotspot6_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot7_a  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot7_a (){
+  // script for hotspot7: Any click on hotspot
+  OtherPlayer (JEFF, 6, "Jeff - usually hangs out on the beach, responds to the name, Surfer Dude.");
+}
+#sectionend hotspot7_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart room_b  // DO NOT EDIT OR REMOVE THIS LINE
+function room_b (){
+  // script for room: Repeatedly execute
+  if (players == 0) SetLabelText (11, 0, "Please select two other kids.");
+  else if (players == 1) SetLabelText (11, 0, "Please select one other kid.");
+  else SetLabelText (11, 0, "");
+  // change faces
+  if (timer > 0) timer--;
+  else
+  {
+    if (face < 0)
+    {
+      // verändern
+      face = Random (6);
+      if ((face == 4) && (IsObjectOn (7 + face))) face = -1;
+      else ObjectOn (7 + face);
+      timer = 30;
+    }
+    else
+    {
+      // wiederherstellen
+      ObjectOff (7 + face);
+      face = -1;
+      timer = 80;
+    }
+  }
+}
+#sectionend room_b  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot1_a  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot1_a (){
+  // script for hotspot1: Any click on hotspot
+  SetLabelText (12, 0, "Dave - Sandy's boyfriend. Organizer of the rescue effort.");
+}
+#sectionend hotspot1_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot8_a  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot8_a (){
+  // script for hotspot8: Any click on hotspot
+  if (players == 2)
+  {
+    GUIOff (11);
+    GUIOff (12);
+    SetCursorMode (7);
+    SetMusicRepeat (0);
+    PlayMusic (1);
+    HideMouseCursor ();
+    SetSpeechStyle (SPEECH_LUCASARTS);
+    SetGlobalInt (1, INTRO);
+    NewRoom (40);
+  }
+}
+#sectionend hotspot8_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+

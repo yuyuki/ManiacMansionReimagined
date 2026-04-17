@@ -1,0 +1,109 @@
+// room script file
+import int GSotherplayerup, GSotherplayerdown;
+import function OtherPlayerButtonSprite (int otherplayer);
+
+function room_a (){
+  // script for room: Player enters screen (before fadein)
+  StopMusic ();
+  PlayAmbientSound (1, 96, 150, 100, 100);
+  GUIOff (13);
+  if (GetGlobalInt (1) == INTRO)
+  {
+    SetCursorMode (0);
+    character [M].room = -1;
+    // --- Dave ---
+    ReleaseCharacterView (DAVE);
+    ChangeCharacterView (DAVE, 1);
+    character [DAVE].talkview = 1;
+    SetCharacterClickable (DAVE, 0);
+    PlaceCharacter (DAVE, 203, 136, DIR_RIGHT);
+    // --- first other kid ---
+    PlaceCharacter (GSotherplayerup, 243, 136, DIR_LEFT);
+    character [GSotherplayerup].room = 1;
+    SetButtonPic (1, 12, 1, OtherPlayerButtonSprite (GSotherplayerup));
+    // --- second other kid ---
+    PlaceCharacter (GSotherplayerdown, 283, 139, DIR_LEFT);
+    character [GSotherplayerdown].room = 1;
+    SetButtonPic (1, 13, 1, OtherPlayerButtonSprite (GSotherplayerdown));
+  }
+}
+
+function IsKid (int charid) {
+  return (GSotherplayerup == charid) || (GSotherplayerdown == charid);
+}
+
+function room_b (){
+  // script for room: Player enters screen (after fadein)
+  if (GetGlobalInt (1) == INTRO)
+  {
+    EndCutscene ();
+    StartCutscene (5);
+    SetCharacterSpeed (DAVE, 3);
+    Wait (20);
+    DisplaySpeech (DAVE, "Ok! This looks like the old mansion.");
+    Wait (10);
+    MoveCharacterBlocking (DAVE, 125, 137, 0);
+    DisplaySpeech (DAVE, "I'm sure I saw Dr. Fred take Sandy here.");
+    Wait (10);
+    MoveCharacterBlocking (DAVE, 203, 136, 0);
+    Wait (10);
+    DisplaySpeech (DAVE, "It's up to us to get her out.");
+    DisplaySpeech (DAVE, "This could be real dangerous.");
+    DisplaySpeech (DAVE, "If anyone wants to back out...");
+    Wait (25);
+    if (IsKid (SYD)) DisplaySpeech (SYD, "Let's do it.");
+    if (IsKid (MICHAEL))
+    {
+      DisplaySpeech (MICHAEL, "Did any of you guys see that movie?");
+      DisplaySpeech (MICHAEL, "Four kids went into this strange house...");
+      DisplaySpeech (MICHAEL, "and...");
+      DisplaySpeech (MICHAEL, "uh...");
+      DisplaySpeech (MICHAEL, "...never mind.");
+    }
+    if (IsKid (WENDY)) DisplaySpeech (WENDY, "This would make a great story.");
+    if (IsKid (BERNHARD))
+    {
+      int x = character [BERNHARD].x;
+      DisplaySpeech (BERNHARD, "Ok, I'm outta here!");
+      MoveCharacterBlocking (BERNHARD, 310, character [BERNHARD].y, 0);
+      DisplaySpeech (DAVE, "BERNARD! Don't be a tuna head!");
+      DisplaySpeech (DAVE, "It's Sandy we're talking about!");
+      Wait (5);
+      MoveCharacterBlocking (BERNHARD, x, character [BERNHARD].y, 0);
+      Wait (10);
+      DisplaySpeech (BERNHARD, "Ok.");
+    }
+    if (IsKid (RAZOR)) DisplaySpeech (RAZOR, "I heard Dr. Fred was kinda cute.");
+    if (IsKid (JEFF)) DisplaySpeech (JEFF, "I thought we were going to the beach!");
+    Wait (25);
+    FaceDirection (DAVE, DIR_DOWN);
+    FaceDirection (GSotherplayerup, DIR_DOWN);
+    FaceDirection (GSotherplayerdown, DIR_DOWN);
+    EndCutscene ();
+    Wait (15);
+    DisplaySpeech (DAVE, "Ok, let's go rescue Sandy!");
+    GUIOn (0);
+    GUIOn (1);
+    ShowMouseCursor ();
+    SetScreenTransition (TRANSITION_CROSSFADE);
+    SetGlobalInt (1, NO_CUTSCENE);
+  }
+}
+
+function region1_a (){
+  // script for region1: Player walks onto region
+  EnterRoom (2, 945, 132, DIR_LEFT);
+}
+
+function hotspot1_a (){
+  // script for hotspot1: Any click on hotspot
+  if (any_click_walk_look (30, 138, DIR_DOWN, "WARNING!!") != 0) 
+  { 
+    if (UsedAction (A_LOOK_AT))
+    {
+      DisplaySpeech (GetPlayerCharacter (), "Trespassers will be...");
+      DisplaySpeech (GetPlayerCharacter (), "...horribly mutilated.");
+    }
+  }
+  else Unhandled ();
+}

@@ -1,0 +1,436 @@
+// room script file
+import function BeamEdBackIntoHisRoom (int ignoreRoom14);
+
+function room_a (){
+  // script for room: Player enters screen (before fadein)
+  SetMusicVolume (2);
+  SetMusicRepeat (1);
+  PlayMusic (8);
+  SetObjectClickable (0, 0);
+  SetObjectClickable (2, 0);
+  init_object (119, 0);
+  int cutscene = GetGlobalInt (1);
+  if (cutscene == EDNA_ANSWERS_PHONE)
+  {
+    // EDNA is PC
+    character [EDNA].x = 128;
+    character [EDNA].y = 131;
+    FaceDirection (GetPlayerCharacter (), DIR_RIGHT);
+  }  
+  else if (cutscene == ED_TALKS_TO_EDNA)
+  {
+    // ED is PC
+    SetMusicVolume (3);
+    PlayMusic (9);
+    SeekMIDIPosition (5);
+    SetViewport (1, 1);
+    ObjectOn (0);
+    SetGlobalInt (119, 1);
+    character [ED].x = 164;
+    character [ED].y = 141;
+    character [EDNA].x = 210;
+    character [EDNA].y = 140;
+    FaceCharacter (ED, EDNA);
+    FaceCharacter (EDNA, ED);
+  }
+  else if (cutscene == FRED_TALKS_TO_EDNA)
+  {
+    // EDNA is PC
+    SetMusicVolume (3);
+    PlayMusic (9);
+    SeekMIDIPosition (5);
+    SetViewport (1, 1);
+    ObjectOn (0);
+    SetGlobalInt (119, 1);
+    character [FRED].room = 17;
+    character [FRED].x = 30;
+    character [FRED].y = 133;
+    character [EDNA].x = 268;
+    character [EDNA].y = 140;
+    FaceDirection (EDNA, DIR_RIGHT);
+  }
+  else if (character [EDNA].room == 17)
+  {
+    if (GetGlobalInt (97) == 0)
+    {
+      // Edna idle
+      character [EDNA].x = 268;
+      character [EDNA].y = 140;
+      FaceDirection (EDNA, DIR_RIGHT);
+    }
+    else 
+    {
+      // Edna at phone
+      character [EDNA].x = 128;
+      character [EDNA].y = 131;
+      FaceDirection (EDNA, DIR_UP);
+    }
+  }
+  AlarmSound ();
+}
+
+function OpenDoor (){
+  if (GetGlobalInt (119) == 0)
+  {
+    PlaySound (2);
+    ObjectOn (0);
+    SetGlobalInt (119, 1);
+  }
+}
+
+function CloseDoor (){
+  if (GetGlobalInt (119) == 1)
+  {
+    PlaySound (3);
+    ObjectOff (0);
+    SetGlobalInt (119, 0);
+  }
+}
+
+function room_c (){
+  // script for room: Player enters screen (after fadein)
+  int cutscene = GetGlobalInt (1);
+  if (cutscene == EDNA_ANSWERS_PHONE)
+  {
+    // EDNA is PC
+    Wait (20);
+    PlaySound (86);
+    Wait (40);
+    PlaySound (86);
+    Wait (40);
+    FaceDirection (GetPlayerCharacter (), DIR_DOWN);
+    Wait (20);
+    if (GetGlobalInt (151) == 0) DisplaySpeech (GetPlayerCharacter (), "Now who could that be?");
+    MoveCharacterBlocking (GetPlayerCharacter (), 128, 131, 0);
+    FaceDirection (GetPlayerCharacter (), DIR_UP);
+    Wait (10);
+    if (GetGlobalInt (151) == 0)
+    {
+      DisplaySpeech (GetPlayerCharacter (), "Hello?");
+      DisplaySpeech (GetPlayerCharacter (), "Who's there?");
+      DisplaySpeech (GetPlayerCharacter (), "Is this a prank phone call?");
+      DisplaySpeech (GetPlayerCharacter (), "It doesn't sound like a prank phone call,");
+      DisplaySpeech (GetPlayerCharacter (), "there's no heavy breathing.");
+      DisplaySpeech (GetPlayerCharacter (), "Here, let me show you how to do it...");
+      SetGlobalInt (151, 1);
+    }
+    else
+    {
+      DisplaySpeech (GetPlayerCharacter (), "Hello?");
+      DisplaySpeech (GetPlayerCharacter (), "Is this you again?");
+    }
+    SetGlobalInt (97, 1);
+    Wait (20);
+    FinishCutscene (0);
+  }
+  else if (cutscene == ED_TALKS_TO_EDNA)
+  {
+    // ED is PC
+    Wait (35);
+    DisplaySpeech (ED, "Daddy's been acting very strangely ever...");
+    DisplaySpeech (ED, "...since his secret project in the lab...");
+    DisplaySpeech (EDNA, "YEAH SO!");
+    DisplaySpeech (ED, "Well, Mommy, I'm worried about him.");
+    DisplaySpeech (ED, "He hasn't been at dinner for 5 years...");
+    DisplaySpeech (EDNA, "YEAH, SO!");
+    DisplaySpeech (ED, "...and he's been bringing those bodies...");
+    DisplaySpeech (ED, "...down into the basement late at night.");
+    DisplaySpeech (EDNA, "WHAT'S YOUR POINT ED?!");
+    DisplaySpeech (EDNA, "I'M A VERY BUSY LADY!");
+    Wait (30);
+    FaceDirection (ED, DIR_DOWN);
+    Wait (70);
+    FaceDirection (ED, DIR_RIGHT);
+    Wait (30);
+    DisplaySpeech (ED, "Never mind.");
+    MoveCharacterBlocking (ED, 30, 133, 0);
+    FaceDirection (ED, DIR_LEFT);
+    Wait (5);
+    SendEdBackIntoHisRoom ();
+    Wait (15);
+    CloseDoor ();
+    Wait (30);
+    character [EDNA].x = 268;
+    character [EDNA].y = 140;
+    SetGlobalInt (97, 0);
+    SetGlobalInt (1, NO_CUTSCENE);
+    FinishCutscene (0);
+  }
+  else if (cutscene == FRED_TALKS_TO_EDNA)
+  {
+    // EDNA is PC
+    MoveCharacterBlocking (FRED, 157, 133, 0);
+    MoveCharacterBlocking (FRED, 169, 141, 0);
+    MoveCharacterBlocking (FRED, 225, 141, 0);
+    FaceCharacter (FRED, EDNA);
+    Wait (10);
+    DisplaySpeech (FRED, "Edna...");
+    DisplaySpeech (FRED, "I'm having trouble with the Zom-B-Matic.");
+    DisplaySpeech (FRED, "I need to shut down the power.");
+    DisplaySpeech (FRED, "It'll be off for 5 or 6 minutes.");
+    FaceCharacter (EDNA, FRED);
+    Wait (10);
+    DisplaySpeech (EDNA, "Is this all you have to say to me?");
+    DisplaySpeech (EDNA, "You've been in the basement for the past 5 years!");
+    DisplaySpeech (EDNA, "Sometimes I think you like that meteor more than me!");
+    DisplaySpeech (FRED, "Don't worry my little Beauty Queen soon everything will be different.");
+    FaceLocation (EDNA, 269, 141);
+    Wait (10);
+    DisplaySpeech (EDNA, "Sure.");
+    Wait (15);
+    MoveCharacterBlocking (FRED, 30, 133, 0);
+    FaceLocation (FRED, 29, 133);
+    Wait (5);
+    character [FRED].room = 33;
+    Wait (15);
+    CloseDoor ();
+    Wait (30);
+    SetGlobalInt (97, 0);
+    SetGlobalInt (1, NO_CUTSCENE);
+    FinishCutscene (0);
+    character [FRED].x = 136;
+    character [FRED].y = 133;
+    character [EDNA].x = 268;
+    character [EDNA].y = 140;
+    SetOwnTimer (11, 2350);
+  }
+  else if ((GetGlobalInt (97) == 0) && (character [EDNA].room == 17))
+  {
+    Wait (5);
+    FaceDirection (EDNA, DIR_LEFT);
+    Wait (5);
+    DisplaySpeechBackground (EDNA, "Oh! An unwelcome visitor!");
+    Wait (5);
+    StartHunting (EDNA);
+  }
+}
+
+function EdnaEntersRoom (){
+  // Edna opens door
+  OpenDoor ();
+  Wait (10);
+  FaceDirection (EDNA, DIR_RIGHT);
+  character [EDNA].x = 28;
+  character [EDNA].y = 133;
+  character [EDNA].room = 17;
+  ReleaseCharacterView (EDNA);
+  Wait (10);
+  CloseDoor ();
+  Wait (15);
+  StartHunting (EDNA);
+}
+
+function on_call (int value){
+  if (value == EDNA_ENTERS_ROOM) EdnaEntersRoom ();
+}
+
+function region1_a (){
+  // script for region1: Player walks onto region
+  NewRoomEx (18, 160, 133);
+  FaceLocation (GetPlayerCharacter (), 160, 132);
+}
+
+function hotspot1_a (){
+  // script for hotspot1: Any click on hotspot
+  int result = any_click_on_door (119, 0, 30, 133, DIR_LEFT, 14, 260, 126, DIR_DOWN);
+  if (result == 0) Unhandled ();
+}
+
+function object1_a (){
+  // script for object1: Any click on object
+  if (UsedAction (A_PICK_UP))
+  {
+    if (MovePlayer (271, 140))
+    {
+      FaceLocation (GetPlayerCharacter (), 272, 140);
+      Wait (5);
+      PlaySound (4);
+      ObjectOff (1);
+      AddInventory (6);
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (271, 140))
+    {
+      FaceLocation (GetPlayerCharacter (), 272, 140);
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (271, 140))
+    {
+      FaceLocation (GetPlayerCharacter (), 272, 140);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "It's a small key.");
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot2_a (){
+  // script for hotspot2: Any click on hotspot
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (272, 140))
+    {
+      FaceLocation (GetPlayerCharacter (), 273, 140);
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot3_b (){
+  // script for hotspot3: Any click on hotspot
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (93, 131))
+    {
+      FaceLocation (GetPlayerCharacter (), 93, 130);
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (93, 131))
+    {
+      FaceLocation (GetPlayerCharacter (), 93, 130);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "I can't say I'm surprised.");
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot4_b (){
+  // script for hotspot4: Any click on hotspot
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (93, 131))
+    {
+      FaceLocation (GetPlayerCharacter (), 93, 130);
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot5_b (){
+  // script for hotspot5: Any click on hotspot
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (123, 131))
+    {
+      FaceLocation (GetPlayerCharacter (), 123, 130);
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot6_b (){
+  // script for hotspot6: Any click on hotspot
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (39, 131))
+    {
+      FaceLocation (GetPlayerCharacter (), 39, 132);
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot7_b (){
+  // script for hotspot7: Any click on hotspot
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (240, 140))
+    {
+      FaceLocation (GetPlayerCharacter (), 240, 141);
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (240, 140))
+    {
+      FaceLocation (GetPlayerCharacter (), 240, 141);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "It's a ceiling mirror.");
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot8_b (){
+  // script for hotspot8: Any click on hotspot
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (211, 140))
+    {
+      FaceLocation (GetPlayerCharacter (), 211, 139);
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (211, 140))
+    {
+      FaceLocation (GetPlayerCharacter (), 211, 139);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "That's Dr. Fred alright.");
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot9_b (){
+  // script for hotspot9: Any click on hotspot
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (211, 140))
+    {
+      FaceLocation (GetPlayerCharacter (), 211, 139);
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot10_b (){
+  // script for hotspot10: Any click on hotspot
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (268, 140))
+    {
+      FaceLocation (GetPlayerCharacter (), 268, 139);
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (268, 140))
+    {
+      FaceLocation (GetPlayerCharacter (), 268, 139);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "It's heart shaped.");
+    }
+  }
+  else Unhandled ();
+}
+
+function object3_a (){
+  // script for object3: Any click on object
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (68, 131))
+    {
+      FaceLocation (GetPlayerCharacter (), 68, 130);
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (68, 131))
+    {
+      FaceLocation (GetPlayerCharacter (), 68, 130);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "It's Edna's perfume. And it smells TERRIBLE!");
+    }
+  }
+  else Unhandled ();
+}
+
+

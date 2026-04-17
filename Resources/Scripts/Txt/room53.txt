@@ -1,0 +1,32 @@
+// room script file
+
+function room_a() {
+  // script for room: Player enters screen (before fadein)
+SetMusicVolume (1);
+PlayMusic (9);
+GUIOff(13);
+character [FRED].room = 53;
+PlaceCharacter (FRED, 145, 132, DIR_LEFT);
+
+}
+
+function room_b() {
+  // script for room: Player enters screen (after fadein)
+Wait(40);
+DisplaySpeech(PATRICK,"Wie schaut's aus, Doc? Bitte sagen Sie die Wahrheit.");
+DisplaySpeech(PATRICK,"Werde ich jemals wieder im Maxx-Bereich moderieren?");
+Wait(15);
+DisplaySpeech(FRED,"Ha, du machst wohl Witze. Ich bin Arzt, kein Zauberer!");
+DisplaySpeech(FRED,"Bei DER Schwere der Hirnverletzungen...");
+DisplaySpeech(FRED,"...reicht es höchstens noch für die eSports-Ecke.");
+Wait(15);
+SetCharacterView(PATRICK,51);
+Wait(15);
+character[PATRICK].talkview=49;
+game.text_speed=5;
+DisplaySpeech(PATRICK,"NEEEEEEIIIIIIIIIIN!");
+SetGlobalInt(20,2);
+PlayMusic (1);
+SeekMIDIPosition (31);
+NewRoom(49);
+}

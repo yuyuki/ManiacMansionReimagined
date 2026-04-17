@@ -1,0 +1,298 @@
+// room script file
+
+function room_a (){
+  // script for room: Player enters screen (before fadein)
+  SetObjectClickable (0, 0);
+  SetObjectClickable (1, 0);
+  SetObjectClickable (3, 0);
+  SetMusicVolume (3);
+  PlayMusic (6);
+  init_object (127, 0);
+  if (GetPlayerCharacter () == PURPLE)
+  {
+    character [GetPlayerCharacter ()].x = 576;
+    character [GetPlayerCharacter ()].y = 45;
+    FaceDirection (PURPLE, DIR_DOWN);
+  }
+  AlarmSound ();
+}
+
+function room_c (){
+  // script for room: Player enters screen (after fadein)
+  if (GetPlayerCharacter () == PURPLE)
+  {
+    MoveCharacterBlocking (GetPlayerCharacter (), 586, 130, 0);
+    Wait (10);
+    DisplaySpeech (GetPlayerCharacter (), "Hmm. There's no one here!");
+    if (GetGlobalInt (199) == 0)
+    {
+      MoveCharacterBlocking (GetPlayerCharacter (), 76, 139, 0);
+      MoveCharacterBlocking (GetPlayerCharacter (), 76, 129, 0);
+      Wait (10);
+      SetGlobalInt (199, 1);
+      PlaySound (93);
+      AdjustLights ();
+      StopAmbientSound (1);
+      AlarmSound ();
+      Wait (15);
+    }
+    // switch off light
+    if (GetGlobalInt (GetHotspotProperty (2, "lightsource")) == 1)
+    {
+      MoveCharacterBlocking (GetPlayerCharacter (), 560, 130, 0);
+      PlaySound (93);
+      SetGlobalInt (GetHotspotProperty (2, "lightsource"), 0);
+      AdjustLights ();
+      Wait (10);
+    }
+    // PT goes upstairs
+    MoveCharacterBlocking (GetPlayerCharacter (), 580, 130, 0);
+    MoveCharacterBlocking (GetPlayerCharacter (), 575, 40, 0);
+    // restore player character
+    FinishCutscene (0);
+    character [PURPLE].room = 33;
+    character [PURPLE].x = 360;
+    character [PURPLE].y = 133;
+  }
+}
+
+function room_b (){
+  // script for room: Repeatedly execute
+}
+
+function region1_a (){
+  // script for region1: Player walks onto region
+  EnterRoom (3, 460, 125, DIR_DOWN);
+}
+
+function hotspot1_a (){
+  // script for hotspot1: Any click on hotspot
+    SetDoorStrings ("", "The door is locked.", "I can't unlock the door with this.");
+    int result = any_click_on_door_special (127, 0, 45, 129, DIR_LEFT, 32, 506, 125, DIR_DOWN, 2, 3, 5, 2);
+    if (result == 0) Unhandled ();
+}
+
+function object2_a (){
+  // script for object2: Any click on object
+    if (UsedAction (A_OPEN))
+    {
+      if (MovePlayer (76, 129))
+      {
+        FaceLocation (GetPlayerCharacter (), 76, 128);
+        Wait (5);
+        ObjectOff (2);
+        ObjectOn (1);
+        PlaySound (1);
+        EnableHotspot (3);
+      }
+    }
+    else if (UsedAction (A_LOOK_AT))
+    {
+      if (MovePlayer (76, 129))
+      {
+        FaceLocation (GetPlayerCharacter (), 76, 128);
+        Wait (5);
+        DisplaySpeech (GetPlayerCharacter (), "It's a fuse box.");
+      }
+    }
+    else if (UsedAction (A_WALK_TO))
+    {
+      if (MovePlayer (76, 129))
+      {
+        FaceLocation (GetPlayerCharacter (), 76, 128);
+      }
+    }
+    else Unhandled ();
+}
+
+function hotspot4_a (){
+  // script for hotspot4: Any click on hotspot
+    if (UsedAction (A_CLOSE))
+    {
+      if (MovePlayer (76, 129))
+      {
+        FaceLocation (GetPlayerCharacter (), 76, 128);
+        Wait (10);
+        ObjectOn (2);
+        ObjectOff (1);
+        PlaySound (5);
+        DisableHotspot (3);
+      }
+    }
+    else if (UsedAction (A_WALK_TO))
+    {
+      if (MovePlayer (76, 129))
+      {
+        FaceLocation (GetPlayerCharacter (), 76, 128);
+      }
+    }
+    else if (UsedAction (A_LOOK_AT))
+    {
+      if (MovePlayer (76, 129))
+      {
+        FaceLocation (GetPlayerCharacter (), 76, 128);
+        Wait (5);
+        DisplaySpeech (GetPlayerCharacter (), "It's a fuse box.");
+      }
+    }
+    else Unhandled ();
+}
+
+function hotspot3_a (){
+  // script for hotspot3: Any click on hotspot
+  SetWalkTo (76, 129, DIR_UP);
+  if (WalkedToLookedAt ("") == 0)
+  {
+    if (UsedAction (A_USE))
+    {
+      if (MovedTo ())
+      {
+        if (GetGlobalInt (199) == 1)
+        {
+          SetGlobalInt (199, 0);
+          if (GetGlobalInt (85) != 1)
+          {
+            if (character [PURPLE].room >= 0) SetOwnTimer (17, 500);
+          }
+        }
+        else if (GetGlobalInt (199) == 0)
+        {
+          SetGlobalInt (199, 1);
+          StopAmbientSound (1);
+        }
+        PlaySound (93);
+        AdjustLights ();
+        AlarmSound ();
+      }
+    }
+    else if (UsedAction (A_LOOK_AT))
+    {
+      if (MovedTo ())
+      {
+        if (IsLightOn () == 0) DisplaySpeech (GetPlayerCharacter (), "It's too dark to read.");
+        else DisplaySpeech (GetPlayerCharacter (), "'MAIN POWER'");
+      }
+    }
+    else Unhandled ();
+  }
+}
+
+function object4_a (){
+  // script for object4: Any click on object
+    if (UsedAction (A_PICK_UP))
+    {
+      if (MovePlayer (76, 129))
+      {
+        FaceLocation (GetPlayerCharacter (), 76, 128);
+        Wait (5);
+        ObjectOff (4);
+        PlaySound (4);
+        AddInventory (2);
+      }
+    }
+    else if (UsedAction (A_WALK_TO))
+    {
+      if (MovePlayer (76, 129))
+      {
+        FaceLocation (GetPlayerCharacter (), 76, 128);
+      }
+    }
+    else Unhandled ();
+}
+
+function hotspot5_a (){
+  // script for hotspot5: Any click on hotspot
+    if (UsedAction (A_OPEN))
+    {
+      if (MovePlayer (453, 140))
+      {
+        FaceLocation (GetPlayerCharacter (), 453, 139);
+        Wait (5);
+        DisplaySpeech (GetPlayerCharacter (), "It's too hot!");
+      }
+    }
+    else if (UsedAction (A_WALK_TO))
+    {
+      if (MovePlayer (453, 140))
+      {
+        FaceLocation (GetPlayerCharacter (), 453, 139);
+      }
+    }
+    else Unhandled ();
+}
+
+function hotspot5_b (){
+  // script for hotspot5: Look at hotspot
+}
+
+function hotspot6_a (){
+  // script for hotspot6: Any click on hotspot
+    if (UsedAction (A_LOOK_AT))
+    {
+      if (MovePlayer (453, 140))
+      {
+        FaceLocation (GetPlayerCharacter (), 453, 139);
+        Wait (5);
+        if (IsLightOn () == 0) DisplaySpeech (GetPlayerCharacter (), "It's too dark to read.");
+        else DisplaySpeech (GetPlayerCharacter (), "'Made in Chernobyl'");
+      }
+    }
+    else if (UsedAction (A_WALK_TO))
+    {
+      if (MovePlayer (453, 140))
+      {
+        FaceLocation (GetPlayerCharacter (), 453, 139);
+      }
+    }
+    else Unhandled ();
+}
+
+function hotspot7_b (){
+  // script for hotspot7: Any click on hotspot
+    if (UsedAction (A_LOOK_AT))
+    {
+      if (MovePlayer (133, 140))
+      {
+        FaceLocation (GetPlayerCharacter (), 134, 140);
+        Wait (5);
+        DisplaySpeech (GetPlayerCharacter (), "It's disgusting!");
+      }
+    }
+    else if (UsedAction (A_PICK_UP))
+    {
+      if (MovePlayer (133, 140))
+      {
+        FaceLocation (GetPlayerCharacter (), 134, 140);
+        Wait (5);
+        DisplaySpeech (GetPlayerCharacter (), "Yuck! I'm not touching that!");
+      }
+    }
+    else if (UsedAction (A_WALK_TO))
+    {
+      if (MovePlayer (133, 140))
+      {
+        FaceLocation (GetPlayerCharacter (), 134, 140);
+      }
+    }
+    else Unhandled ();
+}
+
+function hotspot2_b (){
+  // script for hotspot2: Any click on hotspot
+  if (any_click_on_light_switch (2, 560, 131, DIR_LEFT) == 0) Unhandled ();
+}
+
+function room_d (){
+  // script for room: Player leaves screen
+  if (character [PURPLE].room == 31)
+  {
+    StopHunting ();
+    character [PURPLE].room = 33;
+    character [PURPLE].x = 360;
+    character [PURPLE].y = 133;
+    SetGlobalInt (199, 1);
+    SetGlobalInt (GetHotspotProperty (2, "lightsource"), 0);
+  }
+}
+
+

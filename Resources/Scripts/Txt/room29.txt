@@ -1,0 +1,199 @@
+// room script file
+
+function region1_a (){
+  // script for region1: Player walks onto region
+  SetScreenTransition (TRANSITION_CROSSFADE);
+  NewRoomEx (28, 292, 109);
+  FaceLocation (GetPlayerCharacter (), 292, 108);
+  SetGlobalInt (231, GetGlobalInt (231) - 1);
+}
+
+function room_a (){
+  // script for room: Player enters screen (before fadein)
+  StopMusic ();
+  PlayAmbientSound (1, 96, 150, 100, 100);
+}
+
+function object0_a (){
+  // script for object0: Any click on object
+  if (UsedAction (A_PICK_UP))
+  {
+    if (MovePlayer (71, 130))
+    {
+      FaceLocation (GetPlayerCharacter (), 72, 130);
+      Wait (5);
+      PlaySound (4);
+      ObjectOff (0);
+      AddInventory (12);
+      SetGlobalInt (11, 1);
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (71, 130))
+    {
+      FaceLocation (GetPlayerCharacter (), 72, 130);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "It's a high-tech radio.");
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (71, 130))
+    {
+      FaceLocation (GetPlayerCharacter (), 72, 130);
+    }
+  }
+  else Unhandled ();
+}
+
+function object1_a (){
+  // script for object1: Any click on object
+  if (UsedAction (A_PICK_UP))
+  {
+    if (MovePlayer (36, 134))
+    {
+      FaceLocation (GetPlayerCharacter (), 36, 135);
+      Wait (5);
+      PlaySound (4);
+      ObjectOff (1);
+      AddInventory (3);
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (36, 134))
+    {
+      FaceLocation (GetPlayerCharacter (), 36, 135);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "It's a glowing key!");
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (36, 134))
+    {
+      FaceLocation (GetPlayerCharacter (), 36, 135);
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot2_a (){
+  // script for hotspot2: Any click on hotspot
+  SetWalkTo (191, 125, DIR_UP);
+  if (WalkedToLookedAt ("'DO NOT PRESS UNDER ANY CIRCUMSTANCES!'") != 0) { }
+  else if (UsedAction (A_PUSH))
+  {
+    if (MovedTo ())
+    {
+      PlaySound (93);
+      Wait (30);
+      SetGlobalInt (1, OUTRO_EXPLOSION);
+      NewRoom (40);
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot2_b (){
+  // script for hotspot2: Look at hotspot
+}
+
+function hotspot1_b (){
+  // script for hotspot1: Any click on hotspot
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (155, 32))
+    {
+      FaceLocation (GetPlayerCharacter (), 155, 31);
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot3_b (){
+  // script for hotspot3: Any click on hotspot
+  if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (94, 134))
+    {
+      FaceLocation (GetPlayerCharacter (), 94, 135);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "It's a floatable pool chair.");
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (94, 134))
+    {
+      FaceLocation (GetPlayerCharacter (), 94, 135);
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot4_b (){
+  // script for hotspot4: Any click on hotspot
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (159, 135))
+    {
+      FaceLocation (GetPlayerCharacter (), 159, 136);
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (159, 135))
+    {
+      FaceLocation (GetPlayerCharacter (), 159, 136);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "It's the pool's drain.");
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot5_b (){
+  // script for hotspot5: Any click on hotspot
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (215, 133))
+    {
+      FaceLocation (GetPlayerCharacter (), 218, 133);
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (215, 133))
+    {
+      FaceLocation (GetPlayerCharacter (), 218, 133);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "They're radioactive cooling rods.");
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot6_b (){
+  // script for hotspot6: Any click on hotspot
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (215, 133))
+    {
+      FaceLocation (GetPlayerCharacter (), 217, 134);
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (215, 133))
+    {
+      FaceLocation (GetPlayerCharacter (), 217, 134);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "That is disgusting goo!");
+    }
+  }
+  else Unhandled ();
+}
+
+

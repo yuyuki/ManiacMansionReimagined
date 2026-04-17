@@ -1,0 +1,610 @@
+// room script file
+
+function TranslateGraphic (){
+  SetObjectGraphic (9, TranslateNumber ("_bath_21_graphic_ 542"));
+}
+
+function on_call (int value){
+  if (value == GAME_RESTORED)
+  {
+    TranslateGraphic ();
+  }
+}
+
+function room_a (){
+  // script for room: Player enters screen (before fadein)
+  SetMusicVolume (2);
+  SetMusicRepeat (1);
+  PlayMusic (8);
+  TranslateGraphic ();
+  SetObjectClickable (0, 0);
+  SetObjectClickable (1, 0);
+  SetObjectClickable (3, 0);
+  SetObjectClickable (9, 0);
+  SetObjectClickable (10, 0);
+  SetObjectClickable (11, 0);
+  SetObjectIgnoreWalkbehinds (5, 1);
+  init_object (123, 0);
+  
+  string translation;
+  GetTranslationName(translation);
+  if (IsTranslationAvailable()==1) { 
+    if (StrCaseComp(translation, "russian")==0) {
+      SetObjectGraphic(10,1035);
+    }
+    else if (StrCaseComp(translation, "bulgarian")==0) {
+      SetObjectGraphic(10,1044);
+    }
+
+  }
+  
+  if ((GetGlobalInt (34) == 1) && (GetGlobalInt (33) == 0)) PlayAmbientSound (1, 95, 150, 70, 70);
+  else if ((GetGlobalInt (34) == 0) && (GetGlobalInt (33) == 1)) PlayAmbientSound (1, 95, 150, 268, 45);
+  else if ((GetGlobalInt (34) == 1) && (GetGlobalInt (33) == 1)) PlayAmbientSound (1, 95, 150, 70, 70);
+  AlarmSound ();
+}
+
+function room_b (){
+  // script for room: First time player enters screen
+  DisableHotspot (8);
+  int ran = Random (4);
+  SetObjectGraphic (11, 545 + ran);
+  if (ran == 0)      SetGlobalInt (142, 5235);
+  else if (ran == 1) SetGlobalInt (142, 1547);
+  else if (ran == 2) SetGlobalInt (142, 2275);
+  else if (ran == 3) SetGlobalInt (142, 3444);
+  else               SetGlobalInt (142, 7537);
+}
+
+function hotspot1_a (){
+  // script for hotspot1: Any click on hotspot
+  if (any_click_on_door (123, 0, 120, 109, DIR_UP, 20, 428, 131, DIR_LEFT) == 0) Unhandled ();
+}
+
+function hotspot7_a (){
+  // script for hotspot7: Any click on hotspot
+  if ((UsedAction (A_CLOSE)) && (GetGlobalInt (34) == 1) && (GetGlobalInt (33) == 0))
+  {
+    if (MovePlayer (81, 109))
+    {
+      FaceLocation (GetPlayerCharacter (), 81, 108);
+      Wait (5);
+      ObjectOff (1);
+      StopAmbientSound (1);
+      SetGlobalInt (34, 0);
+    }
+  }
+  else if ((UsedAction (A_CLOSE)) && (GetGlobalInt (34) == 1) && (GetGlobalInt (33) == 1))
+  {
+    if (MovePlayer (81, 109))
+    {
+      FaceLocation (GetPlayerCharacter (), 81, 108);
+      Wait (5);
+      ObjectOff (1);
+      PlayAmbientSound (1, 95, 150, 268, 45);
+      SetGlobalInt (34, 0);
+    }
+  }
+  else if ((UsedAction (A_OPEN)) && (GetGlobalInt (34) == 0))
+  {
+    if (MovePlayer (81, 109))
+    {
+      FaceLocation (GetPlayerCharacter (), 81, 108);
+      Wait (5);
+      ObjectOn (1);
+      PlayAmbientSound (1, 95, 150, 70, 70);
+      SetGlobalInt (34, 1);
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (81, 109))
+    {
+      FaceLocation (GetPlayerCharacter (), 81, 108);
+    }
+  }
+  else if (UsedAction (A_USE_INV))
+  {
+    if ((character [GetPlayerCharacter ()].activeinv == 38) && (GetGlobalInt (34) == 0))
+    {
+      if (MovePlayer (81, 109))
+      {
+        FaceLocation (GetPlayerCharacter (), 81, 108);
+      }
+    }
+    else if ((character [GetPlayerCharacter ()].activeinv == 38) && (GetGlobalInt (34) == 1))
+    {
+      if (MovePlayer (81, 109))
+      {
+        FaceLocation (GetPlayerCharacter (), 81, 108);
+        PlaySound (34);
+        LoseInventory (38);
+        AddInventory (39);
+      }
+    }
+    else if ((character [GetPlayerCharacter ()].activeinv == 41) && (GetGlobalInt (34) == 0))
+    {
+      if (MovePlayer (81, 109))
+      {
+        FaceLocation (GetPlayerCharacter (), 81, 108);
+      }
+    }
+    else if ((character [GetPlayerCharacter ()].activeinv == 41) && (GetGlobalInt (34) == 1))
+    {
+      if (MovePlayer (81, 109))
+      {
+        FaceLocation (GetPlayerCharacter (), 81, 108);
+        LoseInventory (41);
+        AddInventory (42);
+      }
+    }
+  }
+  else if (UsedAction (A_USE))
+  {
+    if ((GetGlobalInt (34) == 1) && (GetGlobalInt (33) == 0))
+    {
+      if (MovePlayer (81, 109))
+      {
+        FaceLocation (GetPlayerCharacter (), 81, 108);
+        Wait (5);
+        ObjectOff (1);
+        StopAmbientSound (1);
+        SetGlobalInt (34, 0);
+      }
+    }
+    else if ((GetGlobalInt (34) == 1) && (GetGlobalInt (33) == 1))
+    {
+      if (MovePlayer (81, 109))
+      {
+        FaceLocation (GetPlayerCharacter (), 81, 108);
+        Wait (5);
+        ObjectOff (1);
+        PlayAmbientSound (1, 95, 150, 268, 45);
+        SetGlobalInt (34, 0);
+      }
+    }
+    else if (GetGlobalInt (34) == 0)
+    {
+      if (MovePlayer (81, 109))
+      {
+        FaceLocation (GetPlayerCharacter (), 81, 108);
+        Wait (5);
+        ObjectOn (1);
+        PlayAmbientSound (1, 95, 150, 70, 70);
+        SetGlobalInt (34, 1);
+      }
+    }
+  }
+  else Unhandled ();
+}
+
+function object2_a (){
+  // script for object2: Any click on object
+  if ((UsedAction (A_OPEN)) && (GetGlobalInt (32) == 0))
+  {
+    if (MovePlayer (282, 126))
+    {
+      FaceLocation (GetPlayerCharacter (), 282, 125);
+      Wait (10);
+      DisplaySpeech (GetPlayerCharacter (), "The handle's missing.");
+    }
+  }
+  else if ((UsedAction (A_OPEN)) && (GetGlobalInt (32) == 1) && (GetGlobalInt (33) == 0))
+  {
+    if (MovePlayer (282, 126))
+    {
+      FaceLocation (GetPlayerCharacter (), 282, 125);
+      Wait (10);
+      SetObjectGraphic (3, 472);
+      MoveObjectDirect (4, 204, 83, 2);
+      PlayAmbientSound (1, 95, 150, 268, 45);
+      SetGlobalInt (33, 1);
+    }
+  }
+  else if ((UsedAction (A_CLOSE)) && (GetGlobalInt (32) == 1) && (GetGlobalInt (33) == 1) && (GetGlobalInt (34) == 0))
+  {
+    if (MovePlayer (282, 126))
+    {
+      FaceLocation (GetPlayerCharacter (), 282, 125);
+      Wait (10);
+      SetObjectGraphic (3, 474);
+      StopAmbientSound (1);
+      SetGlobalInt (33, 0);
+    }
+  }
+  else if ((UsedAction (A_CLOSE)) && (GetGlobalInt (32) == 1) && (GetGlobalInt (33) == 1) && (GetGlobalInt (34) == 1))
+  {
+    if (MovePlayer (282, 126))
+    {
+      FaceLocation (GetPlayerCharacter (), 282, 125);
+      Wait (10);
+      SetObjectGraphic (3, 474);
+      PlayAmbientSound (1, 95, 150, 70, 70);
+      SetGlobalInt (33, 0);
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (282, 126))
+    {
+      FaceLocation (GetPlayerCharacter (), 282, 125);
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (282, 126))
+    {
+      FaceLocation (GetPlayerCharacter (), 282, 125);
+      if (GetGlobalInt (32) == 0) DisplaySpeech (GetPlayerCharacter (), "The handle's missing.");
+      else DisplaySpeech (GetPlayerCharacter (), "It's the shower's water faucet.");
+    }
+  }
+  else if (UsedAction (A_USE_INV))
+  {
+    if ((character [GetPlayerCharacter ()].activeinv == 21))
+    {
+      if (MovePlayer (282, 126))
+      {
+        FaceLocation (GetPlayerCharacter (), 282, 125);
+        Wait (10);
+        PlaySound (77);
+        SetObjectGraphic (2, 470);
+        LoseInventory (21);
+        SetGlobalInt (32, 1);
+      }
+    }
+  }
+  else if (UsedAction (A_USE))
+  {
+    if ((UsedAction (A_USE)) && (GetGlobalInt (32) == 0))
+    {
+      if (MovePlayer (282, 126))
+      {
+        FaceLocation (GetPlayerCharacter (), 282, 125);
+        Wait (10);
+        DisplaySpeech (GetPlayerCharacter (), "The handle's missing.");
+      }
+    }
+    else if ((UsedAction (A_USE)) && (GetGlobalInt (32) == 1) && (GetGlobalInt (33) == 0))
+    {
+      if (MovePlayer (282, 126))
+      {
+        FaceLocation (GetPlayerCharacter (), 282, 125);
+        Wait (10);
+        SetObjectGraphic (3, 472);
+        MoveObjectDirect (4, 204, 83, 2);
+        PlayAmbientSound (1, 95, 150, 268, 45);
+        SetGlobalInt (33, 1);
+      }
+    }
+    else if ((UsedAction (A_USE)) && (GetGlobalInt (32) == 1) && (GetGlobalInt (33) == 1) && (GetGlobalInt (34) == 0))
+    {
+      if (MovePlayer (282, 126))
+      {
+        FaceLocation (GetPlayerCharacter (), 282, 125);
+        Wait (10);
+        SetObjectGraphic (3, 474);
+        StopAmbientSound (1);
+        SetGlobalInt (33, 0);
+      }
+    }
+    else if ((UsedAction (A_USE)) && (GetGlobalInt (32) == 1) && (GetGlobalInt (33) == 1) && (GetGlobalInt (34) == 1))
+    {
+      if (MovePlayer (282, 126))
+      {
+        FaceLocation (GetPlayerCharacter (), 282, 125);
+        Wait (10);
+        SetObjectGraphic (3, 474);
+        PlayAmbientSound (1, 95, 150, 70, 70);
+        SetGlobalInt (33, 0);
+      }
+    }
+  }
+  else Unhandled ();
+}
+
+function object5_a (){
+  // script for object5: Any click on object
+  if ((UsedAction (A_CLOSE)) && (GetGlobalInt (318) == 1))
+  {
+    if (MovePlayer (63, 140))
+    {
+      FaceLocation (GetPlayerCharacter (), 62, 140);
+      Wait (5);
+      PlaySound (84);
+      ObjectOff (5);
+      ObjectOn (8);
+      SetGlobalInt (318, 0);
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (63, 140))
+    {
+      FaceLocation (GetPlayerCharacter (), 62, 140);
+    }
+  }
+  else if (UsedAction (A_USE))
+  {
+    if (character [GetPlayerCharacter ()].activeinv == 39)
+    {
+      if (MovePlayer (63, 140))
+      {
+        FaceLocation (GetPlayerCharacter (), 62, 140);
+        Wait (5);
+        PlaySound (33);
+        LoseInventory (39);
+        AddInventory (38);
+      }
+    }
+    else if (character [GetPlayerCharacter ()].activeinv == 56)
+    {
+      if (MovePlayer (63, 140))
+      {
+        FaceLocation (GetPlayerCharacter (), 62, 140);
+        Wait (5);
+        PlaySound (33);
+        LoseInventory (56);
+        AddInventory (38);
+      }
+    }
+  }
+  else Unhandled ();
+}
+
+function object6_a (){
+  // script for object6: Any click on object
+  if (UsedAction (A_OPEN))
+  {
+    if (MovePlayer (212, 127))
+    {
+      FaceLocation (GetPlayerCharacter (), 212, 126);
+      Wait (5);
+      PlaySound (37);
+      Wait (5);
+      SetObjectView (6, 106);
+      AnimateObject (6, 0, 0, 0);
+      while (IsObjectAnimating (6) == 1) Wait (1);
+      EnableHotspot (8);
+      ObjectOff (6);
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (212, 127))
+    {
+      FaceLocation (GetPlayerCharacter (), 212, 126);
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot8_a (){
+  // script for hotspot8: Any click on hotspot
+  if (UsedAction (A_CLOSE))
+  {
+    if (MovePlayer (212, 127))
+    {
+      FaceLocation (GetPlayerCharacter (), 212, 126);
+      Wait (5);
+      ObjectOn (6);
+      DisableHotspot (8);
+      PlaySound (37);
+      SetObjectView (6, 107);
+      AnimateObject (6, 0, 0, 0);
+      while (IsObjectAnimating (6) == 1) Wait (1);
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (212, 127))
+    {
+      FaceLocation (GetPlayerCharacter (), 212, 126);
+    }
+  }
+  else Unhandled ();
+}
+
+function object8_a (){
+  // script for object8: Any click on object
+  if ((UsedAction (A_OPEN)) && (GetGlobalInt (318) == 0))
+  {
+    if (MovePlayer (63, 140))
+    {
+      FaceLocation (GetPlayerCharacter (), 62, 140);
+      Wait (5);
+      PlaySound (83);
+      ObjectOn (5);
+      ObjectOff (8);
+      SetGlobalInt (318, 1);
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (63, 140))
+    {
+      FaceLocation (GetPlayerCharacter (), 62, 140);
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot3_a (){
+  // script for hotspot3: Any click on hotspot
+  if ((UsedAction (A_PULL)) || (UsedAction (A_USE)))
+  {
+    if (MovePlayer (34, 123))
+    {
+      FaceLocation (GetPlayerCharacter (), 34, 123);
+      Wait (5);
+      PlaySound (38);
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (34, 123))
+    {
+      FaceLocation (GetPlayerCharacter (), 34, 123);
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot5_a (){
+  // script for hotspot5: Any click on hotspot
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (63, 140))
+    {
+      FaceLocation (GetPlayerCharacter (), 62, 140);
+    }
+  }
+  else if ((UsedAction (A_OPEN)) && (GetGlobalInt (34) == 0))
+  {
+    if (MovePlayer (63, 140))
+    {
+      FaceLocation (GetPlayerCharacter (), 62, 140);
+      Wait (5);
+      PlaySound (83);
+      ObjectOn (5);
+      ObjectOff (8);
+      SetGlobalInt (318, 1);
+    }
+  }
+  else if ((UsedAction (A_CLOSE)) && (GetGlobalInt (34) == 1))
+  {
+    if (MovePlayer (63, 140))
+    {
+      FaceLocation (GetPlayerCharacter (), 62, 140);
+      Wait (5);
+      PlaySound (84);
+      ObjectOff (5);
+      ObjectOn (8);
+      SetGlobalInt (34, 0);
+    }
+  }
+  else if (UsedAction (A_USE_INV))
+  {
+    if (character [GetPlayerCharacter ()].activeinv == 39)
+    {
+      // volles Wasserglass mit Toilette benutzen
+      if (GetGlobalInt (318) == 1)
+      {
+        if (MovePlayer (63, 140))
+        {
+          FaceLocation (GetPlayerCharacter (), 62, 140);
+          Wait (5);
+          PlaySound (33);
+          LoseInventory (39);
+          AddInventory (38);
+        }
+      }
+      else
+      {
+        // ---ask---
+      }
+    }
+    else if (character [GetPlayerCharacter ()].activeinv == 56)
+    {
+      // volles Poolwasserglass mit Toilette benutzen
+      if (GetGlobalInt (318) == 1)
+      {
+        if (MovePlayer (63, 140))
+        {
+          FaceLocation (GetPlayerCharacter (), 62, 140);
+          Wait (5);
+          PlaySound (33);
+          LoseInventory (56);
+          AddInventory (38);
+        }
+      }
+      else
+      {
+        // ---ask---
+      }
+    }
+    else Unhandled ();
+  }
+  else if (UsedAction (A_USE))
+  {
+    // Toilette benutzen
+    if (MovePlayer (63, 140))
+    {
+      FaceLocation (GetPlayerCharacter (), 62, 141);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "I'd like a little more privacy for that!");
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot2_a (){
+  // script for hotspot2: Any click on hotspot
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (81, 109))
+    {
+      FaceLocation (GetPlayerCharacter (), 81, 108);
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot6_a (){
+  // script for hotspot6: Any click on hotspot
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (303, 126))
+    {
+      FaceLocation (GetPlayerCharacter (), 304, 126);
+    }
+  }
+  else Unhandled ();
+}
+
+function object4_a (){
+  // script for object4: Any click on object
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (240, 127))
+    {
+      FaceLocation (GetPlayerCharacter (), 240, 126);
+    }
+  }
+  else Unhandled ();
+}
+
+function object7_c (){
+  // script for object7: Any click on object
+  if (UsedAction (A_PICK_UP))
+  {
+    if (MovePlayer (55, 109))
+    {
+      FaceLocation (GetPlayerCharacter (), 55, 108);
+      Wait (5);
+      PlaySound (4);
+      ObjectOff (7);
+      AddInventory (41);
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (55, 109))
+    {
+      FaceLocation (GetPlayerCharacter (), 55, 108);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "It's an old, grimey sponge.");
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (55, 109))
+    {
+      FaceLocation (GetPlayerCharacter (), 55, 108);
+    }
+  }
+  else Unhandled ();
+}
+
+
+

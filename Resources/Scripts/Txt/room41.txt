@@ -1,0 +1,75 @@
+// room script file
+
+function room_a (){
+  // script for room: Player enters screen (before fadein)
+  if (GetGlobalInt (143) <= 0)
+  {
+    int ran = Random (4);
+    SetObjectGraphic (1, 642 + ran);
+    if (ran == 0)      SetGlobalInt (143, 3621);
+    else if (ran == 1) SetGlobalInt (143, 1230);
+    else if (ran == 2) SetGlobalInt (143, 1029);
+    else if (ran == 3) SetGlobalInt (143, 4186);
+    else               SetGlobalInt (143, 0120);
+  }
+  SetObjectClickable (0, 0);
+  SetObjectClickable (1, 0);
+  SetCharacterView (GetPlayerCharacter (), 105);
+  GUIOff (0);
+  GUIOff (1);
+  ObjectOff (1);
+  if (GetGlobalInt (36) == 1)
+  {
+    ObjectOn (0);
+    SetObjectGraphic (0, 491);
+  }
+  else if (GetGlobalInt (36) == 2)
+  {
+    ObjectOff (0);
+  }
+  else if (GetGlobalInt (36) == 3)
+  {
+    ObjectOn (0);
+    SetObjectGraphic (0, 492);
+  }
+  else if (GetGlobalInt (36) == 4)
+  {
+    ObjectOn (0);
+    if (GetGlobalInt (37) == 0) SetObjectGraphic (0, 490);
+    else
+    {
+      SetObjectGraphic (0, 489);
+      ObjectOn (1);
+    }
+  }
+  AlarmSound ();
+}
+
+function room_b (){
+  // script for room: Player enters screen (after fadein)
+  if (GetGlobalInt (36) == 1)
+  {
+    Wait (30);
+    PlaySound (48);
+    SetObjectView (0, 80);
+    AnimateObject (0, 0, 0, 1);
+    Wait (50);
+  }
+}
+
+function hotspot1_a (){
+  // script for hotspot1: Any click on hotspot
+  ReleaseCharacterView (GetPlayerCharacter ());
+  GUIOn (0);
+  GUIOn (1);
+  FaceDirection (GetPlayerCharacter (), DIR_RIGHT);
+  if (GetPlayerCharacter () == DAVE)            NewRoomEx (23, 110, 129);
+  else if (GetPlayerCharacter () == SYD)        NewRoomEx (23, 109, 129);
+  else if (GetPlayerCharacter () == MICHAEL)    NewRoomEx (23, 110, 129);
+  else if (GetPlayerCharacter () == RAZOR)      NewRoomEx (23, 108, 129);
+  else if (GetPlayerCharacter () == WENDY)      NewRoomEx (23, 110, 127);
+  else if (GetPlayerCharacter () == JEFF)       NewRoomEx (23, 109, 129);
+  else if (GetPlayerCharacter () == BERNHARD)   NewRoomEx (23, 110, 129);
+}
+
+

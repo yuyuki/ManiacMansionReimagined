@@ -1,0 +1,581 @@
+// room script file
+
+#sectionstart room_a  // DO NOT EDIT OR REMOVE THIS LINE
+function room_a (){
+  // script for room: Player enters screen (before fadein)
+if (GetGlobalInt(19)==0) {
+  SetMusicVolume (2);
+  SetMusicRepeat (1);
+  PlayMusic (7);
+}
+  
+  if (GetGlobalInt (282) == 0) SetBackgroundFrame (0);
+  else if (GetGlobalInt (282) == 1) SetBackgroundFrame (1);
+  else if (GetGlobalInt (282) == 2) SetBackgroundFrame (2);
+  else if (GetGlobalInt (282) == 3) SetBackgroundFrame (3);
+  else if (GetGlobalInt (282) == 4) SetBackgroundFrame (4);
+  init_object (82, 0);
+  init_object (129, 1);
+  SetObjectClickable (0, 0);
+  SetObjectClickable (1, 0);
+  int cutscene = GetGlobalInt (1);
+  if (cutscene == NO_CUTSCENE)
+  {
+    if (GetPlayerCharacter () == POLICE)
+    {
+      // POLICE is PC
+      character [GetPlayerCharacter ()].x = 85;
+      character [GetPlayerCharacter ()].y = 125;
+      ReleaseCharacterView (GetPlayerCharacter ());
+      // FaceLocation(POLICE,85,200);
+      FaceDirection (GetPlayerCharacter (), DIR_DOWN);
+      character [FRED].room = -1;
+      character [SANDY].room = -1;
+      character [PURPLE].room = 33;
+      character [PURPLE].x = 345;
+      character [PURPLE].y = 126;
+      SetMusicVolume (3);
+      PlayMusic (9);
+      SeekMIDIPosition (5);
+    }
+    else
+    {
+      character [FRED].room = -1;
+      character [SANDY].room = -1;
+      character [PURPLE].x = 360;
+      character [PURPLE].y = 133;
+    }
+  }
+  else if (cutscene == SANDY_CRIES_FOR_HELP)
+  {
+    // SANDY is PC
+    SetMusicVolume (3);
+    PlayMusic (9);
+    SeekMIDIPosition (5);
+    character [PURPLE].room = -1;
+    ObjectOff (0);
+    SetViewport (5, 5);
+    FaceCharacter (FRED, SANDY);
+    FaceCharacter (SANDY, FRED);
+  }
+  else if (GetGlobalInt (1) == POOL_IS_EMPTY) // avo- (GetGlobalInt (201) == 2)
+  {
+    // FRED is PC
+    SetMusicVolume (3);
+    PlayMusic (9);
+    SeekMIDIPosition (5);
+    character [PURPLE].room = 33;
+    character [PURPLE].x = 360;
+    character [PURPLE].y = 133;
+    character [FRED].x = 136;
+    character [FRED].y = 133;
+    FaceDirection (FRED, DIR_DOWN);
+    character [SANDY].room = -1;
+    ObjectOff (0);
+    SetViewport (5, 5);
+  }
+  else if (GetGlobalInt (1) == MACHINE_IS_READY) // avo- (GetGlobalInt (201) == 3)
+  {
+    // SANDY is PC
+    SetMusicVolume (3);
+    PlayMusic (9);
+    SeekMIDIPosition (5);
+    character [PURPLE].room = 33;
+    character [PURPLE].x = 360;
+    character [PURPLE].y = 133;
+    character [SANDY].room = 33;
+    character [SANDY].x = 256;
+    character [SANDY].y = 132;
+    FaceDirection (SANDY, DIR_RIGHT);
+    character [FRED].room = 33;
+    character [FRED].x = 360;
+    character [FRED].y = 133;
+    ObjectOff (0);
+    SetViewport (5, 5);
+  }
+  else if (GetGlobalInt (1) == POWER_OFF_FIRST_TIME) // avo- (GetGlobalInt (201) == 4)
+  {
+    // FRED is PC
+    SetMusicVolume (3);
+    PlayMusic (9);
+    SeekMIDIPosition (5);
+    character [PURPLE].room = 33;
+    character [PURPLE].x = 360;
+    character [PURPLE].y = 133;
+    character [FRED].x = 136;
+    character [FRED].y = 133;
+    FaceDirection (FRED, DIR_DOWN);
+    character [SANDY].room = -1;
+    ObjectOff (0);
+    SetViewport (5, 5);
+  }
+  else if (GetGlobalInt (1) == POWER_OFF_AGAIN) // avo- (GetGlobalInt (201) == 5)
+  {
+    // FRED is PC
+    SetMusicVolume (3);
+    PlayMusic (9);
+    SeekMIDIPosition (5);
+    character [PURPLE].room = 33;
+    character [PURPLE].x = 360;
+    character [PURPLE].y = 133;
+    character [FRED].x = 136;
+    character [FRED].y = 133;
+    FaceDirection (FRED, DIR_DOWN);
+    character [SANDY].room = -1;
+    ObjectOff (0);
+    SetViewport (5, 5);
+  }
+  /* avo- wird von GS-TimeToActIsOver gesetzt, aber es gibt dann kein FadeIn
+  else if (GetGlobalInt (201) == 6)
+  {
+    SetMusicVolume (3);
+    PlayMusic (9);
+    SeekMIDIPosition (5);
+  }
+  */
+  AlarmSound ();
+  
+  if (GetGlobalInt (19) ==1)
+  {
+    SetViewport(1,1);   
+    character [PURPLE].room = 33;
+    character [FRED].room = 33;
+    character [ED].room = 33;
+    PlaceCharacter (PURPLE, 350, 139, DIR_RIGHT);
+    PlaceCharacter (EDNA, 44, 139, DIR_RIGHT);
+    PlaceCharacter (FRED, 171, 139, DIR_DOWN);
+    PlaceCharacter (ED, 251, 130, DIR_UP);
+  }
+}
+#sectionend room_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart room_b  // DO NOT EDIT OR REMOVE THIS LINE
+function room_b (){
+  // script for room: Player enters screen (after fadein)
+  int cutscene = GetGlobalInt (1);
+  if (cutscene == NO_CUTSCENE)
+  {
+    if (GetPlayerCharacter () == POLICE)
+    {
+      // POLICE is PC
+      Wait (15);
+      FaceCharacter (GetPlayerCharacter (), PURPLE);
+      Wait (5);
+      MoveCharacter (PURPLE, 170, 130);
+      DisplaySpeech (GetPlayerCharacter (), "Don't bug me, sucker-face!");
+      MoveCharacterBlocking (GetPlayerCharacter (), 375, 130, 0);
+      FaceDirection (GetPlayerCharacter (), DIR_RIGHT);
+      Wait (5);
+      // open door
+      if (GetGlobalInt (129) != 1)
+      {
+        PlaySound (2);
+        ObjectOn (1);
+        SetGlobalInt (129, 1);
+        Wait (15);
+      }
+      SetCharacterView (GetPlayerCharacter (), 105);
+      Wait (10);
+      //
+      SetGlobalInt (242, 5);
+      NewRoom (34);
+    }
+    else if ((character [PURPLE].room == 33) && (character [PURPLE].inv [61] <= 0))
+    {
+      // PT is in room and hasn't seen the contract for the meteor
+      StartHunting (PURPLE);
+    }
+  }
+  else if (cutscene == SANDY_CRIES_FOR_HELP)
+  {
+    // SANDY is PC
+    Wait (30);
+    DisplaySpeech (FRED, "Well, my dear. Hope you're having fun!");
+    MoveCharacterBlocking (FRED, 170, 133, 0);
+    Wait (20);
+    DisplaySpeech (FRED, "Within minutes it'll all be over.");
+    DisplaySpeech (FRED, "You'll be hooked up to my machine...");
+    DisplaySpeech (FRED, "...getting your pretty brains sucked out.");
+    DisplaySpeech (SANDY, "You'll never get away with this!");
+    FaceCharacter (SANDY, FRED);
+    DisplaySpeech (SANDY, "Dave and his friends will rescue me!");
+    DisplaySpeech (SANDY, "You and your meteor can eat slime!");
+    MoveCharacterBlocking (FRED, 170, 140, 0);
+    Wait (30);
+    DisplaySpeech (FRED, "That's what she thinks!");
+    DisplaySpeech (FRED, "Heh, heh, heh.");
+    MoveCharacterBlocking (FRED, 365, 133, 0);
+    MoveCharacterBlocking (SANDY, 85, 125, 0);
+    FaceDirection (SANDY, DIR_UP);
+    Wait (5);
+    DisplaySpeech (SANDY, "Help, help, HELP!");
+    Wait (30);
+    SetGlobalInt (1, NO_CUTSCENE);
+    FinishCutscene (0);
+  }
+  else if (GetGlobalInt (1) == POOL_IS_EMPTY) // avo- (GetGlobalInt (201) == 2)
+  {
+    // FRED is PC
+    Wait (30);
+    DisplaySpeech (FRED, "Oh no!");
+    DisplaySpeech (FRED, "The pool is empty again!");
+    MoveCharacterBlocking (FRED, 201, 132, 0);
+    FaceDirection (FRED, DIR_UP);
+    Wait (5);
+    DisplaySpeech (FRED, "We're going to have another meltdown!");
+    Wait (10);
+    MoveCharacterBlocking (FRED, 50, 135, 0);
+    Wait (10);
+    DisplaySpeech (FRED, "How can I take over the world when I'm on a budget?");
+    MoveCharacterBlocking (FRED, 280, 135, 0);
+    Wait (10);
+    DisplaySpeech (FRED, "I always get stuck with cheap equipment.");
+    MoveCharacterBlocking (FRED, 50, 135, 0);
+    FaceDirection (FRED, DIR_DOWN);
+    Wait (10);
+    DisplaySpeech (FRED, "Boy is the meteor going to be pissed.");
+    MoveCharacterBlocking (FRED, 180, 135, 0);
+    Wait (10);
+    DisplaySpeech (FRED, "TENTACLE! FRONT AAAND CENTER!");
+    MoveCharacterBlocking (PURPLE, 210, 133, 0);
+    Wait (10);
+    DisplaySpeech (PURPLE, "Yes sir, Dr. Fred sir,");
+    DisplaySpeech (PURPLE, "Purple Tentacle at your disposal, sir.");
+    DisplaySpeech (FRED, "Quick! Go check out the reactor.");
+    DisplaySpeech (PURPLE, "Yes sir!");
+    Wait (10);
+    MoveCharacterBlocking (PURPLE, 85, 125, 0);
+    FaceDirection (PURPLE, DIR_UP);
+    Wait (5);
+    ObjectOn (0);
+    Wait (20);
+    SetGlobalInt (238, 1);
+    SetOwnTimer (19, 500);
+    SetGlobalInt (1, NO_CUTSCENE);
+    FinishCutscene (0);
+  }
+  else if (GetGlobalInt (1) == MACHINE_IS_READY) // avo- (GetGlobalInt (201) == 3)
+  {
+    // SANDY is PC
+    Wait (30);
+    DisplaySpeech (SANDY, "Get away from me you purple slime geek.");
+    MoveCharacter (PURPLE, 170, 132);
+    MoveCharacterBlocking (SANDY, 50, 135, 0);
+    FaceCharacter (SANDY, PURPLE);
+    DisplaySpeech (SANDY, "Don't touch me!");
+    MoveCharacterBlocking (PURPLE, 50, 135, 0);
+    MoveCharacterBlocking (SANDY, 256, 135, 0);
+    FaceCharacter (SANDY, PURPLE);
+    MoveCharacterBlocking (FRED, 290, 135, 0);
+    DisplaySpeech (FRED, "PURPLE TENTACLE!");
+    DisplaySpeech (FRED, "Stop playing with the lab experiments.");
+    DisplaySpeech (FRED, "Bring her, the machine is ready.");
+    Wait (5);
+    FaceDirection (FRED, DIR_DOWN);
+    Wait (10);
+    DisplaySpeech (FRED, "Heh, heh, heh.");
+    MoveCharacterBlocking (FRED, 360, 135, 0);
+    MoveCharacter (PURPLE, 230, 135);
+    DisplaySpeech (SANDY, "EEEEK!");
+    Wait (20);
+    SetGlobalInt (1, NO_CUTSCENE);
+    FinishCutscene (0);
+  }
+  else if (GetGlobalInt (1) == POWER_OFF_FIRST_TIME) // avo- (GetGlobalInt (201) == 4)
+  {
+    // FRED is PC
+    Wait (30);
+    DisplaySpeech (FRED, "Oh great, someone shut the power off!");
+    MoveCharacterBlocking (FRED, 201, 132, 0);
+    FaceDirection (FRED, DIR_UP);
+    Wait (5);
+    DisplaySpeech (FRED, "We're going to have another meltdown!");
+    Wait (10);
+    MoveCharacterBlocking (FRED, 50, 135, 0);
+    Wait (10);
+    DisplaySpeech (FRED, "How can I take over the world when I'm on a budget?");
+    MoveCharacterBlocking (FRED, 280, 135, 0);
+    Wait (10);
+    DisplaySpeech (FRED, "I always get stuck with cheap equipment.");
+    MoveCharacterBlocking (FRED, 50, 135, 0);
+    FaceDirection (FRED, DIR_DOWN);
+    Wait (10);
+    DisplaySpeech (FRED, "Boy is the meteor going to be pissed.");
+    MoveCharacterBlocking (FRED, 180, 135, 0);
+    Wait (10);
+    DisplaySpeech (FRED, "TENTACLE! FRONT AAAND CENTER!");
+    MoveCharacterBlocking (PURPLE, 210, 133, 0);
+    Wait (10);
+    DisplaySpeech (PURPLE, "Yes sir, Dr. Fred sir,");
+    DisplaySpeech (PURPLE, "Purple Tentacle at your disposal, sir.");
+    DisplaySpeech (FRED, "Quick! Go check out the reactor.");
+    DisplaySpeech (PURPLE, "Yes sir!");
+    Wait (10);
+    MoveCharacterBlocking (PURPLE, 85, 125, 0);
+    FaceDirection (PURPLE, DIR_UP);
+    Wait (5);
+    ObjectOn (0);
+    Wait (20);
+    SetGlobalInt (238, 1);
+    character [PURPLE].room = -1;
+    SetGlobalInt (1, NO_CUTSCENE);
+    FinishCutscene (0);
+    SetOwnTimer (19, 500);
+  }
+  else if (GetGlobalInt (1) == POWER_OFF_AGAIN) // avo- (GetGlobalInt (201) == 5)
+  {
+    // FRED is PC
+    Wait (30);
+    DisplaySpeech (FRED, "Not again!");
+    MoveCharacterBlocking (FRED, 201, 132, 0);
+    FaceDirection (FRED, DIR_UP);
+    Wait (5);
+    Wait (10);
+    MoveCharacterBlocking (FRED, 50, 135, 0);
+    Wait (10);
+    DisplaySpeech (FRED, "How can I take over the world when I'm on a budget?");
+    MoveCharacterBlocking (FRED, 280, 135, 0);
+    Wait (10);
+    DisplaySpeech (FRED, "I always get stuck with cheap equipment.");
+    MoveCharacterBlocking (FRED, 50, 135, 0);
+    FaceDirection (FRED, DIR_DOWN);
+    Wait (10);
+    DisplaySpeech (FRED, "Boy is the meteor going to be pissed.");
+    MoveCharacterBlocking (FRED, 180, 135, 0);
+    Wait (10);
+    DisplaySpeech (FRED, "TENTACLE! FRONT AAAND CENTER!");
+    MoveCharacterBlocking (PURPLE, 210, 133, 0);
+    Wait (10);
+    DisplaySpeech (PURPLE, "Yes sir, Dr. Fred sir,");
+    DisplaySpeech (PURPLE, "Purple Tentacle at your disposal, sir.");
+    DisplaySpeech (FRED, "Quick! Go check out the reactor.");
+    DisplaySpeech (PURPLE, "Yes sir!");
+    Wait (10);
+    MoveCharacterBlocking (PURPLE, 85, 125, 0);
+    FaceDirection (PURPLE, DIR_UP);
+    Wait (5);
+    ObjectOn (0);
+    Wait (20);
+    character [PURPLE].room = -1;
+    SetGlobalInt (1, NO_CUTSCENE);
+    FinishCutscene (0);
+    SetOwnTimer (19, 500);
+  }
+
+  if (GetGlobalInt (19) ==1)
+  {   
+    PlayMusic (9);
+    SeekMIDIPosition (5);
+    MoveCharacterBlocking (FRED, 224, 139, 1); Wait(5);
+    MoveCharacterBlocking (FRED, 74, 139, 1); Wait(5);
+    DisplaySpeechBackgroundEx (EDNA,"How long do we have to stay down here?");
+    MoveCharacterBlocking (FRED, 224, 139, 1); Wait(5);
+    MoveCharacterBlocking (FRED, 74, 139, 1); Wait(5);
+    MoveCharacterBlocking (FRED, 224, 139, 1); Wait(5);
+    MoveCharacterBlocking (FRED, 150, 139, 1); Wait(5);
+    FaceLocation(FRED,150,200);
+    Wait(25);
+    FaceCharacter(FRED,EDNA);
+    Wait(15);
+    DisplaySpeech(FRED,"Shh... I think I hear something!");
+    Wait(15);
+    FaceCharacter(ED,FRED);
+    Wait(15);
+    DisplaySpeech(ED,"I miss my hamster.");
+    Wait(15);
+    FaceCharacter(FRED,ED);
+    Wait(15);
+    DisplaySpeech(FRED,"Quiet! I think I hear someone upstairs!");
+    Wait(15);
+    MoveCharacterBlocking (EDNA, 211, 130, 1);
+    Wait(15);
+    DisplaySpeech(EDNA,"Oh great! Who forgot to lock the door?");
+    Wait(15);
+    FaceLocation(ED,251,1);
+    Wait(15);
+    DisplaySpeech(FRED,"PURPLE TENTACLE!");
+    MoveCharacterBlocking (PURPLE, 185, 139, 1);
+    Wait(5);
+    DisplaySpeech(PURPLE,"Yes sir, Dr. Fred sir,");
+    DisplaySpeech(FRED,"Go upstairs and check it out!");
+    DisplaySpeech(PURPLE,"Yes sir!");
+    Wait(5);
+    MoveCharacterBlocking (PURPLE, 85, 125, 1);
+    Wait(5);
+    ObjectOn(0);
+    PlaySound(43);
+    Wait(25);
+    SetCharacterView(PURPLE,105);
+    Wait(25);
+    FaceLocation(ED,251,200);
+    Wait(15);
+    DisplaySpeech(ED,"I really DO miss my hamster!");
+    Wait(15);
+    SetGlobalInt(19,2);
+    SetPlayerCharacter(DAVE);
+  }
+
+}
+#sectionend room_b  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot2_a  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot2_a (){
+  // script for hotspot2: Any click on hotspot
+  // avo- if (GetGlobalInt (293) == 0)
+  {
+    SetDoorStrings ("", "", "");
+    int result = any_click_on_door_special (82, 0, 85, 125, DIR_UP, 32, 150, 125, DIR_DOWN, 43, 44, -1, 0);
+    if (result == 0) Unhandled ();
+  }
+}
+#sectionend hotspot2_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot3_a  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot3_a (){
+  // script for hotspot3: Any click on hotspot
+  // avo- if (GetGlobalInt (293) == 0)
+  {
+    int result = any_click_on_door (129, 1, 375, 130, DIR_RIGHT, 34, 55, 136, DIR_RIGHT);
+    if (result == 2)
+    {
+      if (GetGlobalInt (242) == 0) SetGlobalInt (242, 1);
+    }
+    else if (result == 0) Unhandled ();
+  }
+}
+#sectionend hotspot3_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot5_a  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot5_a (){
+  // script for hotspot5: Any click on hotspot
+  // avo- if (GetGlobalInt (293) == 0)
+  {
+    if (UsedAction (A_WALK_TO))
+    {
+      if (MovePlayer (270, 140))
+      {
+        FaceLocation (GetPlayerCharacter (), 271, 140);
+      }
+    }
+    else if (UsedAction (A_USE))
+    {
+      if (MovePlayer (270, 140))
+      {
+        FaceLocation (GetPlayerCharacter (), 271, 140);
+        Wait (5);
+        DisplaySpeech (GetPlayerCharacter (), "I see a heart-shaped bed.");
+      }
+    }
+    else Unhandled ();
+  }
+}
+#sectionend hotspot5_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart object2_a  // DO NOT EDIT OR REMOVE THIS LINE
+function object2_a (){
+  // script for object2: Any click on object
+  // avo- if (GetGlobalInt (293) == 0)
+  {
+    if (UsedAction (A_WALK_TO))
+    {
+      if (MovePlayer (122, 125))
+      {
+        FaceLocation (GetPlayerCharacter (), 122, 124);
+      }
+    }
+    else if ((UsedAction (A_PUSH)) || (UsedAction (A_USE)))
+    {
+      if (MovePlayer (122, 125))
+      {
+        FaceLocation (GetPlayerCharacter (), 122, 124);
+        Wait (5);
+        PlaySound (93);
+        Wait (5);
+        if (GetGlobalInt (282) == 0)
+        {
+          SetBackgroundFrame (1);
+          SetGlobalInt (282, 1);
+          SetObjectGraphic (2, 880);
+          DisableHotspot (1);
+          DisableHotspot (2);
+          DisableHotspot (3);
+          DisableHotspot (4);
+          DisableHotspot (5);
+        }
+        else if (GetGlobalInt (282) == 1)
+        {
+          SetBackgroundFrame (2);
+          SetGlobalInt (282, 2);
+        }
+        else if (GetGlobalInt (282) == 2)
+        {
+          SetBackgroundFrame (3);
+          SetGlobalInt (282, 3);
+        }
+        else if (GetGlobalInt (282) == 3)
+        {
+          SetBackgroundFrame (4);
+          SetGlobalInt (282, 4);
+        }
+        else if (GetGlobalInt (282) == 4)
+        {
+          SetBackgroundFrame (0);
+          SetGlobalInt (282, 0);
+          SetObjectGraphic (2, 879);
+          EnableHotspot (1);
+          EnableHotspot (2);
+          EnableHotspot (3);
+          EnableHotspot (4);
+          EnableHotspot (5);
+        }
+      }
+    }
+    else Unhandled ();
+  }
+}
+#sectionend object2_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot1_b  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot1_b (){
+  // script for hotspot1: Any click on hotspot
+  // avo- if (GetGlobalInt (293) == 0)
+  {
+    if (UsedAction (A_WALK_TO))
+    {
+      if (MovePlayer (196, 136))
+      {
+        FaceLocation (GetPlayerCharacter (), 196, 135);
+      }
+    }
+    else if (UsedAction (A_LOOK_AT))
+    {
+      DisplaySpeech (GetPlayerCharacter (), "It's a map of the mansion.");
+    }
+    else Unhandled ();
+  }
+}
+#sectionend hotspot1_b  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot4_b  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot4_b (){
+  // script for hotspot4: Any click on hotspot
+  // avo- if (GetGlobalInt (293) == 0)
+  {
+    if (UsedAction (A_WALK_TO))
+    {
+      any_click_move (196, 136, DIR_UP);
+    }
+    else Unhandled ();
+  }
+}
+#sectionend hotspot4_b  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+

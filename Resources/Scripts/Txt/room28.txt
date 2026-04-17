@@ -1,0 +1,200 @@
+// room script file
+
+function room_a (){
+  // script for room: Player enters screen (before fadein)
+  if ((GetGlobalInt (1) == KID_DIES_IN_POOL) || (GetGlobalInt (1) == KIDS_DIE_IN_POOL))
+  {
+    character [GetPlayerCharacter ()].x = 500;
+    character [GetPlayerCharacter ()].y = 128;
+    SetCharacterView (GetPlayerCharacter (), 105);
+    character [GetPlayerCharacter ()].talkview = 89;
+  }
+  if (GetRegionAt (character [GetPlayerCharacter ()].x, character [GetPlayerCharacter ()].y) == 3)
+  {
+    character [GetPlayerCharacter ()].x = 282;
+    character [GetPlayerCharacter ()].y = 84;
+    FaceLocation (GetPlayerCharacter (), 282, 85);
+  }
+  StopMusic ();
+  init_object (125, 0);
+  init_object (108, 1);
+  SetObjectClickable (0, 0);
+  SetObjectClickable (1, 0);
+  SetObjectClickable (2, 0);
+  if (GetGlobalInt (138) == 1)
+  {
+    ObjectOff (2);
+    ObjectOff (3);
+    ObjectOff (4);
+    RestoreWalkableArea (2);
+  }
+  else
+  {
+    if (GetGlobalInt (11) == 1)
+    {
+      ObjectOn (2);
+      ObjectOn (3);
+      RemoveWalkableArea (2);
+    }
+    else if (GetGlobalInt (11) == 0)
+    {
+      ObjectOn (2);
+      ObjectOn (3);
+      ObjectOn (4);
+      RemoveWalkableArea (2);
+    }
+  }
+}
+
+function room_b (){
+  // script for room: Player enters screen (after fadein)
+  PlayAmbientSound (1, 96, 150, 100, 100);
+  if (GetGlobalInt (1) == KID_DIES_IN_POOL)
+  {
+    SetGlobalInt (231, GetGlobalInt (231) - 1);
+    PlaySound (80);
+    Wait (200);
+    PlayerDies ();
+  }
+  else if (GetGlobalInt (1) == KIDS_DIE_IN_POOL)
+  {
+    SetGlobalInt (231, GetGlobalInt (231) - 2);
+    PlaySound (80);
+    Wait (200);
+    PlayerDies ();
+  }
+}
+
+function hotspot1_a (){
+  // script for hotspot1: Any click on hotspot
+  if (any_click_on_door (108, 1, 55, 138, DIR_LEFT, 27, 120, 123, DIR_DOWN) == 0) Unhandled ();
+}
+
+function hotspot2_a (){
+  // script for hotspot2: Any click on hotspot
+  SetDoorStrings ("", "", "");
+  if (any_click_on_door_special (125, 0, 125, 84, DIR_UP, 30, 52, 108, DIR_DOWN, 72, 73, -1, 0) == 0) Unhandled ();
+}
+
+function region1_a (){
+  // script for region1: Player walks onto region
+  SetScreenTransition (TRANSITION_CROSSFADE);
+  NewRoomEx (29, 156, 41);
+  FaceLocation (GetPlayerCharacter (), 156, 40);
+  SetGlobalInt (231, GetGlobalInt (231) + 1);
+}
+
+function hotspot4_a (){
+  // script for hotspot4: Any click on hotspot
+  if ((UsedAction (A_WALK_TO)) && (GetGlobalInt (138) == 0))
+  {
+    if (MovePlayer (300, 83))
+    {
+      FaceLocation (GetPlayerCharacter (), 300, 84);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "I don't want to get wet!");
+    }
+  }
+  else if (UsedAction (A_USE_INV))
+  {
+    if (GetGlobalInt (138) == 0)
+    {
+      if ((character [GetPlayerCharacter ()].activeinv == 38))
+      {
+        if (MovePlayer (204, 85))
+        {
+          FaceLocation (GetPlayerCharacter (), 204, 86);
+          Wait (10);
+          PlaySound (32);
+          LoseInventory (38);
+          AddInventory (56);
+        }
+      }
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    DisplaySpeech (GetPlayerCharacter (), "It's a swimming pool filled with radioactive water.");
+  }
+}
+
+function hotspot3_a (){
+  // script for hotspot3: Any click on hotspot
+  if (UsedAction (A_WALK_TO))
+  {
+    if (GetGlobalInt (138) == 0)
+    {
+      if (MovePlayer (300, 83))
+      {
+        FaceLocation (GetPlayerCharacter (), 300, 84);
+        Wait (5);
+        DisplaySpeech (GetPlayerCharacter (), "I'm not going down there.");
+        DisplaySpeech (GetPlayerCharacter (), "It's full of water!");
+      }
+    }
+    else if (GetGlobalInt (138) == 1)
+    {
+      if (MovePlayer (293, 116))
+      {
+        //
+      }
+    }
+  }
+  else Unhandled ();
+}
+
+function object3_a (){
+  // script for object3: Any click on object
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (330, 141))
+    {
+      FaceLocation (GetPlayerCharacter (), 330, 140);
+    }
+  }
+  else if (UsedAction (A_PICK_UP))
+  {
+    if (MovePlayer (330, 141))
+    {
+      FaceLocation (GetPlayerCharacter (), 330, 140);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "I can't reach it.");
+    }
+  }
+  else Unhandled ();
+}
+
+function object4_a (){
+  // script for object4: Any click on object
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (330, 141))
+    {
+      FaceLocation (GetPlayerCharacter (), 330, 140);
+    }
+  }
+  else if (UsedAction (A_PICK_UP))
+  {
+    if (MovePlayer (330, 141))
+    {
+      FaceLocation (GetPlayerCharacter (), 330, 140);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "I can't reach it.");
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot5_a (){
+  // script for hotspot5: Any click on hotspot
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (430, 83))
+    {
+      FaceLocation (GetPlayerCharacter (), 430, 82);
+    }
+  }
+  else Unhandled ();
+}
+
+

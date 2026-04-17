@@ -1,0 +1,43 @@
+// room script file
+
+#sectionstart room_b  // DO NOT EDIT OR REMOVE THIS LINE
+function room_b (){
+  // script for room: Player enters screen (before fadein)
+  int cutscene = GetGlobalInt (1);
+  if (cutscene == INTRO) PlacePC (10, 120, DIR_DOWN);
+  else if (cutscene == FINAL_SCENE)
+  {
+    SetGlobalInt (154, NO_CHAR);
+    if (GetGlobalInt(20)!=2) FinishCutscene (0);
+    ChangeCharacterView (GetPlayerCharacter (), 105);
+    RemoveWalkableArea (1);
+    PlacePC (1, 1, DIR_DOWN);
+    GUIOff (0);
+    GUIOff (1);
+    GUIOff (10);
+    GUIOn (13);
+    SetGlobalInt(327,1);
+    SetGlobalInt(315,1);
+    SetLabelText (13, 0, "Congratulations! You won the game!");
+    SetLabelText (13, 1, "Press F8 to play again.");
+  }
+}
+#sectionend room_b  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart room_a  // DO NOT EDIT OR REMOVE THIS LINE
+function room_a (){
+  // script for room: Player enters screen (after fadein)
+  if (GetGlobalInt (1) == INTRO)
+  {
+    MoveCharacterBlocking (GetPlayerCharacter (), 999, 120, 0);
+    NewRoom (46);
+  }
+  else if (GetGlobalInt (1) == FINAL_SCENE)
+  {  
+    SetOwnTimer(31,200);
+  }
+}
+#sectionend room_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+

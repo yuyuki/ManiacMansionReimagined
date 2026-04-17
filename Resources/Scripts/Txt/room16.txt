@@ -1,0 +1,678 @@
+// room script file
+
+function room_a (){
+  // script for room: Player enters screen (before fadein)
+  SetObjectClickable (0, 0);
+  SetObjectClickable (3, 0);
+  SetObjectClickable (7, 0);
+  if ((GetGlobalInt (92) == 1) && (GetGlobalInt (23) == 1))
+  {
+    SetMusicVolume (2);
+    SetMusicRepeat (1);
+    PlayMusic (4);
+  }
+  else if ((GetGlobalInt (92) == 1) && (GetGlobalInt (23) == 2))
+  {
+    PlayAmbientSound (1, 70, 150, 50, 50);
+  }
+  else if ((GetGlobalInt (92) == 1) && (GetGlobalInt (23) == 3))
+  {
+    SetMusicVolume (2);
+    SetMusicRepeat (1);
+    PlayMusic (2);
+  }
+  else if ((GetGlobalInt (93) == 1) && (GetGlobalInt (94) == 1))
+  {
+    SetMusicVolume (2);
+    SetMusicRepeat (1);
+    PlayMusic (3);
+  }
+  else
+  {
+    SetMusicVolume (2);
+    SetMusicRepeat (1);
+    PlayMusic (8);
+  }
+  character [GREEN].x = 388;
+  character [GREEN].y = 134;
+  init_object (136, 0);
+  int ran = Random (24);
+  if (ran == 0) SetObjectGraphic (7, 876);
+  else SetObjectGraphic (7, 26);
+  AlarmSound ();
+}
+
+function hotspot2_a (){
+  // script for hotspot2: Any click on hotspot
+  SetDoorStrings ("", "", "");
+  int result = any_click_on_door_special (136, 0, 96, 126, DIR_DOWN, 15, 20, 40, DIR_DOWN, 72, 84, -1, 0);
+  if (result == 2) SetGlobalInt (94, 0);
+  else if (result == 0) Unhandled ();
+}
+
+function region2_a (){
+  //
+}
+
+function hotspot1_a (){
+  // script for hotspot1: Look at hotspot
+}
+
+function hotspot1_b (){
+  // script for hotspot1: Any click on hotspot
+  if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (243, 136))
+    {
+      FaceLocation (GetPlayerCharacter (), 242, 136);
+      Wait (5);
+      if (GetGlobalInt (199) == 0) DisplaySpeech (GetPlayerCharacter (), "It's too dark to read.");
+      else DisplaySpeech (GetPlayerCharacter (), "'THX Sound'");
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (243, 136))
+    {
+      FaceLocation (GetPlayerCharacter (), 242, 136);
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot3_a (){
+  // script for hotspot3: Any click on hotspot
+  if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (397, 136))
+    {
+      FaceLocation (GetPlayerCharacter (), 398, 136);
+      Wait (5);
+      if (GetGlobalInt (199) == 0) DisplaySpeech (GetPlayerCharacter (), "It's too dark to read.");
+      else DisplaySpeech (GetPlayerCharacter (), "'THX Sound'");
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (397, 136))
+    {
+      FaceLocation (GetPlayerCharacter (), 398, 136);
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot4_a (){
+  // script for hotspot4: Any click on hotspot
+  if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (380, 136))
+    {
+      FaceLocation (GetPlayerCharacter (), 380, 135);
+      Wait (5);
+      if (GetGlobalInt (199) == 0) DisplaySpeech (GetPlayerCharacter (), "It's too dark to read.");
+      else DisplaySpeech (GetPlayerCharacter (), "'To my slimiest son, love MOM.'");
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (380, 136))
+    {
+      FaceLocation (GetPlayerCharacter (), 380, 135);
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot7_a (){
+  // script for hotspot7: Any click on hotspot
+  if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (243, 136))
+    {
+      FaceLocation (GetPlayerCharacter (), 243, 135);
+      Wait (5);
+      if (GetGlobalInt (199) == 0) DisplaySpeech (GetPlayerCharacter (), "It's too dark to read.");
+      else DisplaySpeech (GetPlayerCharacter (), "'See Ron Gilbert Live at the Forum!'");
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (243, 136))
+    {
+      FaceLocation (GetPlayerCharacter (), 243, 135);
+    }
+  }
+  else Unhandled ();
+}
+
+function object1_a (){
+  // script for object1: Any click on object
+  if (UsedAction (A_PICK_UP))
+  {
+    if (GetGlobalInt (92) == 0)
+    {
+      if (MovePlayer (295, 134))
+      {
+        FaceLocation (GetPlayerCharacter (), 295, 133);
+        Wait (5);
+        ObjectOff (1);
+        PlaySound (4);
+        AddInventory (14);
+        SetGlobalInt (91, 0);
+      }
+    }
+    else if (GetGlobalInt (92) == 1)
+    {
+      if (MovePlayer (295, 134))
+      {
+        FaceLocation (GetPlayerCharacter (), 295, 133);
+        Wait (5);
+        DisplaySpeech (GetPlayerCharacter (), "It's still playing!");
+      }
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (295, 134))
+    {
+      FaceLocation (GetPlayerCharacter (), 295, 133);
+    }
+  }
+  else Unhandled ();
+}
+
+function object2_a (){
+  // script for object2: Any click on object
+  if (UsedAction (A_PICK_UP))
+  {
+    if (GetGlobalInt (94) == 0)
+    {
+      if (MovePlayer (295, 134))
+      {
+        FaceLocation (GetPlayerCharacter (), 295, 133);
+        Wait (5);
+        ObjectOff (2);
+        PlaySound (4);
+        AddInventory (26);
+        SetGlobalInt (93, 0);
+      }
+    }
+    else if (GetGlobalInt (94) == 1)
+    {
+      if (MovePlayer (295, 134))
+      {
+        FaceLocation (GetPlayerCharacter (), 295, 133);
+        Wait (5);
+        DisplaySpeech (GetPlayerCharacter (), "It's still playing!");
+      }
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (295, 134))
+    {
+      FaceLocation (GetPlayerCharacter (), 295, 133);
+    }
+  }
+  else Unhandled ();
+}
+
+function object4_a (){
+  // script for object4: Any click on object
+  if (UsedAction (A_PICK_UP))
+  {
+    if (MovePlayer (552, 127))
+    {
+      FaceLocation (GetPlayerCharacter (), 553, 127);
+      Wait (5);
+      PlaySound (4);
+      ObjectOff (4);
+      AddInventory (7);
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (552, 127))
+    {
+      FaceLocation (GetPlayerCharacter (), 553, 127);
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (552, 127))
+    {
+      FaceLocation (GetPlayerCharacter (), 553, 127);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "It looks like a car key.");
+    }
+  }
+  else Unhandled ();
+}
+
+function object5_a (){
+  // script for object5: Any click on object
+  if (UsedAction (A_PICK_UP))
+  {
+    if (MovePlayer (340, 134))
+    {
+      FaceLocation (GetPlayerCharacter (), 340, 133);
+      Wait (5);
+      PlaySound (4);
+      ObjectOff (5);
+      AddInventory (19);
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (340, 134))
+    {
+      FaceLocation (GetPlayerCharacter (), 340, 133);
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (340, 134))
+    {
+      FaceLocation (GetPlayerCharacter (), 340, 133);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "'Tentacle mating calls.'");
+    }
+  }
+  else Unhandled ();
+}
+
+function object6_a (){
+  // script for object6: Any click on object
+  if (UsedAction (A_PICK_UP))
+  {
+    if (MovePlayer (312, 134))
+    {
+      FaceLocation (GetPlayerCharacter (), 312, 133);
+      Wait (5);
+      PlaySound (4);
+      ObjectOff (6);
+      AddInventory (26);
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (312, 134))
+    {
+      FaceLocation (GetPlayerCharacter (), 312, 133);
+    }
+  }
+  else Unhandled ();
+}
+
+function room_b (){
+  // script for room: Player enters screen (after fadein)
+  if (GetGlobalInt (266) == 1)
+  {
+    if (GetPlayerCharacter () == DAVE)
+    {
+      DisplaySpeech (GetPlayerCharacter (), "I love her songs!");
+      DisplaySpeech (GetPlayerCharacter (), "'Killing me repeatedly' is my favorite!");
+      SetGlobalInt (266, 0);
+    }
+    else if (GetPlayerCharacter () == SYD)
+    {
+      DisplaySpeech (GetPlayerCharacter (), "I love her songs!");
+      DisplaySpeech (GetPlayerCharacter (), "'Where the dead-end streets have no name' is my favorite!");
+      SetGlobalInt (266, 0);
+    }
+    else if (GetPlayerCharacter () == MICHAEL)
+    {
+      DisplaySpeech (GetPlayerCharacter (), "I love her songs!");
+      DisplaySpeech (GetPlayerCharacter (), "'My frustration will go on' is my favorite!");
+      SetGlobalInt (266, 0);
+    }
+    else if (GetPlayerCharacter () == WENDY)
+    {
+      DisplaySpeech (GetPlayerCharacter (), "I love her songs!");
+      DisplaySpeech (GetPlayerCharacter (), "'The man who sold the genre' is my favorite!");
+      SetGlobalInt (266, 0);
+    }
+    else if (GetPlayerCharacter () == BERNHARD)
+    {
+      DisplaySpeech (GetPlayerCharacter (), "I love her songs!");
+      DisplaySpeech (GetPlayerCharacter (), "'MCGA' is my favorite!");
+      SetGlobalInt (266, 0);
+    }
+    else if (GetPlayerCharacter () == RAZOR)
+    {
+      DisplaySpeech (GetPlayerCharacter (), "I love her songs!");
+      DisplaySpeech (GetPlayerCharacter (), "'Death is all around' is my favorite!");
+      SetGlobalInt (266, 0);
+    }
+    else if (GetPlayerCharacter () == JEFF)
+    {
+      DisplaySpeech (GetPlayerCharacter (), "I love her songs!");
+      DisplaySpeech (GetPlayerCharacter (), "'Ken sold me' is my favorite!");
+      SetGlobalInt (266, 0);
+    }
+  }
+}
+
+function hotspot5_b (){
+  // script for hotspot5: Any click on hotspot
+  if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (325, 136))
+    {
+      FaceLocation (GetPlayerCharacter (), 325, 135);
+      Wait (5);
+      if (GetGlobalInt (199) == 0) DisplaySpeech (GetPlayerCharacter (), "It's too dark to read.");
+      else DisplaySpeech (GetPlayerCharacter (), "I think it speaks for itself.");
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (325, 136))
+    {
+      FaceLocation (GetPlayerCharacter (), 325, 135);
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot6_d (){
+  // script for hotspot6: Any click on hotspot
+  if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (295, 134))
+    {
+      FaceLocation (GetPlayerCharacter (), 295, 133);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "Wow! This thing is sweet.");
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (295, 134))
+    {
+      FaceLocation (GetPlayerCharacter (), 295, 133);
+    }
+  }
+  else if (UsedAction (A_USE_INV))
+  {
+    if ((character [GetPlayerCharacter ()].activeinv == 14))
+    {
+      if (MovePlayer (295, 134))
+      {
+        FaceLocation (GetPlayerCharacter (), 295, 133);
+        Wait (5);
+        if (GetGlobalInt (199) == 0)
+        {
+          DisplaySpeech (GetPlayerCharacter (), "The power is off.");
+        }
+        else
+        {
+          PlaySound (60);
+          ObjectOn (1);
+          LoseInventory (14);
+          SetGlobalInt (91, 1);
+        }
+      }
+    }
+    else if ((character [GetPlayerCharacter ()].activeinv == 26))
+    {
+      if (MovePlayer (295, 134))
+      {
+        FaceLocation (GetPlayerCharacter (), 295, 133);
+        Wait (5);
+        if (GetGlobalInt (199) == 0)
+        {
+          DisplaySpeech (GetPlayerCharacter (), "The power is off.");
+        }
+        else
+        {
+          PlaySound (60);
+          ObjectOn (2);
+          LoseInventory (26);
+          SetGlobalInt (93, 1);
+        }
+      }
+    }
+  }
+  else if (UsedAction (A_USE))
+  {
+    if ((GetGlobalInt (91) == 0) && (GetGlobalInt (93) == 0))
+    {
+      if (MovePlayer (295, 134))
+      {
+        FaceLocation (GetPlayerCharacter (), 295, 133);
+        Wait (5);
+        DisplaySpeech (GetPlayerCharacter (), "There's no tape in the player.");
+      }
+    }
+    else if ((GetGlobalInt (91) == 1) && (GetGlobalInt (92) == 0) && (GetGlobalInt (23) == 0))
+    {
+      if (MovePlayer (295, 134))
+      {
+        FaceLocation (GetPlayerCharacter (), 295, 133);
+        Wait (5);
+        if (GetGlobalInt (199) == 0)
+        {
+          DisplaySpeech (GetPlayerCharacter (), "The power is off.");
+        }
+        else
+        {
+          SetObjectGraphic (3, 629);
+          PlaySound (94);
+          DisplaySpeech (GetPlayerCharacter (), "It's blank.");
+          SetGlobalInt (92, 1);
+        }
+      }
+    }
+    // Stille
+    else if ((GetGlobalInt (91) == 1) && (GetGlobalInt (92) == 0) && (GetGlobalInt (23) == 1))
+    {
+      if (MovePlayer (295, 134))
+      {
+        FaceLocation (GetPlayerCharacter (), 295, 133);
+        Wait (5);
+        if (GetGlobalInt (199) == 0)
+        {
+          DisplaySpeech (GetPlayerCharacter (), "The power is off.");
+        }
+        else
+        {
+          SetObjectGraphic (3, 629);
+          PlaySound (94);
+          PlayMusic (4);
+          SetGlobalInt (92, 1);
+        }
+      }
+    }
+    // old record
+    else if ((GetGlobalInt (91) == 1) && (GetGlobalInt (92) == 0) && (GetGlobalInt (23) == 2))
+    {
+      if (MovePlayer (295, 134))
+      {
+        FaceLocation (GetPlayerCharacter (), 295, 133);
+        Wait (5);
+        if (GetGlobalInt (199) == 0)
+        {
+          DisplaySpeech (GetPlayerCharacter (), "The power is off.");
+        }
+        else
+        {
+          SetObjectGraphic (3, 629);
+          PlaySound (94);
+          PlayAmbientSound (1, 70, 150, 50, 50);
+          Wait (20);
+          DisplaySpeech (GREEN, "THE TENTACLE MATING CALL!");
+          Wait (10);
+          MoveCharacter (GREEN, 330, 134);
+          while (character [GREEN].walking) Wait (1);
+          BeginCutscene (NO_CHAR);
+          PlayerDies ();
+          SetObjectGraphic (3, 628);
+          SetGlobalInt (92, 0);
+          // PlayMusic (5);
+          // Wait(20); ObjectOn(12); Wait(20); ObjectOn(13);
+          // Wait(20); SetObjectGraphic(8,459); ObjectOff(9);
+          // ObjectOn(10); ObjectOn(11);
+          // SetGlobalInt (92, 1);
+        }
+      }
+    }
+    // record
+    else if ((GetGlobalInt (91) == 1) && (GetGlobalInt (92) == 0) && (GetGlobalInt (23) == 3))
+    {
+      if (MovePlayer (295, 134))
+      {
+        FaceLocation (GetPlayerCharacter (), 295, 133);
+        Wait (5);
+        if (GetGlobalInt (199) == 0)
+        {
+          DisplaySpeech (GetPlayerCharacter (), "The power is off.");
+        }
+        else
+        {
+          BeginCutscene (NO_CHAR);
+          SetObjectGraphic (3, 629);
+          PlaySound (94);
+          PlayMusic (2);
+          MoveCharacter (GetPlayerCharacter (), 390, 134);
+          while (character [GetPlayerCharacter ()].walking) Wait (1);
+          FaceLocation (GetPlayerCharacter (), 389, 134);
+          MoveCharacter (GREEN, 304, 134);
+          while (character [GREEN].walking) Wait (1);
+          Wait (60);
+          DisplaySpeech (GREEN, "Hey, this is great stuff!");
+          MoveCharacter (GREEN, 345, 134);
+          while (character [GREEN].walking) Wait (1);
+          DisplaySpeech (GREEN, "I could use someone like you in my band!");
+          MoveCharacter (GREEN, 304, 134);
+          while (character [GREEN].walking) Wait (1);
+          DisplaySpeech (GREEN, "I have a demo tape, but it's no use.");
+          Wait (10);
+          StopMusic ();
+          PlaySound (94);
+          SetObjectGraphic (3, 628);
+          Wait (20);
+          ObjectOff (1);
+          PlaySound (4);
+          SetGlobalInt (91, 0);
+          Wait (20);
+          ObjectOn (6);
+          Wait (10);
+          DisplaySpeech (GREEN, "I'll never get a recording contract...");
+          DisplaySpeech (GREEN, "...even if we get a band together.");
+          Wait (10);
+          MoveCharacter (GREEN, 540, 125);
+          while (character [GREEN].walking) Wait (1);
+          Wait (15);
+          FinishCutscene (0);
+        }
+      }
+    }
+    // Syd/Razor
+    else if ((GetGlobalInt (91) == 1) && (GetGlobalInt (92) == 1))
+    {
+      if (MovePlayer (295, 134))
+      {
+        FaceLocation (GetPlayerCharacter (), 295, 133);
+        Wait (5);
+        if (GetGlobalInt (199) == 0)
+        {
+          DisplaySpeech (GetPlayerCharacter (), "The power is off.");
+        }
+        else
+        {
+          SetObjectGraphic (3, 628);
+          PlaySound (94);
+          StopMusic ();
+          StopAmbientSound(1);
+          SetGlobalInt (92, 0);
+        }
+      }
+    }
+    else if ((GetGlobalInt (93) == 1) && (GetGlobalInt (94) == 0))
+    {
+      if (MovePlayer (295, 134))
+      {
+        FaceLocation (GetPlayerCharacter (), 295, 133);
+        Wait (5);
+        if (GetGlobalInt (199) == 0)
+        {
+          DisplaySpeech (GetPlayerCharacter (), "The power is off.");
+        }
+        else
+        {
+          SetObjectGraphic (3, 629);
+          PlaySound (94);
+          PlayMusic (3);
+          SetGlobalInt (94, 1);
+        }
+      }
+    }
+    else if ((GetGlobalInt (93) == 1) && (GetGlobalInt (94) == 1))
+    {
+      if (MovePlayer (295, 134))
+      {
+        FaceLocation (GetPlayerCharacter (), 295, 133);
+        Wait (5);
+        if (GetGlobalInt (199) == 0)
+        {
+          DisplaySpeech (GetPlayerCharacter (), "The power is off.");
+        }
+        else
+        {
+          SetObjectGraphic (3, 628);
+          PlaySound (94);
+          StopMusic ();
+          SetGlobalInt (94, 0);
+        }
+      }
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot8_b (){
+  // script for hotspot8: Any click on hotspot
+  if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (243, 136))
+    {
+      FaceLocation (GetPlayerCharacter (), 243, 135);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "It doesn't look very comfortable.");
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (243, 136))
+    {
+      FaceLocation (GetPlayerCharacter (), 243, 135);
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot9_b (){
+  // script for hotspot9: Any click on hotspot
+  if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (552, 127))
+    {
+      FaceLocation (GetPlayerCharacter (), 553, 127);
+      Wait (5);
+      if (GetGlobalInt (199) == 0) DisplaySpeech (GetPlayerCharacter (), "It's too dark to read.");
+      else NewRoom (42);
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (552, 127))
+    {
+      FaceLocation (GetPlayerCharacter (), 553, 127);
+    }
+  }
+  else Unhandled ();
+}
+
+

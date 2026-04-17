@@ -1,0 +1,95 @@
+// room script file
+
+function room_a (){
+  // script for room: Player enters screen (before fadein)
+  SetObjectClickable (0, 0);
+  SetObjectClickable (1, 0);
+  SetMusicVolume (3);
+  SetMusicRepeat (1);
+  PlayMusic (6);
+  init_object (111, 0);
+  init_object (112, 1);
+  AlarmSound ();
+}
+
+function hotspot1_a (){
+  // script for hotspot1: Any click on hotspot
+  int result = any_click_on_door (111, 0, 60, 127, DIR_LEFT, 7, 77, 109, DIR_DOWN);
+  if (result == 0) Unhandled ();
+}
+
+function hotspot2_a (){
+  // script for hotspot2: Any click on hotspot
+  int result = any_click_on_door (112, 1, 575, 127, DIR_RIGHT, 8, 45, 122, DIR_RIGHT);
+  if (result == 0) Unhandled ();
+}
+
+function hotspot3_a (){
+  // script for hotspot3: Any click on hotspot
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (308, 118))
+    {
+      FaceLocation (GetPlayerCharacter (), 308, 117);
+      Wait (5);
+      SetScreenTransition (TRANSITION_CROSSFADE);
+      NewRoomEx (9, 144, 127);
+      FaceLocation (GetPlayerCharacter (), 144, 128);
+    }
+  }
+  else Unhandled ();
+}
+
+function region1_a (){
+  // script for region1: Player walks onto region
+  NewRoomEx (3, 341, 41);
+  FaceLocation (GetPlayerCharacter (), 341, 42);
+}
+
+function hotspot8_b (){
+  // script for hotspot8: Any click on hotspot
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (330, 140))
+    {
+      FaceLocation (GetPlayerCharacter (), 330, 141);
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot4_b (){
+  // script for hotspot4: Any click on hotspot
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (210, 126))
+    {
+      FaceLocation (GetPlayerCharacter (), 210, 125);
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot5_b (){
+  // script for hotspot5: Any click on hotspot
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (402, 126))
+    {
+      FaceLocation (GetPlayerCharacter (), 402, 125);
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot7_b (){
+  // script for hotspot7: Any click on hotspot
+  if (any_click_on_light_switch (7, 516, 126, DIR_UP) == 0) Unhandled ();
+}
+
+function hotspot6_b (){
+  // script for hotspot6: Any click on hotspot
+  if (any_click_on_light_switch (6, 124, 126, DIR_UP) == 0) Unhandled ();
+}
+
+

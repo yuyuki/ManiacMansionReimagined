@@ -1,0 +1,59 @@
+// room script file
+
+#sectionstart room_a  // DO NOT EDIT OR REMOVE THIS LINE
+function room_a (){
+  // script for room: Player enters screen (before fadein)
+  character[GetPlayerCharacter()].x=1;
+  SetCharacterView (GetPlayerCharacter (), 105);
+  BeginCutscene (NO_CHAR);
+  SetGlobalInt (1, NO_CUTSCENE);
+  SetGlobalInt (160, 1);
+
+
+}
+#sectionend room_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart room_b  // DO NOT EDIT OR REMOVE THIS LINE
+function room_b (){
+  // script for room: Player enters screen (after fadein)
+  Wait (15);
+  MoveCharacterBlocking (GetPlayerCharacter (), 500, 100, 0);
+  Wait (30);
+  if (GetGlobalInt (161) == 0)
+  {
+    DisplaySpeech (POLICE, "This is the Meteor Police.");
+    Wait (40);
+    DisplaySpeech (POLICE, "Uh huh...");
+    DisplaySpeech (POLICE, "You found the murderous purple meteor?");
+    DisplaySpeech (POLICE, "I'll be there in 5 minutes!");
+    Wait (30);
+    DisplaySpeech (POLICE, "Oh, make sure the lab is unlocked.");
+    Wait (20);
+    FaceLocation (POLICE, 600, 141);
+    Wait (20);
+    DisplaySpeech (POLICE, "As for you...");
+    DisplaySpeech (POLICE, "...keep it under lightspeed!");
+    SetGlobalInt (161, 1);
+  }
+  else if (GetGlobalInt (161) == 1)
+  {
+    DisplaySpeech (POLICE, "Ok, I'll come back, but this time unlock the lab!");
+    SetGlobalInt (161, 2);
+  }
+  else if (GetGlobalInt (161) == 2)
+  {
+    DisplaySpeech (POLICE, "Enough! I'll come back one more time!");
+    // SetGlobalInt(161,3);
+  }
+  SetOwnTimer (18, 1000);
+  Wait (20);
+  ObjectOff (0);
+  FinishCutscene (0);
+  ReleaseCharacterView (GetPlayerCharacter ());
+  EnterRoom (15, 262, 132, DIR_UP);
+}
+#sectionend room_b  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+

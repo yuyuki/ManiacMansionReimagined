@@ -1,0 +1,155 @@
+// text script for room
+
+import function KeyPadCheckNumber (int number);
+
+// sprites of the digits must be ordered 0 to 9
+// digit_graphics is the slot number of digit 0
+#define digit_graphics 442
+
+int digits = 0, number = 0;
+
+function press_button (int digit){
+  PlaySound (8);
+  SetCursorMode (1);
+  int do = digits;
+  // show another digit
+  ObjectOn (do);
+  // shift digits to left
+  while (do > 0)
+  {
+    SetObjectGraphic (do, GetObjectGraphic (do - 1));
+    do--;
+  }
+  // set its graphic according the button's number
+  SetObjectGraphic (do, digit_graphics + digit);
+  digits++;
+  number = number * 10 + digit;
+  if (digits >= 4)
+  {
+    // wait so that the player can see the last digit
+    Wait (40);
+    ObjectOff (0);
+    ObjectOff (1);
+    ObjectOff (2);
+    ObjectOff (3);
+    Wait (40);
+    // check if correct number
+    KeyPadCheckNumber (number);  
+  }
+}
+
+#sectionstart room_b  // DO NOT EDIT OR REMOVE THIS LINE
+function room_b (){
+  // script for room: Player enters screen (before fadein)
+  GUIOff (0);
+  GUIOff (1);
+  SetCursorMode (1);
+  digits = 0;
+  ObjectOff (0);
+  ObjectOff (1);
+  ObjectOff (2);
+  ObjectOff (3);
+  number = 0;
+  AlarmSound ();
+}
+#sectionend room_b  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart room_a  // DO NOT EDIT OR REMOVE THIS LINE
+function room_a() {
+  // script for room: Player leaves screen
+  GUIOn (0);
+  GUIOn (1);
+  ReleaseCharacterView (GetPlayerCharacter ());  
+}
+#sectionend room_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot5_b  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot5_b (){
+  // script for hotspot5: Look at hotspot
+  KeyPadCheckNumber (-1);
+}
+#sectionend hotspot5_b  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot6_a  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot6_a (){
+  // script for hotspot6: Any click on hotspot
+  press_button (1);
+}
+#sectionend hotspot6_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot7_a  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot7_a (){
+  // script for hotspot7: Any click on hotspot
+  press_button (2);
+}
+#sectionend hotspot7_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot8_a  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot8_a (){
+  // script for hotspot8: Any click on hotspot
+  press_button (3);
+}
+#sectionend hotspot8_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot9_a  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot9_a (){
+  // script for hotspot9: Any click on hotspot
+  press_button (4);
+}
+#sectionend hotspot9_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot10_a  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot10_a (){
+  // script for hotspot10: Any click on hotspot
+  press_button (5);
+}
+#sectionend hotspot10_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot11_a  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot11_a (){
+  // script for hotspot11: Any click on hotspot
+  press_button (6);
+}
+#sectionend hotspot11_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot12_a  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot12_a (){
+  // script for hotspot12: Any click on hotspot
+  press_button (7);
+}
+#sectionend hotspot12_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot13_a  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot13_a (){
+  // script for hotspot13: Any click on hotspot
+  press_button (8);
+}
+#sectionend hotspot13_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot14_a  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot14_a (){
+  // script for hotspot14: Any click on hotspot
+  press_button (9);
+}
+#sectionend hotspot14_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot15_a  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot15_a (){
+  // script for hotspot15: Any click on hotspot
+  press_button (0);
+}
+#sectionend hotspot15_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+

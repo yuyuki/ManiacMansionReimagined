@@ -1,0 +1,21 @@
+// room script file
+
+function room_a (){
+  // script for room: Player enters screen (before fadein)
+  SetCharacterView (GetPlayerCharacter (), 105);
+  GUIOff (0);
+  GUIOff (1);
+  AlarmSound ();
+}
+
+function hotspot1_a (){
+  // script for hotspot1: Any click on hotspot
+  SetGlobalInt (266, 1);
+  NewRoom (16);
+  GUIOn (0);
+  GUIOn (1);
+  ReleaseCharacterView (GetPlayerCharacter ());
+  FaceLocation (GetPlayerCharacter (), 1000, 100);
+}
+
+

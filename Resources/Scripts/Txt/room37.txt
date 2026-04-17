@@ -1,0 +1,195 @@
+// room script file
+
+function room_a (){
+  // script for room: Player enters screen (before fadein)
+  StopMusic ();
+  SetMusicVolume (3);
+  SetObjectClickable (0, 0);
+  if (GetGlobalInt (213) == 2) SetGlobalInt (212, 7);
+  else if ((GetGlobalInt (211) == 1) && (GetGlobalInt (38) == 0) || (GetGlobalInt (38) == 2)) SetGlobalInt (212, 1);
+  else if ((GetGlobalInt (211) == 1) && (GetGlobalInt (38) == 1)) SetGlobalInt (212, 2);
+  else if ((GetGlobalInt (211) == 2) && (GetGlobalInt (23) == 2)) SetGlobalInt (212, 3);
+  else if ((GetGlobalInt (211) == 2) && (GetGlobalInt (23) == 1)) SetGlobalInt (212, 4);
+  else if ((GetGlobalInt (211) == 2) && (GetGlobalInt (23) == 3)) SetGlobalInt (212, 5);
+  else if ((GetGlobalInt (211) == 2) && (GetGlobalInt (23) == 0)) SetGlobalInt (212, 6);
+  if (GetGlobalInt (212) != 0)
+  {
+    character [MARK].x = 280;
+    character [MARK].y = 141;
+    FaceLocation (MARK, 280, 140);
+  }
+}
+
+function room_b (){
+  // script for room: Player enters screen (after fadein)
+  if (GetGlobalInt (212) == 1)
+  {
+    Wait (20);
+    DisplaySpeech (MARK, "Ah! A manuscript! Let's see...");
+    Wait (50);
+    FaceDirection (MARK, DIR_LEFT);
+    Wait (10);
+    DisplaySpeech (MARK, "What is this garbage!");
+    FaceDirection (MARK, DIR_DOWN);
+    Wait (10);
+    DisplaySpeech (MARK, "I wouldn't even use it to start a fire.");
+    SetGlobalInt (212, 0);
+    FinishCutscene (0);
+  }
+  if (GetGlobalInt (212) == 2)
+  {
+    Wait (20);
+    DisplaySpeech (MARK, "Ah! A manuscript! Let's see...");
+    Wait (50);
+    FaceDirection (MARK, DIR_DOWN);
+    Wait (10);
+    DisplaySpeech (MARK, "Wow!");
+    DisplaySpeech (MARK, "This is hot stuff!");
+    MoveCharacterBlocking (GetPlayerCharacter (), 40, 141, 0);
+    Wait (10);
+    FaceDirection (MARK, DIR_LEFT);
+    Wait (10);
+    DisplaySpeech (MARK, "It will sell millions maybe even BILLIONS!");
+    MoveCharacterBlocking (GetPlayerCharacter (), 190, 141, 0);
+    Wait (10);
+    FaceDirection (MARK, DIR_DOWN);
+    Wait (10);
+    DisplaySpeech (MARK, "I'm going to make Mr. Meteor a million dollar offer!");
+    Wait (10);
+    MoveCharacterBlocking (GetPlayerCharacter (), 190, 123, 0);
+    Wait (40);
+    SetGlobalInt (214, 1);
+    SetOwnTimer (21, 500);
+    SetGlobalInt (212, 0);
+    FinishCutscene (0);
+  }
+  if (GetGlobalInt (212) == 3)
+  {
+    Wait (40);
+    DisplaySpeech (MARK, "A cassette tape!");
+    Wait (20);
+    MoveCharacterBlocking (GetPlayerCharacter (), 200, 130, 0);
+    MoveCharacterBlocking (GetPlayerCharacter (), 90, 130, 0);
+    Wait (10);
+    FaceDirection (MARK, DIR_DOWN);
+    Wait (10);
+    DisplaySpeech (MARK, "Now, where's the play button?");
+    Wait (15);
+    PlaySound (94);
+    Wait (20);
+    PlayAmbientSound (1, 70, 150, 50, 50);
+    Wait (75);
+    PlaySound (58);
+    ObjectOn (0);
+    Wait (70);
+    FaceDirection (MARK, DIR_RIGHT);
+    Wait (10);
+    Wait (20);
+    DisplaySpeech (MARK, "Oh, Great!");
+    Wait (30);
+    MoveCharacterBlocking (GetPlayerCharacter (), 190, 130, 0);
+    FaceDirection (MARK, DIR_UP);
+    Wait (50);
+    SetGlobalInt (212, 0);
+    FinishCutscene (0);
+  }
+  if (GetGlobalInt (212) == 4)
+  {
+    Wait (40);
+    DisplaySpeech (MARK, "A cassette tape!");
+    Wait (20);
+    MoveCharacterBlocking (GetPlayerCharacter (), 200, 130, 0);
+    MoveCharacterBlocking (GetPlayerCharacter (), 90, 130, 0);
+    Wait (10);
+    FaceDirection (MARK, DIR_DOWN);
+    Wait (10);
+    PlayMusic (4);
+    DisplaySpeech (MARK, "Now, where's the play button?");
+    Wait (15);
+    PlaySound (94);
+    Wait (500);
+    DisplaySpeech (MARK, "I like the beat, but the melody stinks!");
+    Wait (40);
+    SetGlobalInt (212, 0);
+    FinishCutscene (0);
+  }
+  if (GetGlobalInt (212) == 5)
+  {
+    Wait (20);
+    DisplaySpeech (MARK, "A cassette tape!");
+    Wait (20);
+    MoveCharacterBlocking (GetPlayerCharacter (), 200, 130, 0);
+    MoveCharacterBlocking (GetPlayerCharacter (), 90, 130, 0);
+    Wait (10);
+    FaceDirection (MARK, DIR_DOWN);
+    Wait (10);
+    DisplaySpeech (MARK, "Now, where's the play button?");
+    Wait (15);
+    PlayMusic (2);
+    Wait (5);
+    PlaySound (94);
+    Wait (575);
+    DisplaySpeech (MARK, "Wonderful!");
+    DisplaySpeech (MARK, "Outrageous!");
+    DisplaySpeech (MARK, "AWESOME!");
+    DisplaySpeech (MARK, "This will be a MEGAHIT!");
+    DisplaySpeech (MARK, "I've got to sign them right now!");
+    Wait (40);
+    {
+      if (GetGlobalInt (215) == RAZOR) SetGlobalInt (214, 3);
+      else if (GetGlobalInt (215) == SYD) SetGlobalInt (214, 4);
+    }
+    SetGlobalInt (212, 0);
+    FinishCutscene (0);
+    SetOwnTimer (21, 500);
+  }
+  if (GetGlobalInt (212) == 6)
+  {
+    Wait (20);
+    DisplaySpeech (MARK, "A cassette tape!");
+    Wait (20);
+    MoveCharacterBlocking (GetPlayerCharacter (), 200, 130, 0);
+    MoveCharacterBlocking (GetPlayerCharacter (), 90, 130, 0);
+    Wait (10);
+    FaceDirection (MARK, DIR_DOWN);
+    Wait (10);
+    DisplaySpeech (MARK, "Now, where's the play button?");
+    Wait (15);
+    PlaySound (94);
+    Wait (75);
+    DisplaySpeech (MARK, "A blank tape?");
+    DisplaySpeech (MARK, "Is this a joke?");
+    Wait (40);
+    SetGlobalInt (212, 0);
+    FinishCutscene (0);
+  }
+  if (GetGlobalInt (212) == 7)
+  {
+    Wait (20);
+    DisplaySpeech (MARK, "A cassette tape!");
+    Wait (20);
+    MoveCharacterBlocking (GetPlayerCharacter (), 200, 130, 0);
+    MoveCharacterBlocking (GetPlayerCharacter (), 90, 130, 0);
+    Wait (10);
+    FaceDirection (MARK, DIR_DOWN);
+    Wait (10);
+    DisplaySpeech (MARK, "Now, where's the play button?");
+    Wait (15);
+    PlayMusic (3);
+    Wait (5);
+    PlaySound (94);
+    Wait (575);
+    DisplaySpeech (MARK, "Wonderful!");
+    DisplaySpeech (MARK, "Outrageous!");
+    DisplaySpeech (MARK, "AWESOME!");
+    DisplaySpeech (MARK, "This will be a MEGAHIT!");
+    DisplaySpeech (MARK, "I've got to sign them right now!");
+    Wait (40);
+    SetGlobalInt (214, 2);
+    SetGlobalInt (212, 0);
+    FinishCutscene (0);
+    SetOwnTimer (21, 500);
+  }
+}
+
+

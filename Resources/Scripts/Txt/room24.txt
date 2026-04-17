@@ -1,0 +1,154 @@
+// room script file
+
+function room_a (){
+  // script for room: Player enters screen (before fadein)
+  SetMusicVolume (2);
+  SetMusicRepeat (1);
+  PlayMusic (8);
+  SetObjectClickable (0, 0);
+  init_object (124, 0);
+  AlarmSound ();
+}
+
+function hotspot1_a (){
+  // script for hotspot1: Any click on hotspot
+  SetDoorStrings ("", "", "");
+  if (any_click_on_door_special (124, 0, 163, 140, DIR_UP, 22, 328, 132, DIR_LEFT, 72, 84, -1, 0) == 0) Unhandled ();
+}
+
+function hotspot5_a (){
+  // script for hotspot5: Any click on hotspot
+  if (UsedAction (A_PICK_UP))
+  {
+    if (GetGlobalInt (199) == 1)
+    {
+      if (MovePlayer (88, 126))
+      {
+        FaceLocation (GetPlayerCharacter (), 88, 125);
+        Wait (5);
+        PlaySound (40);
+        DisplaySpeech (GetPlayerCharacter (), "YOWL!");
+      }
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (88, 126))
+    {
+      FaceLocation (GetPlayerCharacter (), 88, 125);
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    DisplaySpeech (GetPlayerCharacter (), "It's broken electrical wires.");
+  }
+  else if (UsedAction (A_USE_INV))
+  {
+    if ((character [GetPlayerCharacter ()].activeinv == 22) && (GetGlobalInt (199) == 0) && (GetGlobalInt (198) == 1) && (GetGlobalInt (185) == 2))
+    {
+      if (MovePlayer (88, 126))
+      {
+        FaceLocation (GetPlayerCharacter (), 88, 125);
+        Wait (5);
+        ObjectOn (1);
+        DisableHotspot (5);
+        DisplaySpeech (GetPlayerCharacter (), "There, that should do it.");
+        SetGlobalInt (208, 1);
+      }
+    }
+    else if ((character [GetPlayerCharacter ()].activeinv == 22) && (GetGlobalInt (199) == 0) && (GetGlobalInt (198) == 1) && (GetGlobalInt (185) == 1))
+    {
+      if (MovePlayer (88, 126))
+      {
+        FaceLocation (GetPlayerCharacter (), 88, 125);
+        Wait (5);
+        int switch = 1 - GetGlobalInt (198);
+        SetGlobalInt (198, switch);
+        SetInvItemPic (8, 93 + switch);
+        AdjustLights ();
+        SetCursorMode (9);
+        DisplaySpeech (GetPlayerCharacter (), "Looks like the batteries went dead.");
+        DisplaySpeech (GetPlayerCharacter (), "Maybe I can find some others.");
+        SetGlobalInt (320, 1);
+      }
+    }
+    else if ((character [GetPlayerCharacter ()].activeinv == 22) && (GetGlobalInt (199) == 0) && (GetGlobalInt (198) == 0))
+    {
+      if (MovePlayer (88, 126))
+      {
+        FaceLocation (GetPlayerCharacter (), 88, 125);
+        Wait (5);
+        DisplaySpeech (GetPlayerCharacter (), "It's kind of dark,");
+        DisplaySpeech (GetPlayerCharacter (), "but I think I fixed it.");
+      }
+    }
+    else if ((character [GetPlayerCharacter ()].activeinv == 22) && (GetGlobalInt (199) == 1))
+    {
+      if (MovePlayer (88, 126))
+      {
+        FaceLocation (GetPlayerCharacter (), 88, 125);
+        Wait (5);
+        PlaySound (40);
+        DisplaySpeech (GetPlayerCharacter (), "YOWL!");
+      }
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot2_a (){
+  // script for hotspot2: Any click on hotspot
+  if (any_click_on_light_switch (2, 113, 133, DIR_DOWN) == 0) Unhandled ();
+}
+
+function room_b (){
+  // script for room: Player enters screen (after fadein)
+  // avo leer
+}
+
+function hotspot4_a (){
+  // script for hotspot4: Any click on hotspot
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (225, 126))
+    {
+      FaceLocation (GetPlayerCharacter (), 225, 125);
+    }
+  }
+  else if ((UsedAction (A_OPEN)) || (UsedAction (A_PICK_UP)))
+  {
+    if (MovePlayer (225, 126))
+    {
+      FaceLocation (GetPlayerCharacter (), 225, 125);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "The  boards won't budge.");
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    DisplaySpeech (GetPlayerCharacter (), "Looks like this job was done in a rush.");
+  }
+  else Unhandled ();
+}
+
+function object1_a (){
+  // script for object1: Look at object
+}
+
+function object1_c (){
+  // script for object1: Any click on object
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (88, 126))
+    {
+      FaceLocation (GetPlayerCharacter (), 88, 125);
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    DisplaySpeech (GetPlayerCharacter (), "The wires are fixed now.");
+  }
+  else Unhandled ();
+}
+
+

@@ -1,0 +1,304 @@
+// room script file
+
+function hotspot1_a (){
+  // script for hotspot1: Any click on hotspot
+  if (any_click_on_door (121, 0, 45, 131, DIR_LEFT, 14, 500, 126, DIR_DOWN) == 0) Unhandled ();
+}
+
+function room_a (){
+  // script for room: Player enters screen (before fadein)
+  SetMusicVolume (2);
+  SetMusicRepeat (1);
+  PlayMusic (8);
+  SetObjectClickable (0, 0);
+  SetObjectClickable (1, 0);
+  init_object (121, 0);
+  init_object (123, 1);
+  AlarmSound ();
+}
+
+function hotspot2_a (){
+  // script for hotspot2: Any click on hotspot
+  if (UsedAction (A_CLOSE))
+  {
+    if (GetGlobalInt (123) == 1)
+    {
+      if (MovePlayer (428, 131))
+      {
+        FaceLocation (GetPlayerCharacter (), 429, 131);
+        Wait (5);
+        PlaySound (3);
+        ObjectOff (1);
+        SetGlobalInt (123, 0);
+      }
+    }
+  }
+  else if (UsedAction (A_OPEN))
+  {
+    if (GetGlobalInt (123) == 0)
+    {
+      if (MovePlayer (428, 131))
+      {
+        FaceLocation (GetPlayerCharacter (), 429, 131);
+        Wait (5);
+        PlaySound (2);
+        ObjectOn (1);
+        SetGlobalInt (123, 1);
+      }
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (GetGlobalInt (123) == 1)
+    {
+      if (MovePlayer (428, 131))
+      {
+        FaceLocation (GetPlayerCharacter (), 429, 131);
+        Wait (5);
+        NewRoomEx (21, 120, 109);
+        FaceLocation (GetPlayerCharacter (), 120, 110);
+      }
+    }
+    else
+    {
+      if (MovePlayer (428, 131))
+      {
+        FaceLocation (GetPlayerCharacter (), 429, 131);
+      }
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot3_a (){
+  // script for hotspot3: Any click on hotspot
+  if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (96, 130))
+    {
+      FaceLocation (GetPlayerCharacter (), 96, 129);
+      Wait (5);
+      if (GetGlobalInt (199) == 0) DisplaySpeech (GetPlayerCharacter (), "It's too dark to read.");
+      else DisplaySpeech (GetPlayerCharacter (), "May 1972, and Ted's Deathday is circled!");
+    }
+  }
+  else if ((UsedAction (A_PUSH)) || (UsedAction (A_PICK_UP)))
+  {
+    if (MovePlayer (96, 130))
+    {
+      FaceLocation (GetPlayerCharacter (), 96, 129);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "It's nailed, stapled and glued to the wall.");
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (96, 130))
+    {
+      FaceLocation (GetPlayerCharacter (), 96, 129);
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot4_a (){
+  // script for hotspot4: Any click on hotspot
+  if ((UsedAction (A_LOOK_AT)) || (UsedAction (A_PICK_UP)) || (UsedAction (A_USE)))
+  {
+    if (MovePlayer (96, 130))
+    {
+      FaceLocation (GetPlayerCharacter (), 96, 129);
+      Wait (10);
+      DisplaySpeech (GetPlayerCharacter (), "Yuck!");
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (96, 130))
+    {
+      FaceLocation (GetPlayerCharacter (), 96, 129);
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot5_a (){
+  // script for hotspot5: Any click on hotspot
+  if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (315, 130))
+    {
+      FaceLocation (GetPlayerCharacter (), 315, 129);
+      Wait (5);
+      if (GetGlobalInt (199) == 0) DisplaySpeech (GetPlayerCharacter (), "It's too dark to read.");
+      else DisplaySpeech (GetPlayerCharacter (), "Miss Mummy of 982 BC.");
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (315, 130))
+    {
+      FaceLocation (GetPlayerCharacter (), 315, 129);
+    }
+  }
+  else Unhandled ();
+}
+
+function object3_a (){
+  // script for object3: Any click on object
+  if (UsedAction (A_USE))
+  {
+    if (any_click_move (240, 130, DIR_UP))
+    {
+      BeginCutscene (NO_CHAR);
+      SetObjectGraphic (3, 464);
+      PlaySound (72);
+      Wait (25);
+      SetObjectGraphic (3, 463);
+      PlaySound (31);
+      Wait (25);
+      SetObjectGraphic (3, 464);
+      PlaySound (72);
+      Wait (25);
+      SetObjectGraphic (3, 463);
+      PlaySound (31);
+      Wait (25);
+      SetObjectGraphic (3, 464);
+      PlaySound (72);
+      Wait (25);
+      SetObjectGraphic (3, 463);
+      PlaySound (31);
+      Wait (25);
+      SetObjectGraphic (3, 464);
+      PlaySound (72);
+      Wait (25);
+      SetObjectGraphic (3, 463);
+      PlaySound (31);
+      Wait (25);
+      SetObjectGraphic (3, 464);
+      PlaySound (72);
+      Wait (25);
+      SetObjectGraphic (3, 463);
+      PlaySound (31);
+      Wait (25);
+      if (IsTrained (GetPlayerCharacter ()) == 0) DisplaySpeech (GetPlayerCharacter (), "Ah. I feel much stronger now!");
+      else                                        DisplaySpeech (GetPlayerCharacter (), "I've had enough!");
+      SetGlobalInt (IsTrainedGI (GetPlayerCharacter ()), 1);
+      FinishCutscene (0);
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (240, 130))
+    {
+      FaceLocation (GetPlayerCharacter (), 240, 129);
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (240, 130))
+    {
+      FaceLocation (GetPlayerCharacter (), 240, 129);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "This looks like it could supply a good workout.");
+    }
+  }
+  else Unhandled ();
+}
+
+function object2_a (){
+  // script for object2: Any click on object
+  if (UsedAction (A_CLOSE))
+  {
+    if (GetGlobalInt (31) == 1)
+    {
+      if (MovePlayer (161, 130))
+      {
+        FaceLocation (GetPlayerCharacter (), 161, 129);
+        Wait (5);
+        PlaySound (47);
+        SetObjectGraphic (2, 465);
+        ObjectOff (4);
+        ObjectOff (5);
+        SetGlobalInt (31, 0);
+      }
+    }
+  }
+  else if (UsedAction (A_OPEN))
+  {
+    if (GetGlobalInt (31) == 0)
+    {
+      if (MovePlayer (161, 130))
+      {
+        FaceLocation (GetPlayerCharacter (), 161, 129);
+        Wait (5);
+        PlaySound (46);
+        SetObjectGraphic (2, 462);
+        ObjectOn (4);
+        ObjectOn (5);
+        SetGlobalInt (31, 1);
+      }
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (161, 130))
+    {
+      FaceLocation (GetPlayerCharacter (), 161, 129);
+    }
+  }
+  else Unhandled ();
+}
+
+function object5_a (){
+  // script for object5: Any click on object
+  if (UsedAction (A_USE))
+  {
+    if (MovePlayer (190, 130))
+    {
+      FaceLocation (GetPlayerCharacter (), 190, 129);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "All I get is fuzz.");
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (190, 130))
+    {
+      FaceLocation (GetPlayerCharacter (), 190, 129);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "Only the bear essentials for the afterlife.");
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (190, 130))
+    {
+      FaceLocation (GetPlayerCharacter (), 190, 129);
+    }
+  }
+  else Unhandled ();
+}
+
+function object4_b (){
+  // script for object4: Any click on object
+  if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (161, 130))
+    {
+      FaceLocation (GetPlayerCharacter (), 161, 129);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "I guess even after death it doesn't hurt to be comfortable.");
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (161, 130))
+    {
+      FaceLocation (GetPlayerCharacter (), 161, 129);
+    }
+  }
+  else Unhandled ();
+}
+
+

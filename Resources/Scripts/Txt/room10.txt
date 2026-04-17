@@ -1,0 +1,318 @@
+// room script file
+
+function hotspot1_a (){
+  // script for hotspot1: Any click on hotspot
+  if (any_click_on_door (115, 0, 244, 115, DIR_UP, 9, 274, 127, DIR_DOWN) == 0) Unhandled ();
+}
+
+function room_a (){
+  // script for room: Player enters screen (before fadein)
+  SetObjectClickable (0, 0);
+  SetObjectClickable (1, 0);
+  SetMusicVolume (2);
+  SetMusicRepeat (1);
+  PlayMusic (14);
+  init_object (115, 0);
+  AlarmSound ();
+}
+
+function hotspot2_a (){
+  // script for hotspot2: Any click on hotspot
+  if (UsedAction (A_CLOSE))
+  {
+    if (GetGlobalInt (28) == 1)
+    {
+      if (MovePlayer (105, 128))
+      {
+        FaceLocation (GetPlayerCharacter (), 105, 127);
+        Wait (5);
+        PlaySound (1);
+        ObjectOff (1);
+        ObjectOff (2);
+        SetGlobalInt (28, 0);
+      }
+    }
+  }
+  else if (UsedAction (A_OPEN))
+  {
+    if ((GetGlobalInt (28) == 0) & (GetGlobalInt (29) == 0))
+    {
+      if (MovePlayer (105, 128))
+      {
+        FaceLocation (GetPlayerCharacter (), 105, 127);
+        Wait (5);
+        PlaySound (1);
+        ObjectOn (1);
+        ObjectOn (2);
+        SetGlobalInt (28, 1);
+      }
+    }
+    if ((GetGlobalInt (28) == 0) & (GetGlobalInt (29) == 1))
+    {
+      if (MovePlayer (105, 128))
+      {
+        FaceLocation (GetPlayerCharacter (), 105, 127);
+        Wait (5);
+        PlaySound (1);
+        ObjectOn (1);
+        SetGlobalInt (28, 1);
+      }
+    }
+  }
+  else if (UsedAction (A_USE_INV))
+  {
+    if ((character [GetPlayerCharacter ()].activeinv == 20) && (GetGlobalInt (28) == 1))
+    {
+      if (MovePlayer (105, 128))
+      {
+        FaceLocation (GetPlayerCharacter (), 105, 127);
+        Wait (5);
+        PlaySound (77);
+        ObjectOn (2);
+        LoseInventory (20);
+        SetGlobalInt (29, 0);
+      }
+    }
+    else if ((character [GetPlayerCharacter ()].activeinv == 20) && (GetGlobalInt (28) == 0))
+    {
+      if (MovePlayer (105, 128))
+      {
+        FaceLocation (GetPlayerCharacter (), 105, 127);
+      }
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (105, 128))
+    {
+      FaceLocation (GetPlayerCharacter (), 105, 127);
+    }
+  }
+  else Unhandled ();
+}
+
+function object2_a (){
+  // script for object2: Any click on object
+  if (UsedAction (A_PICK_UP))
+  {
+    if (MovePlayer (105, 128))
+    {
+      FaceLocation (GetPlayerCharacter (), 105, 127);
+      Wait (5);
+      PlaySound (4);
+      ObjectOff (2);
+      AddInventory (20);
+      SetGlobalInt (29, 1);
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (105, 128))
+    {
+      FaceLocation (GetPlayerCharacter (), 105, 127);
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (105, 128))
+    {
+      FaceLocation (GetPlayerCharacter (), 105, 127);
+      Wait (5);
+      if (GetGlobalInt (38) == 0)
+      {
+        DisplaySpeech (GetPlayerCharacter (), "It looks like someone's memoir,");
+        DisplaySpeech (GetPlayerCharacter (), "but the writing is terrible!");
+        DisplaySpeech (GetPlayerCharacter (), "It's written by a meteor?");
+        DisplaySpeech (GetPlayerCharacter (), "How strange!");
+      }
+      else if (GetGlobalInt (38) == 1)
+      {
+        DisplaySpeech (GetPlayerCharacter (), "This is great stuff!");
+        DisplaySpeech (GetPlayerCharacter (), "The whole world should see it.");
+      }
+      else if (GetGlobalInt (38) == 2)
+      {
+        DisplaySpeech (GetPlayerCharacter (), "This is the worst junk I've ever read.");
+      }
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot4_a (){
+  // script for hotspot4: Any click on hotspot
+  if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (174, 122))
+    {
+      FaceLocation (GetPlayerCharacter (), 174, 121);
+      Wait (5);
+      if (GetGlobalInt (192) == 0) DisplaySpeech (GetPlayerCharacter (), "It's too dark to read.");
+      else
+      {
+        DisplaySpeech (GetPlayerCharacter (), "It looks like formulas...");
+        DisplaySpeech (GetPlayerCharacter (), "...describing the structure of a meteor!");
+        DisplaySpeech (GetPlayerCharacter (), "That's strange.");
+      }
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (174, 122))
+    {
+      FaceLocation (GetPlayerCharacter (), 174, 121);
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot5_a (){
+  // script for hotspot5: Any click on hotspot
+  if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (84, 126))
+    {
+      FaceLocation (GetPlayerCharacter (), 84, 125);
+      Wait (5);
+      if (GetGlobalInt (192) == 0) DisplaySpeech (GetPlayerCharacter (), "It's too dark to read.");
+      else DisplaySpeech (GetPlayerCharacter (), "'Degree for mummifying and bandaging.'");
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (84, 126))
+    {
+      FaceLocation (GetPlayerCharacter (), 84, 125);
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot6_a (){
+  // script for hotspot6: Any click on hotspot
+  if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (53, 126))
+    {
+      FaceLocation (GetPlayerCharacter (), 53, 125);
+      Wait (5);
+      if (GetGlobalInt (192) == 0) DisplaySpeech (GetPlayerCharacter (), "It's too dark to read.");
+      else DisplaySpeech (GetPlayerCharacter (), "'Presented to Doctor Fred.'");
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (53, 126))
+    {
+      FaceLocation (GetPlayerCharacter (), 53, 125);
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot7_a (){
+  // script for hotspot7: Any click on hotspot
+  if ((UsedAction (A_PUSH)) || (UsedAction (A_PULL)))
+  {
+    if (MovePlayer (213, 137))
+    {
+      FaceLocation (GetPlayerCharacter (), 213, 138);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "It's too heavy!");
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (213, 137))
+    {
+      FaceLocation (GetPlayerCharacter (), 213, 138);
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot8_a (){
+  // script for hotspot8: Any click on hotspot
+  if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (302, 120))
+    {
+      FaceLocation (GetPlayerCharacter (), 302, 119);
+      Wait (5);
+      if (GetGlobalInt (192) == 0) DisplaySpeech (GetPlayerCharacter (), "It's too dark to read.");
+      else DisplaySpeech (GetPlayerCharacter (), "Yuck. That's disgusting!");
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (302, 120))
+    {
+      FaceLocation (GetPlayerCharacter (), 302, 119);
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot10_a (){
+  // script for hotspot10: Any click on hotspot
+  if (UsedAction (A_OPEN))
+  {
+    if (MovePlayer (400, 138))
+    {
+      FaceLocation (GetPlayerCharacter (), 400, 139);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "It must require a special key.");
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (400, 138))
+    {
+      FaceLocation (GetPlayerCharacter (), 400, 139);
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot3_a (){
+  // script for hotspot3: Any click on hotspot
+  if (any_click_on_light_switch (3, 80, 128, DIR_UP) == 0) Unhandled ();
+}
+
+function hotspot9_a (){
+  // script for hotspot9: Any click on hotspot
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (325, 140))
+    {
+      FaceLocation (GetPlayerCharacter (), 326, 140);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "Oooh! That's scary!");
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot11_a (){
+  // script for hotspot11: Any click on hotspot
+  if (UsedAction (A_LOOK_AT))
+  {
+    if (MovePlayer (302, 120))
+    {
+      FaceLocation (GetPlayerCharacter (), 302, 119);
+      Wait (5);
+      if (GetGlobalInt (192) == 0) DisplaySpeech (GetPlayerCharacter (), "It's too dark to read.");
+      else DisplaySpeech (GetPlayerCharacter (), "'Chewy carmel center.'");
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (302, 120))
+    {
+      FaceLocation (GetPlayerCharacter (), 302, 119);
+    }
+  }
+  else Unhandled ();
+}
+
+

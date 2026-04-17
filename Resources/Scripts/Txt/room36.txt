@@ -1,0 +1,192 @@
+// room script file
+
+import int GSotherplayerup, GSotherplayerdown;
+
+#sectionstart room_a  // DO NOT EDIT OR REMOVE THIS LINE
+function room_a (){
+  // script for room: Player enters screen (before fadein)
+  StopMusic ();
+  SetObjectClickable (0, 0);
+  SetObjectClickable (1, 0);
+  init_object (137, 0);
+  init_object (10, 2);
+  AlarmSound ();
+}
+#sectionend room_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot2_a  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot2_a (){
+  // script for hotspot2: Any click on hotspot
+  if ((UsedAction (A_CLOSE)) && (GetGlobalInt (137) == 1))
+  {
+    if (MovePlayer (33, 123))
+    {
+      FaceLocation (GetPlayerCharacter (), 33, 122);
+      Wait (5);
+      ObjectOff (0);
+      PlaySound (82);
+      SetGlobalInt (137, 0);
+    }
+  }
+  else if ((UsedAction (A_OPEN)) && (GetGlobalInt (137) == 0))
+  {
+    if (MovePlayer (33, 123))
+    {
+      FaceLocation (GetPlayerCharacter (), 33, 122);
+      Wait (5);
+      ObjectOn (0);
+      PlaySound (81);
+      SetGlobalInt (137, 1);
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (GetGlobalInt (137) == 1)
+    {
+      if (MovePlayer (33, 123))
+      {
+        FaceLocation (GetPlayerCharacter (), 33, 122);
+        Wait (5);
+        EnterRoom (2, 275, 142, DIR_DOWN);
+      }
+    }
+    else
+    {
+      if (MovePlayer (33, 123))
+      {
+        FaceLocation (GetPlayerCharacter (), 33, 122);
+      }
+    }
+  }
+  else Unhandled ();
+}
+#sectionend hotspot2_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot3_a  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot3_a (){
+  // script for hotspot3: Any click on hotspot
+  if (any_click_walk (793, 123, DIR_UP) != 0) { }
+  else if ((UsedAction (A_CLOSE)) && (GetGlobalInt (138) == 1) && (GetGlobalInt (231) == 0))
+  {
+    if (any_click_move (793, 123, DIR_UP))
+    {
+      ObjectOff (1);
+      SetGlobalInt (138, 0);
+      StopAmbientSound (1);
+      AlarmSound ();
+      PlaySound (79);
+    }
+  }
+  else if ((UsedAction (A_CLOSE)) && (GetGlobalInt (138) == 1) && (GetGlobalInt (231) > 0)) 
+  {
+    if (any_click_move (793, 123, DIR_UP))
+    {
+      ObjectOff (1);
+      SetGlobalInt (138, 0);
+      StopAmbientSound (1);
+      AlarmSound ();
+      PlaySound (79);
+      int cutscene = KID_DIES_IN_POOL;
+      int charid = NO_CHAR;
+      if (character [GSotherplayerup].room == 29) 
+      {
+        charid = GSotherplayerup;
+        if (character [GSotherplayerdown].room == 29) cutscene = KIDS_DIE_IN_POOL;
+      }
+      else if (character [GSotherplayerdown].room == 29) charid = GSotherplayerdown;
+      Wait (100);
+      SetGlobalInt (1, cutscene);
+      character [charid].room = 28;
+      BeginCutscene (charid);
+    }
+  }
+  else if ((UsedAction (A_OPEN)) && (GetGlobalInt (138) == 0))
+  {
+    if (any_click_move (793, 123, DIR_UP))
+    {
+      PlaySound (79);
+      ObjectOn (1);
+      Wait (25);
+      SetGlobalInt (138, 1);
+      AlarmSound ();
+      if (GetGlobalInt (85) != 1)
+      {
+        SetOwnTimer (16, 300);
+        SetOwnTimer (27, 2350);
+      }
+    }
+  }
+  else Unhandled ();
+}
+#sectionend hotspot3_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot1_a  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot1_a (){
+  // script for hotspot1: Any click on hotspot
+  if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (544, 124))
+    {
+      FaceLocation (GetPlayerCharacter (), 544, 123);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "It's too high to reach.");
+    }
+  }
+  else Unhandled ();
+}
+#sectionend hotspot1_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart object2_c  // DO NOT EDIT OR REMOVE THIS LINE
+function object2_c (){
+  // script for object2: Any click on object
+  if (UsedAction (A_PICK_UP))
+  {
+    if (MovePlayer (547, 123))
+    {
+      FaceLocation (GetPlayerCharacter (), 547, 124);
+      Wait (5);
+      DisplaySpeech (GetPlayerCharacter (), "I don't have anything to put it in.");
+    }
+  }
+  else if (UsedAction (A_USE_INV))
+  {
+    if (character [GetPlayerCharacter ()].activeinv == 41)
+    {
+      if (MovePlayer (547, 123))
+      {
+        FaceLocation (GetPlayerCharacter (), 547, 124);
+        Wait (10);
+        PlaySound (28);
+        ObjectOff (2);
+        AddInventory (43);
+        LoseInventory (41);
+        SetGlobalInt (10, 2);
+      }
+    }
+    else if (character [GetPlayerCharacter ()].activeinv == 38)
+    {
+      if (MovePlayer (547, 123))
+      {
+        FaceLocation (GetPlayerCharacter (), 547, 124);
+        Wait (10);
+        DisplaySpeech (GetPlayerCharacter (), "I can't get it in the jar.");
+      }
+    }
+  }
+  else if (UsedAction (A_WALK_TO))
+  {
+    if (MovePlayer (547, 123))
+    {
+      FaceLocation (GetPlayerCharacter (), 547, 124);
+    }
+  }
+  else Unhandled ();
+}
+#sectionend object2_c  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+

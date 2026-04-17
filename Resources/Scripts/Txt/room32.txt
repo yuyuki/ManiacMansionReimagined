@@ -1,0 +1,448 @@
+// room script file
+
+function TranslateGraphic (){
+  SetObjectGraphic (6, TranslateNumber ("_dungeon_32_graphic_ 881"));
+}
+
+function on_call (int value){
+  if (value == GAME_RESTORED)
+  {
+    TranslateGraphic ();
+  }
+}
+
+function close_door (){
+  // close door
+  ObjectOff (0);
+  PlaySound (44);
+  SetGlobalInt (127, 2);
+  SetGlobalInt (86, NO_CHAR);
+}
+
+int kid = NO_CHAR;
+int charid = NO_CHAR;
+
+function IsKidStandingAt (int x) {
+  int i = 0;
+  while (i < 7)
+  {
+    if ((character [DAVE + i].room == 32) && (character [DAVE + i].x == x)) return 1;
+    i++;
+  }
+  return 0;
+}
+
+function room_a (){
+  // script for room: Player enters screen (before fadein)
+  SetObjectClickable (0, 0);
+  SetObjectClickable (1, 0);
+  SetObjectClickable (6, 0);
+  SetMusicVolume (3);
+  SetMusicRepeat (1);
+  PlayMusic (11);
+  TranslateGraphic ();
+  init_object (127, 0);
+  charid = GetGlobalInt (323);
+  if (charid != NO_CHAR)
+  {
+    character [charid].room = 32;
+    // send with ToDungeon
+    if (GetGlobalInt (154) == NO_CHAR)
+    {
+      // PC is captured
+      kid = GetPlayerCharacter ();
+    }
+    else
+    {
+      // NPC is captured
+      kid = GetGlobalInt (323);
+      charid = GetPlayerCharacter ();
+    }
+    ObjectOn (0);
+    character [charid].x = 476;
+    character [charid].y = 140;
+    if (IsKidStandingAt (442) == 0) 
+    {
+      character [kid].x = 442;
+      character [kid].y = 139;
+    }
+    else if (IsKidStandingAt (451) == 0) 
+    {
+      character [kid].x = 451;
+      character [kid].y = 140;
+    }
+    else 
+    {
+      character [kid].x = 460;
+      character [kid].y = 141;
+    }
+    FaceCharacter (kid, charid);
+    FaceCharacter (charid, kid);
+    if (charid == PURPLE) StopAmbientSound (1);
+    SetGlobalInt (323, NO_CHAR);
+  }
+  else if (character [POLICE].room == 32)
+  {
+    // POLICE is PC
+    character [GetPlayerCharacter ()].x = 291;
+    character [GetPlayerCharacter ()].y = 142;
+    SetCharacterView (GetPlayerCharacter (), 105);
+    FaceDirection (GetPlayerCharacter (), DIR_DOWN);
+  }
+  else if (GetGlobalInt (1) == LAB_DOOR_OPENED)
+  {
+    character [GetPlayerCharacter ()].x = 150;
+    character [GetPlayerCharacter ()].y = 128;
+    FaceDirection (GetPlayerCharacter (), DIR_UP);
+  }
+  else if ((GetGlobalInt (1) == KEY_PAD_CANCEL) || (GetGlobalInt (1) == KEY_PAD_WRONG) || (GetGlobalInt (1) == KEY_PAD_OK_1))
+  {
+    PlacePC (150, 128, DIR_UP);
+    ShowMouseCursor ();
+    if (GetGlobalInt (1) != KEY_PAD_OK_1) SetGlobalInt (1, NO_CUTSCENE);
+  }
+  AlarmSound ();
+}
+
+function room_c (){
+  // script for room: First time player enters screen
+  DisableHotspot (1);
+}
+
+function room_b (){
+  // script for room: Player enters screen (after fadein)
+  if (charid != NO_CHAR)
+  {
+    if (charid == EDNA)
+    {
+      Wait (10);
+      if ((kid == DAVE) || (kid == SYD) || (kid == MICHAEL) || (kid == BERNHARD) || (kid == JEFF))
+      {
+        DisplaySpeech (charid, "How silly of me!");
+        DisplaySpeech (charid, "I should have tied you to my bed!");
+      }
+      else
+      {
+        DisplaySpeech (charid, "You're lucky you're not a boy...");
+        DisplaySpeech (charid, "...or you'd be in BIG trouble now!");
+      }
+      EndCutscene ();
+      Wait (10);
+      MoveCharacterBlocking (charid, 506, 125, 0);
+      FaceDirection (charid, DIR_UP);
+      Wait (5);
+      SetCharacterView (charid, 105);
+      // EndCutscene ();
+      Wait (10);
+      close_door ();
+      Wait (20);
+      FinishCutscene (1);
+      SendEdnaBackIntoHerRoom ();
+    }
+    else if (charid == ED)
+    {
+      Wait (10);
+      DisplaySpeech (charid, "Too bad you weren't on my side!");
+      EndCutscene ();
+      Wait (10);
+      MoveCharacterBlocking (charid, 506, 125, 0);
+      FaceDirection (charid, DIR_UP);
+      Wait (5);
+      SetCharacterView (charid, 105);
+      // EndCutscene ();
+      Wait (10);
+      close_door ();
+      Wait (20);
+      FinishCutscene (1);
+      SendEdBackIntoHisRoom ();
+    }
+    else if (charid == PURPLE)
+    {
+      Wait (10);
+      if (GetGlobalInt (298) == 0)
+      {
+        DisplaySpeech (charid, "I hope you rot!");
+        SetGlobalInt (298, 1);
+      }
+      else DisplaySpeech (charid, "And this time I'll make sure you won't get out!");
+      Wait (10);
+      close_door ();
+      Wait (10);
+      SetPlayerCharacter (kid);
+      MoveCharacterBlocking (charid, 270, 140, 0);
+      Wait (20);
+      FinishCutscene (0);
+      character [charid].room = 33;
+      character [charid].x = 360;
+      character [charid].y = 133;
+      DisableHotspot (1);
+      EnableHotspot (3);
+      PlaySound (44);
+      ObjectOff (1);
+      ObjectOff (2);
+      ObjectOn (3);
+      ObjectOn (4);
+      SetObjectGraphic (3, 534);
+      SetGlobalInt (83, 2);
+      SetObjectGraphic (4, 536);
+      SetGlobalInt (84, 2);
+      SetObjectGraphic (2, 533);
+      SetGlobalInt (85, 2);
+      SetGlobalInt (82, 0);
+    }
+  }
+  else if (character [POLICE].room == 32)
+  {
+    // POLICE is PC
+    Wait (40);
+    PlaySound (42);
+    ReleaseCharacterView (GetPlayerCharacter ());
+    if (GetGlobalInt (85) == 1) ObjectOn (5);
+    Wait (20);
+    DisplaySpeech (GetPlayerCharacter (), "All right!");
+    DisplaySpeech (GetPlayerCharacter (), "Let's go get 'em!");
+    Wait (15);
+    MoveCharacterBlocking (GetPlayerCharacter (), 150, 128, 0);
+    FaceDirection (GetPlayerCharacter (), DIR_UP);
+    Wait (5);
+    if ((GetGlobalInt (85) != 1) || (GetGlobalInt (82) != 1))
+    {
+      Wait (20);
+      DisplaySpeech (GetPlayerCharacter (), "How am I supposed to get in there?");
+      DisplaySpeech (GetPlayerCharacter (), "Oh well, maybe next time.");
+      Wait (15);
+      MoveCharacterBlocking (GetPlayerCharacter (), 275, 136, 0);
+      FaceDirection (GetPlayerCharacter (), DIR_DOWN);
+      Wait (20);
+      PlaySound (42);
+      SetCharacterView (GetPlayerCharacter (), 105);
+      Wait (20);
+      FinishCutscene (0);
+      // send police back home
+      character [POLICE].room = 39;
+      character [POLICE].x = 408;
+      character [POLICE].y = 141;
+      ReleaseCharacterView (POLICE);
+      SetGlobalInt (160, 0);
+    }
+    else 
+    {
+      Wait (20);
+      SetCharacterView (GetPlayerCharacter (), 105);
+      Wait (25);
+      NewRoom (33);
+    }
+  }
+  else if (GetGlobalInt (1) == KEY_PAD_OK_1)
+  {
+    Wait (15);
+    PlaySound (43);
+    SetObjectGraphic (2, 538);
+    Wait (15);
+    SetGlobalInt (85, 1);
+    SetGlobalInt (1, NO_CUTSCENE);
+  }
+}
+
+function region1_a (){
+  // script for region1: Player walks off region
+  if (GetGlobalInt (86) == GetPlayerCharacter ())
+  {
+    if (GetGlobalInt (127) == 1) close_door ();
+    SetGlobalInt (86, NO_CHAR);
+  }
+}
+
+function hotspot2_a (){
+  // script for hotspot2: Any click on hotspot
+  region1_a ();
+  SetDoorStrings ("It's the dungeon door.", "The door is locked.", "I can't unlock the door with this.");
+  if (any_click_on_door_special (127, 0, 506, 125, DIR_UP, 31, 45, 129, DIR_RIGHT, 43, 44, 5, 2) == 0) Unhandled ();
+}
+
+function hotspot3_a (){
+  // script for hotspot3: Any click on hotspot
+  region1_a ();
+  SetWalkTo (150, 128, DIR_UP);
+  if (WalkedToLookedAt ("It's a huge outer door to Dr. Fred's lab.") != 0) { }
+  else if (UsedAction (A_OPEN))
+  {
+    if (GetGlobalInt (82) == 0) 
+    {
+      if (MovedTo ())
+      {
+        if ((GetGlobalInt (83) == 1) && (GetGlobalInt (84) == 1))
+        {
+          DisableHotspot (3);
+          EnableHotspot (1);
+          PlaySound (43);
+          ObjectOn (1);
+          ObjectOn (2);
+          ObjectOff (3);
+          ObjectOff (4);
+          SetGlobalInt (82, 1);
+        }
+        else DisplaySpeech (GetPlayerCharacter (), "The door is locked.");
+      }
+    }
+  }
+  else Unhandled ();
+}
+
+function ClickOntoLock (int GI, int object, int opengraphic, int closegraphic, int key){
+  region1_a ();
+  SetWalkTo (150, 128, DIR_UP);
+  if (WalkedToLookedAt ("It's a heavy, metal padlock.") != 0) { }
+  else if ((UsedAction (A_CLOSE)) && (GetGlobalInt (GI) == 1))
+  {
+    if (MovedTo ())
+    {
+      PlaySound (17);
+      SetObjectGraphic (object, closegraphic);
+      SetGlobalInt (GI, 2);
+    }
+  }
+  else if ((UsedAction (A_OPEN)) && (GetGlobalInt (GI) != 1))
+  {
+    if (MovedTo ()) DisplaySpeech (GetPlayerCharacter (), "It doesn't seem to open.");
+  }
+  else 
+  {
+    int result = UsedInvItem (key);
+    if ((result == 2) && (GetGlobalInt (GI) != 1))
+    {
+      PlaySound (18);
+      SetObjectGraphic (object, opengraphic);
+      SetGlobalInt (GI, 1);
+    }
+    else if (result == 0) Unhandled ();
+  }
+}
+
+function object4_a (){
+  // script for object4: Any click on object
+  ClickOntoLock (84, 4, 537, 536, 3);
+}
+
+function object3_b (){
+  // script for object3: Any click on object
+  ClickOntoLock (83, 3, 535, 534, 3);
+}
+
+function object2_a (){
+  // script for object2: Any click on object
+  region1_a ();
+  SetWalkTo (150, 128, DIR_UP);
+  if (UsedAction (A_OPEN))
+  {
+    if (MovedTo ())
+    {
+      /* avo-
+      SetGlobalInt (153, 3);
+      NewRoom (45);
+      */
+      KeyPad (32, 32, GetGlobalInt (145), 32, -1, -1);
+    }
+  }
+  else if (UsedAction (A_CLOSE))
+  {
+    if (GetGlobalInt (85) == 1)
+    {
+      if (MovedTo ())
+      {
+        PlaySound (44);
+        SetObjectGraphic (2, 533);
+        SetGlobalInt (85, 2);
+      }
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    if (MovedTo ())
+    {
+      if (GetGlobalInt (85) != 1)
+      {
+        DisplaySpeech (GetPlayerCharacter (), "It's the inner door to the lab.");
+        DisplaySpeech (GetPlayerCharacter (), "It requires a combination.");
+      }
+      else DisplaySpeech (GetPlayerCharacter (), "It's the inner door to the lab.");
+    }
+  }
+  else if ((UsedAction (A_WALK_TO)) && (GetGlobalInt (85) == 1))
+  {
+    if (MovedTo ()) EnterRoom (33, 85, 125, DIR_DOWN);
+  }
+  else Unhandled ();
+}
+
+function hotspot1_a (){
+  // script for hotspot1: Any click on hotspot
+  region1_a ();
+  SetWalkTo (150, 128, DIR_UP);
+  if (WalkedToLookedAt ("It's a huge outer door to Dr. Fred's lab.") != 0) { }
+  else if (UsedAction (A_CLOSE) && (GetGlobalInt (82) == 1))
+  {
+    if (MovedTo ())
+    {
+      DisableHotspot (1);
+      EnableHotspot (3);
+      PlaySound (44);
+      ObjectOff (1);
+      ObjectOff (2);
+      ObjectOn (3);
+      ObjectOn (4);
+      SetGlobalInt (82, 0);
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot6_a (){
+  // script for hotspot6: Any click on hotspot
+  region1_a ();
+  if (any_click_walk_look (268, 134, DIR_LEFT, "I wonder if I know him.") == 0) Unhandled ();
+}
+
+function hotspot7_a (){
+  // script for hotspot7: Any click on hotspot
+  region1_a ();
+  SetWalkTo (275, 127, DIR_UP);
+  if (WalkedToLookedAt ("This brick appears to be a bit loose.") != 0) { }
+  else if (UsedAction (A_PUSH))
+  {
+    if (MovedTo ())
+    {
+      PlaySound (43);
+      ObjectOn (0);
+      SetGlobalInt (127, 1);
+      SetGlobalInt (86, GetPlayerCharacter ());
+    }
+  }
+  else Unhandled ();
+}
+
+function hotspot4_b (){
+  // script for hotspot4: Any click on hotspot
+  region1_a ();
+  if (any_click_walk_look (270, 128, DIR_UP, "'Made in Sweden.'") == 0) Unhandled ();
+}
+
+function hotspot5_b (){
+  // script for hotspot5: Any click on hotspot
+  region1_a ();
+  if (any_click_walk_look (347, 140, DIR_UP, "It's a large, empty candle holder.") == 0) Unhandled ();
+}
+
+function hotspot8_b (){
+  // script for hotspot8: Any click on hotspot
+  region1_a ();
+  if (any_click_walk_look (430, 128, DIR_UP, "'Made in Sweden.'") == 0) Unhandled ();
+}
+
+function object5_a (){
+  // script for object5: Any click on object
+  region1_a ();
+  if (any_click_walk_look_pick (300, 139, DIR_LEFT, "'Meteor Police, badge number 714.'", 5, 9, -1, 4) == 0) Unhandled ();
+}
+
+

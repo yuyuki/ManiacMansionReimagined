@@ -1,0 +1,159 @@
+// room script file
+
+function room_a (){
+  // script for room: Player enters screen (before fadein)
+  SetObjectClickable (0, 0);
+  SetMusicVolume (2);
+  SetMusicRepeat (1);
+  PlayMusic (14);
+  init_object (117, 0);
+  if (GetGlobalInt (1) == NORMAL_ENTER_ROOM)
+  {
+    character [GetPlayerCharacter ()].x = 75;
+    character [GetPlayerCharacter ()].y = 33;
+    FaceDirection (GetPlayerCharacter (), DIR_DOWN);
+  }
+  AlarmSound ();
+}
+
+function room_c (){
+  // script for room: Player enters screen (after fadein)
+  if (GetGlobalInt (1) == NORMAL_ENTER_ROOM)
+  {
+    Wait (5);
+    MoveCharacter (GetPlayerCharacter (), 75, 60);
+    SetGlobalInt (1, NO_CUTSCENE);
+  }
+}
+
+function room_b (){
+  // script for room: Repeatedly execute
+  if ((GetGlobalInt (89) <= 1) && (character [GREEN].walking == 0) && (character [GREEN].y != character [GetPlayerCharacter ()].y))
+  {
+    MoveCharacterBlocking (GREEN, character [GREEN].x, character [GetPlayerCharacter ()].y, 0);
+  }
+}
+
+function room_d() {
+  // script for room: Player leaves screen
+  if (GetGlobalInt (89) == 2)
+  {
+    character [GREEN].room = 16;
+    character [GREEN].x = 388;
+    character [GREEN].y = 134;
+    SetGlobalInt (89, 3);
+    DisableRegion (4);
+  }
+}
+
+function region2_a (){
+  // script for region2: Player walks onto region
+  EnterRoom (9, 575, 40, DIR_DOWN);
+}
+
+function region1_a (){
+  // script for region1: Player walks onto region
+  EnterRoom (14, 50, 135, DIR_RIGHT);
+}
+
+function region3_a (){
+  // script for region3: Player walks onto region
+  if (GetGlobalInt (89) == 0)
+  {
+    MoveCharacterBlocking (GetPlayerCharacter (), 310, character [GetPlayerCharacter ()].y, 0);
+    FaceDirection (GetPlayerCharacter (), DIR_LEFT);
+    DisplaySpeech (GREEN, "You can't pass until you feed me!");
+  }
+  else if (GetGlobalInt (89) == 1)
+  {
+    MoveCharacterBlocking (GetPlayerCharacter (), 310, character [GetPlayerCharacter ()].y, 0);
+    FaceDirection (GetPlayerCharacter (), DIR_LEFT);
+    DisplaySpeech (GREEN, "Where's my drink!");
+  }
+}
+
+function region4_a (){
+  // script for region4: Player walks onto region
+  if (GetPlayerCharacter () == BERNHARD)
+  {
+    DisplaySpeechBackground (BERNHARD, "AAAAAAAAAAEEEEEEE");
+    MoveCharacterBlocking (GetPlayerCharacter (), 448, 131, 0);
+    EnterRoom (9, 575, 40, DIR_DOWN);
+  }
+}
+
+function CanPass (int x, int y){
+  int result = (GetGlobalInt (89) > 1);
+  if (result == 0) MoveCharacter (GetPlayerCharacter (), x, y);
+  return result;
+}
+
+function any_click_move_GT (int x, int y, int dir){
+  int result = CanPass (x, y);
+  if (result) any_click_move (x, y, dir);
+  return result;
+}
+
+function hotspot3_c (){
+  // script for hotspot3: Any click on hotspot
+  if (UsedAction (A_WALK_TO)) any_click_move_GT (122, 140, DIR_UP);
+  else if (UsedAction (A_USE_INV))
+  {
+    if (character [GetPlayerCharacter ()].activeinv == 39)
+    {
+      if (any_click_move_GT (122, 140, DIR_UP))
+      {
+        PlaySound (33);
+        LoseInventory (39);
+        AddInventory (38);
+      }
+    }
+    else if (character [GetPlayerCharacter ()].activeinv == 56)
+    {
+      if (any_click_move_GT (122, 140, DIR_UP))
+      {
+        PlaySound (33);
+        LoseInventory (56);
+        AddInventory (38);
+      }
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    if (any_click_move_GT (122, 140, DIR_UP)) DisplaySpeech (GetPlayerCharacter (), "It sure is lovely.");
+  }
+  else Unhandled ();
+}
+
+function hotspot1_a (){
+  // script for hotspot1: Any click on hotspot
+  int result = CanPass (117, 0);
+  if (result) result = any_click_on_door (117, 0, 218, 126, DIR_UP, 13, 295, 130, DIR_LEFT);
+  if (result == 0) Unhandled ();
+}
+
+function hotspot2_a (){
+  // script for hotspot2: Any click on hotspot
+  if (any_click_walk (300, 128, DIR_UP) == 0) Unhandled ();
+}
+
+function hotspot6_a (){
+  // script for hotspot6: Any click on hotspot
+  if (any_click_walk (395, 128, DIR_UP) == 0) Unhandled ();
+}
+
+function hotspot7_a (){
+  // script for hotspot7: Any click on hotspot
+  if (any_click_walk (490, 140, DIR_UP) == 0) Unhandled ();
+}
+
+function hotspot4_a (){
+  // script for hotspot4: Any click on hotspot
+  if (any_click_walk (450, 127, DIR_RIGHT) == 0) Unhandled ();
+}
+
+function hotspot5_a (){
+  // script for hotspot5: Any click on hotspot
+  if (UsedAction (A_WALK_TO)) any_click_move_GT (85, 25, DIR_UP);
+  else Unhandled ();
+}

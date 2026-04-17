@@ -1,0 +1,514 @@
+// room script file
+
+#sectionstart room_a  // DO NOT EDIT OR REMOVE THIS LINE
+function room_a (){
+  // script for room: Player enters screen (before fadein)
+  SetObjectClickable (0, 0);
+  SetObjectClickable (1, 0);
+  SetObjectClickable (12, 0);
+  SetObjectClickable (13, 0);
+  SetMusicVolume (2);
+  SetMusicRepeat (1);
+
+if (GetGlobalInt(19)==0) {  
+  if (GetGlobalInt (50) == 0) PlayMusic (13);
+  else if (GetGlobalInt (50) == 3) 
+  {
+    if (GetGlobalInt (23) == 1) PlayMusic (4);
+    else if (GetGlobalInt (23) == 2) PlayAmbientSound (1, 70, 150, 50, 50);
+    else if (GetGlobalInt (23) == 3) PlayMusic (2);
+  }
+  else if (GetGlobalInt (50) == 4) PlayMusic (3);
+}
+  init_object (109, 0);
+  init_object (110, 1);
+  AlarmSound ();
+
+  if (GetGlobalInt (19) ==2)
+  {
+    ObjectOn(0);
+    SetObjectGraphic (5, 437);
+    character [SANDY].room = 4;
+    ReleaseCharacterView(DAVE);
+    PlaceCharacter (SANDY, 204, 126, DIR_UP);
+    PlaceCharacter (DAVE, 60, 136, DIR_RIGHT);
+  }
+}
+#sectionend room_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot1_a  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot1_a (){
+  // script for hotspot1: Any click on hotspot
+  if (any_click_on_door (109, 0, 60, 136, DIR_LEFT, 3, 575, 136, DIR_LEFT) == 0) Unhandled ();
+}
+#sectionend hotspot1_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot2_a  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot2_a (){
+  // script for hotspot2: Any click on hotspot
+  if (any_click_on_door (110, 1, 570, 136, DIR_RIGHT, 5, 70, 127, DIR_RIGHT) == 0) Unhandled ();
+}
+#sectionend hotspot2_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot3_a  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot3_a (){
+  // script for hotspot3: Any click on hotspot
+  SetWalkTo (131, 135, DIR_UP);
+  if (WalkedToLookedAt ("It sure is old.") != 0) { }
+  else if (UsedAction (A_OPEN))
+  {
+    if (MovedTo ())
+    {
+      DisableHotspot (3);
+      PlaySound (1);
+      ObjectOn (2);
+      if (GetGlobalInt (18) == 0) ObjectOn (3);
+    }
+  }
+  else Unhandled ();
+}
+#sectionend hotspot3_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot4_a  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot4_a (){
+  // script for hotspot4: Any click on hotspot
+  SetWalkTo (131, 135, DIR_UP);
+  if (WalkedToLookedAt ("") != 0) { }
+  else if (UsedAction (A_OPEN))
+  {
+    if (MovedTo ())
+    {
+      DisableHotspot (4);
+      PlaySound (1);
+      ObjectOn (4);
+      ObjectOn (5);
+      if ((GetGlobalInt (50) == 1) || (GetGlobalInt (50) == 3)) ObjectOn (6);
+      else if ((GetGlobalInt (50) == 2) || (GetGlobalInt (50) == 4)) ObjectOn (7);
+    }
+  }
+  else Unhandled ();
+}
+#sectionend hotspot4_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart object4_a  // DO NOT EDIT OR REMOVE THIS LINE
+function object4_a (){
+  // script for object4: Any click on object
+  SetWalkTo (131, 135, DIR_UP);
+  if (WalkedToLookedAt ("") != 0) { }
+  else if (UsedAction (A_CLOSE))
+  {
+    if (MovedTo ())
+    {
+      EnableHotspot (4);
+      PlaySound (5);
+      ObjectOff (4);
+      ObjectOff (5);
+      ObjectOff (6);
+      ObjectOff (7);
+    }
+  }
+  else Unhandled ();
+}
+#sectionend object4_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart object2_a  // DO NOT EDIT OR REMOVE THIS LINE
+function object2_a (){
+  // script for object2: Any click on object
+  SetWalkTo (131, 135, DIR_UP);
+  if (WalkedToLookedAt ("It sure is old.") != 0) { }
+  else if (UsedAction (A_CLOSE))
+  {
+    if (MovedTo ())
+    {
+      EnableHotspot (3);
+      PlaySound (1);
+      ObjectOff (2);
+      ObjectOff (3);
+    }
+  }
+  else
+  {
+    int result = UsedInvItem (37);
+    if (result == 2)
+    {
+      ObjectOn (3);
+      PlaySound (66);
+      LoseInventory (37);
+      SetGlobalInt (18, 0);
+    }
+    else if (result == 0) Unhandled ();
+  }
+}
+#sectionend object2_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart object11_a  // DO NOT EDIT OR REMOVE THIS LINE
+function object11_a (){
+  // script for object11: Any click on object
+  if (any_click_walk_look_pick (360, 134, DIR_DOWN, "", 11, 5, -1, 4) == 0) Unhandled ();
+}
+#sectionend object11_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot5_a  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot5_a (){
+  // script for hotspot5: Any click on hotspot
+  SetWalkTo (205, 135, DIR_UP);
+  if (WalkedToLookedAt ("") != 0) { }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    if (MovedTo ())
+    {
+      if (GetGlobalInt (253) == 0) DisplaySpeech (GetPlayerCharacter (), "It's dark outside.");
+      else                         DisplaySpeech (GetPlayerCharacter (), "It's broken from the noise.");
+    }
+  }
+  else Unhandled ();
+}
+#sectionend hotspot5_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot6_a  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot6_a (){
+  // script for hotspot6: Any click on hotspot
+  SetWalkTo (420, 135, DIR_UP);
+  if (WalkedToLookedAt ("") != 0) { }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    if (MovedTo ())
+    {
+      if (GetGlobalInt (253) == 0) DisplaySpeech (GetPlayerCharacter (), "It's dark outside.");
+      else                         DisplaySpeech (GetPlayerCharacter (), "It's broken from the noise.");
+    }
+  }
+  else Unhandled ();
+}
+#sectionend hotspot6_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot7_a  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot7_a (){
+  // script for hotspot7: Any click on hotspot
+  if (any_click_walk_look (315, 135, DIR_UP, "Cozy.") == 0) Unhandled ();
+}
+#sectionend hotspot7_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart object8_a  // DO NOT EDIT OR REMOVE THIS LINE
+function object8_a (){
+  // script for object8: Any click on object
+  if (any_click_walk_look (315, 135, DIR_UP, "It looks expensive.") == 0) Unhandled ();
+}
+#sectionend object8_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart hotspot8_b  // DO NOT EDIT OR REMOVE THIS LINE
+function hotspot8_b (){
+  // script for hotspot8: Any click on hotspot
+  if (any_click_walk_look (505, 135, DIR_UP, "That's castle Brunwald.") == 0) Unhandled ();
+}
+#sectionend hotspot8_b  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart object3_c  // DO NOT EDIT OR REMOVE THIS LINE
+function object3_c (){
+  // script for object3: Any click on object
+  SetWalkTo (131, 135, DIR_UP);
+  if (WalkedToLookedAt ("") != 0) { }
+  else if (UsedAction (A_PICK_UP))
+  {
+    if (MovedTo ())
+    {
+      if (GetPlayerCharacter () == BERNHARD)
+      {
+        PlaySound (4);
+        ObjectOff (3);
+        AddInventory (37);
+        SetGlobalInt (18, 1);
+      }
+      else DisplaySpeech (GetPlayerCharacter (), "I don't know how this stuff works!");
+    }
+  }
+  else if (UsedAction (A_LOOK_AT))
+  {
+    if (MovedTo ())
+    {
+      if (GetPlayerCharacter () == BERNHARD) DisplaySpeech (GetPlayerCharacter (), "These things will work with anything.");
+      else                                   DisplaySpeech (GetPlayerCharacter (), "This looks pretty technical.");
+    }
+  }
+  else Unhandled ();
+}
+#sectionend object3_c  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart object5_d  // DO NOT EDIT OR REMOVE THIS LINE
+function object5_d (){
+  // script for object5: Any click on object
+  SetWalkTo (131, 135, DIR_UP);
+  if (WalkedToLookedAt ("Nice! Looks like it can only play tapes, though.") != 0) {  }
+  else if (UsedAction (A_USE))
+  {
+    if (MovedTo ())
+    {
+      if (GetGlobalInt (50) == 0) DisplaySpeech (GetPlayerCharacter (), "There's no tape in the player.");
+      else
+      {
+        if (GetGlobalInt (199) == 0) DisplaySpeech (GetPlayerCharacter (), "The power is off.");
+        else
+        {
+          // play tape
+          PlaySound (94);
+          if (GetGlobalInt (50) == 1)
+          {
+            SetGlobalInt (50, 3);
+            SetObjectGraphic (5, 437);
+            // silence
+            if (GetGlobalInt (23) == 0) DisplaySpeech (GetPlayerCharacter (), "It's blank.");
+            // old record
+            else if (GetGlobalInt (23) == 1) PlayMusic (4);
+            // record
+            else if (GetGlobalInt (23) == 2)
+            {
+              StopMusic ();
+              Wait (5);
+              PlayAmbientSound (1, 70, 150, 50, 50);
+              if (GetGlobalInt (253) == 0)
+              {
+                // glass is breaking
+                Wait (60);
+                PlaySound (59);
+                ObjectOn (13);
+                Wait (60);
+                PlaySound (58);
+                ObjectOn (12);
+                Wait (60);
+                PlaySound (69);
+                SetObjectGraphic (8, 459);
+                ObjectOff (9);
+                ObjectOn (10);
+                ObjectOn (11);
+                SetGlobalInt (253, 1);
+              }
+            }
+            // Syd or Razor
+            else if (GetGlobalInt (23) == 3) PlayMusic (2);
+          }
+          else if (GetGlobalInt (50) == 3)
+          {
+            SetGlobalInt (50, 1);
+            SetObjectGraphic (5, 435);
+            StopAmbientSound (1);
+            PlayMusic (13);
+          }
+          else if (GetGlobalInt (50) == 2)
+          {
+            SetGlobalInt (50, 4);
+            SetObjectGraphic (5, 437);
+            PlayMusic (3);
+          }
+          else if (GetGlobalInt (50) == 4)
+          {
+            SetGlobalInt (50, 2);
+            SetObjectGraphic (5, 435);
+            PlayMusic (13);
+          }
+        }
+      }
+    }
+  }
+  else
+  {
+    int result = UsedInvItem (14);
+    if (result == 2)
+    {
+      if (MovedTo ())
+      {
+        if (GetGlobalInt (199) == 0) DisplaySpeech (GetPlayerCharacter (), "The power is off.");
+        else if (GetGlobalInt (50) == 0) 
+        {
+          PlaySound (60);
+          ObjectOn (6);
+          LoseInventory (14);
+          SetGlobalInt (50, 1);
+        }
+        else DisplaySpeech (GetPlayerCharacter (), "It's not empty.");
+      }
+    }
+    if (result != 0) return 0;
+    result = UsedInvItem (26);
+    if (result == 2)
+    {
+      if (MovedTo ())
+      {
+        if (GetGlobalInt (199) == 0) DisplaySpeech (GetPlayerCharacter (), "The power is off.");
+        else if (GetGlobalInt (50) == 0) 
+        {
+          PlaySound (60);
+          ObjectOn (7);
+          LoseInventory (26);
+          SetGlobalInt (50, 2);
+        }
+        else DisplaySpeech (GetPlayerCharacter (), "It's not empty.");
+      }
+    }
+    if (result != 0) return 0;
+    Unhandled ();
+  }
+}
+#sectionend object5_d  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+function AnyClickOntoCassette (int object, int item){
+  SetWalkTo (131, 135, DIR_UP);
+  if (WalkedToLookedAt ("") != 0) { }
+  else if (UsedAction (A_PICK_UP))
+  {
+    if (MovedTo ())
+    {
+      if (GetGlobalInt (50) > 2) DisplaySpeech (GetPlayerCharacter (), "It's still playing!");
+      else 
+      {
+        ObjectOff (object);
+        PlaySound (4);
+        AddInventory (item);
+        SetGlobalInt (50, 0);
+      }
+    }
+  }
+  else Unhandled ();
+}
+
+#sectionstart object6_b  // DO NOT EDIT OR REMOVE THIS LINE
+function object6_b (){
+  // script for object6: Any click on object
+  AnyClickOntoCassette (6, 14);
+}
+#sectionend object6_b  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart object7_b  // DO NOT EDIT OR REMOVE THIS LINE
+function object7_b (){
+  // script for object7: Any click on object
+  AnyClickOntoCassette (7, 26);
+}
+#sectionend object7_b  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart object9_c  // DO NOT EDIT OR REMOVE THIS LINE
+function object9_c (){
+  // script for object9: Any click on object
+  SetWalkTo (325, 135, DIR_UP);
+  if (WalkedToLookedAt ("I can't reach it.") != 0) { }
+  else if (UsedAction (A_PICK_UP))
+  {
+    if (MovedTo ()) DisplaySpeech (GetPlayerCharacter (), "I can't reach it.");
+  }
+  else Unhandled ();
+}
+#sectionend object9_c  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+#sectionstart object10_a  // DO NOT EDIT OR REMOVE THIS LINE
+function object10_a (){
+  // script for object10: Any click on object
+  if (any_click_walk (315, 135, DIR_UP) == 0) Unhandled ();
+}
+#sectionend object10_a  // DO NOT EDIT OR REMOVE THIS LINE
+
+
+
+
+#sectionstart room_b  // DO NOT EDIT OR REMOVE THIS LINE
+function room_b() {
+  // script for room: Player enters screen (after fadein)
+if (GetGlobalInt(19)==2)
+{
+  PlayMusic(3); 
+  Wait(30);
+  DisplaySpeech(DAVE,"Hi Sandy, could you turn the music down?");
+  Wait(50);
+  DisplaySpeech(DAVE,"Sandy, the music's too loud!");
+  Wait(50);
+  MoveCharacterBlocking(DAVE,90,136,1);
+  Wait(15);
+  DisplaySpeech(DAVE,"SANDY, TURN OFF THE MUSIC!");
+  Wait(20);
+  FaceCharacter(SANDY,DAVE);
+  Wait(10);
+  DisplaySpeech(SANDY,"Oh!");
+  Wait(15);
+  MoveCharacterBlocking(SANDY,131,135,1);
+  FaceLocation(SANDY,131,1);
+  Wait(25);
+  PlaySound(1);
+  ObjectOn(4);
+  ObjectOn(5);
+  ObjectOn(6);
+  Wait(35);
+  PlaySound(94);
+  SetObjectGraphic (5, 435);
+  StopMusic();
+  Wait(25);
+  PlaySound(5);
+  ObjectOff(4);
+  ObjectOff(5);
+  ObjectOff(6);
+  Wait(25);
+  FaceCharacter(SANDY,DAVE);
+  Wait(15);
+  DisplaySpeech(SANDY,"I'm sorry Dave, I couldn't hear you,");
+  DisplaySpeech(SANDY,"the music was too loud.");
+  Wait(15);
+  FaceLocation(DAVE,90,200);
+  Wait(15);
+  DisplaySpeech(DAVE,"Everybody's a comedian!");
+  Wait(15);
+  FaceCharacter(DAVE,SANDY);
+  Wait(15);
+  DisplaySpeech(DAVE,"I was just giving a tour to all these...");
+  DisplaySpeech(DAVE,"...future game players. Want to come?");
+  DisplaySpeech(SANDY,"Sure Dave, I'll go anywhere with you!");
+  Wait(15);
+  // FollowCharacterEx(SANDY,DAVE,55,75);
+  MoveCharacter (DAVE, 570, 136);
+  Wait(30);
+  MoveCharacter (SANDY, 530, 136);
+  // MoveCharacterBlocking(DAVE,570,136,1);
+  Wait(135);
+  FaceLocation(DAVE,570,200);
+  Wait(20);
+  DisplaySpeech(DAVE,"Oh yes, in Maniac Mansion,");
+  DisplaySpeech(DAVE,"you not only direct my actions,");
+  DisplaySpeech(DAVE,"but the actions of two of my friends.");
+  GUIOn(0);
+  GUIOn(1);
+  SetButtonPic (1, 13, 1, 1095);
+  DisplaySpeech(DAVE,"You point to the verbs you see below...");
+  DisplaySpeech(DAVE,"...to construct sentences.");
+  Wait(25);
+  FaceLocation(DAVE,600,136);
+  Wait(15);
+  PlaySound(2);
+  ObjectOn(1);
+  Wait(20);
+  SetCharacterView(DAVE,105);
+  Wait(15);
+  MoveCharacterDirect(SANDY,570, 136);
+  while (character[SANDY].walking) Wait(1);
+  Wait(20);
+  SetCharacterView(SANDY,105);
+  Wait(15);
+  GUIOff(0);
+  GUIOff(1);
+  NewRoom(5);
+}
+}
+#sectionend room_b  // DO NOT EDIT OR REMOVE THIS LINE
+
