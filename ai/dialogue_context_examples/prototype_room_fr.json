@@ -1,0 +1,12 @@
+{
+  "language": "fr",
+  "npc_id": "none",
+  "player_character_id": "prototype_player",
+  "room_id": "prototype_room",
+  "plot_stage": "intro",
+  "inventory": [],
+  "revealed_facts": [],
+  "allowed_hint_level": 0,
+  "player_message": "Il y a quelqu'un ?"
+}
+
