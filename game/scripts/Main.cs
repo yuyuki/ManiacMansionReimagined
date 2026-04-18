@@ -1,3 +1,4 @@
+#nullable enable
 using Godot;
 using System;
 using System.Collections.Generic;
@@ -6,316 +7,359 @@ namespace ManiacMansionReimagined;
 
 public partial class Main : Control
 {
-    private const string RoomTexturePath = "res://assets/rooms/room_07.png";
-    private const string BernardSheetPath = "res://assets/sprites/bernard/bernard_walk_cycle_44_58.png";
-    private const string WalkAnimation = "walk";
+	private const string RoomTexturePath = "res://assets/rooms/room_07.png";
+	private const string BernardSheetPath = "res://assets/sprites/bernard/bernard_walk_cycle_44_58.png";
+	private const string WalkAnimation = "walk";
 
-    private TextureRect _roomView = null!;
-    private AnimatedSprite2D _bernard = null!;
+	private TextureRect? _roomView;
+	private AnimatedSprite2D? _bernard;
 
-    private Vector2 _roomTextureSize;
-    private Vector2 _roomDisplayOffset;
-    private Vector2 _targetFeetPosition;
-    private Vector2 _currentFeetPosition;
-    private float _groundY;
-    private bool _isWalking;
+	private Vector2 _roomTextureSize;
+	private Vector2 _roomDisplayOffset;
+	private float _roomScale = 1f;
+	private Vector2 _targetFeetPosition;
+	private Vector2 _currentFeetPosition;
+	private float _groundY;
+	private bool _isWalking;
 
-    [Export]
-    public float WalkSpeed { get; set; } = 180f;
+	[Export]
+	public float WalkSpeed { get; set; } = 180f;
 
-    public override void _Ready()
-    {
-        _roomView = GetNode<TextureRect>("RoomView");
-        _bernard = GetNode<AnimatedSprite2D>("Bernard");
+	public override void _Ready()
+	{
+		_roomView = GetNodeOrNull<TextureRect>("RoomView");
+		_bernard = GetNodeOrNull<AnimatedSprite2D>("Bernard");
+		if (_roomView == null || _bernard == null)
+		{
+			GD.PushError("Main scene is missing required nodes: RoomView and/or Bernard.");
+			return;
+		}
 
-        var roomTexture = GD.Load<Texture2D>(RoomTexturePath);
-        if (roomTexture == null)
-        {
-            GD.PushError($"Missing room texture: {RoomTexturePath}");
-            return;
-        }
+		// Handle clicks directly on the room view so GUI controls don't swallow them before _UnhandledInput.
+		_roomView.GuiInput += OnRoomGuiInput;
 
-        _roomTextureSize = roomTexture.GetSize();
-        _roomView.Texture = roomTexture;
+		var roomTexture = GD.Load<Texture2D>(RoomTexturePath);
+		if (roomTexture == null)
+		{
+			GD.PushError($"Missing room texture: {RoomTexturePath}");
+			return;
+		}
 
-        _bernard.SpriteFrames = BuildBernardFrames(BernardSheetPath);
-        _bernard.Animation = WalkAnimation;
-        _bernard.Play();
+		_roomTextureSize = roomTexture.GetSize();
+		_roomView.Texture = roomTexture;
 
-        UpdateRoomLayout();
+		_bernard.SpriteFrames = BuildBernardFrames(BernardSheetPath);
+		_bernard.Animation = WalkAnimation;
+		_bernard.Play();
 
-        _groundY = _roomDisplayOffset.Y + _roomTextureSize.Y * 0.84f;
-        _currentFeetPosition = new Vector2(_roomDisplayOffset.X + _roomTextureSize.X * 0.18f, _groundY);
-        _targetFeetPosition = _currentFeetPosition;
-        PlaceBernardAtFeet(_currentFeetPosition);
-    }
+		UpdateRoomLayout();
 
-    public override void _Notification(int what)
-    {
-        if (what == NotificationResized)
-        {
-            UpdateRoomLayout();
-            _groundY = _roomDisplayOffset.Y + _roomTextureSize.Y * 0.84f;
-            _currentFeetPosition.Y = _groundY;
-            _targetFeetPosition.Y = _groundY;
-            PlaceBernardAtFeet(_currentFeetPosition);
-        }
-    }
+		_groundY = _roomDisplayOffset.Y + (_roomTextureSize.Y * 0.84f * _roomScale);
+		_currentFeetPosition = new Vector2(
+			_roomDisplayOffset.X + (_roomTextureSize.X * 0.18f * _roomScale),
+			_groundY);
+		_targetFeetPosition = _currentFeetPosition;
+		PlaceBernardAtFeet(_currentFeetPosition);
+	}
 
-    public override void _UnhandledInput(InputEvent @event)
-    {
-        if (@event is InputEventMouseButton mouseButton
-            && mouseButton.Pressed
-            && mouseButton.ButtonIndex == MouseButton.Left)
-        {
-            var click = mouseButton.Position;
-            var roomRect = GetRoomDisplayRect();
-            if (!roomRect.HasPoint(click))
-            {
-                return;
-            }
+	public override void _Notification(int what)
+	{
+		if (what == NotificationResized)
+		{
+			// Can be triggered before _Ready(); keep it safe.
+			if (_roomView == null || _roomTextureSize == Vector2.Zero)
+			{
+				return;
+			}
 
-            var roomX = Mathf.Clamp(click.X - roomRect.Position.X, 24f, _roomTextureSize.X - 24f);
-            var targetX = roomRect.Position.X + roomX;
-            _targetFeetPosition = new Vector2(targetX, _groundY);
+			UpdateRoomLayout();
+			_groundY = _roomDisplayOffset.Y + (_roomTextureSize.Y * 0.84f * _roomScale);
+			_currentFeetPosition.Y = _groundY;
+			_targetFeetPosition.Y = _groundY;
+			PlaceBernardAtFeet(_currentFeetPosition);
+		}
+	}
 
-            if (!_isWalking)
-            {
-                StartWalking();
-            }
-        }
-    }
+	public override void _UnhandledInput(InputEvent @event)
+	{
+		// Kept as a fallback for non-GUI contexts; main click-to-move is handled by RoomView.GuiInput.
+		if (@event is InputEventMouseButton mouseButton
+			&& mouseButton.Pressed
+			&& mouseButton.ButtonIndex == MouseButton.Left)
+		{
+			HandleRoomClick(mouseButton.Position);
+		}
+	}
 
-    public override void _Process(double delta)
-    {
-        if (!_isWalking)
-        {
-            return;
-        }
+	public override void _Process(double delta)
+	{
+		if (!_isWalking)
+		{
+			return;
+		}
 
-        var step = WalkSpeed * (float)delta;
-        var next = _currentFeetPosition.MoveToward(_targetFeetPosition, step);
+		if (_bernard == null)
+		{
+			_isWalking = false;
+			return;
+		}
 
-        if (next.X < _currentFeetPosition.X)
-        {
-            _bernard.FlipH = true;
-        }
-        else if (next.X > _currentFeetPosition.X)
-        {
-            _bernard.FlipH = false;
-        }
+		var step = WalkSpeed * (float)delta;
+		var next = _currentFeetPosition.MoveToward(_targetFeetPosition, step);
 
-        _currentFeetPosition = next;
-        PlaceBernardAtFeet(_currentFeetPosition);
+		if (next.X < _currentFeetPosition.X)
+		{
+			_bernard.FlipH = true;
+		}
+		else if (next.X > _currentFeetPosition.X)
+		{
+			_bernard.FlipH = false;
+		}
 
-        if (_currentFeetPosition.DistanceTo(_targetFeetPosition) < 1.0f)
-        {
-            _currentFeetPosition = _targetFeetPosition;
-            PlaceBernardAtFeet(_currentFeetPosition);
-            StopWalking();
-        }
-    }
+		_currentFeetPosition = next;
+		PlaceBernardAtFeet(_currentFeetPosition);
 
-    private void StartWalking()
-    {
-        _isWalking = true;
-        _bernard.Play(WalkAnimation);
-    }
+		if (_currentFeetPosition.DistanceTo(_targetFeetPosition) < 1.0f)
+		{
+			_currentFeetPosition = _targetFeetPosition;
+			PlaceBernardAtFeet(_currentFeetPosition);
+			StopWalking();
+		}
+	}
 
-    private void StopWalking()
-    {
-        _isWalking = false;
-        _bernard.Stop();
-        _bernard.Frame = 0;
-    }
+	private void StartWalking()
+	{
+		_isWalking = true;
+		_bernard?.Play(WalkAnimation);
+	}
 
-    private void PlaceBernardAtFeet(Vector2 feetPosition)
-    {
-        var frameSize = GetBernardFrameSize();
-        _bernard.Position = new Vector2(
-            feetPosition.X - (frameSize.X / 2f),
-            feetPosition.Y - frameSize.Y);
-    }
+	private void StopWalking()
+	{
+		_isWalking = false;
+		if (_bernard != null)
+		{
+			_bernard.Stop();
+			_bernard.Frame = 0;
+		}
+	}
 
-    private Vector2 GetBernardFrameSize()
-    {
-        var frames = _bernard.SpriteFrames;
-        if (frames == null || frames.GetFrameCount(WalkAnimation) == 0)
-        {
-            return Vector2.Zero;
-        }
+	private void PlaceBernardAtFeet(Vector2 feetPosition)
+	{
+		var frameSize = GetBernardFrameSize();
+		if (_bernard == null)
+		{
+			return;
+		}
 
-        var texture = frames.GetFrameTexture(WalkAnimation, 0);
-        return texture.GetSize();
-    }
+		_bernard.Position = new Vector2(
+			feetPosition.X - (frameSize.X / 2f),
+			feetPosition.Y - frameSize.Y);
+	}
 
-    private void UpdateRoomLayout()
-    {
-        var viewportSize = GetViewportRect().Size;
-        var scale = Mathf.Min(viewportSize.X / _roomTextureSize.X, viewportSize.Y / _roomTextureSize.Y);
-        var displaySize = _roomTextureSize * scale;
-        _roomDisplayOffset = (viewportSize - displaySize) * 0.5f;
+	private Vector2 GetBernardFrameSize()
+	{
+		if (_bernard == null)
+		{
+			return Vector2.Zero;
+		}
 
-        _roomView.AnchorLeft = 0f;
-        _roomView.AnchorTop = 0f;
-        _roomView.AnchorRight = 1f;
-        _roomView.AnchorBottom = 1f;
-        _roomView.OffsetLeft = 0f;
-        _roomView.OffsetTop = 0f;
-        _roomView.OffsetRight = 0f;
-        _roomView.OffsetBottom = 0f;
-        _roomView.StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered;
-    }
+		var frames = _bernard.SpriteFrames;
+		if (frames == null || frames.GetFrameCount(WalkAnimation) == 0)
+		{
+			return Vector2.Zero;
+		}
 
-    private Rect2 GetRoomDisplayRect()
-    {
-        var viewportSize = GetViewportRect().Size;
-        var scale = Mathf.Min(viewportSize.X / _roomTextureSize.X, viewportSize.Y / _roomTextureSize.Y);
-        var displaySize = _roomTextureSize * scale;
-        var position = (viewportSize - displaySize) * 0.5f;
-        return new Rect2(position, displaySize);
-    }
+		var texture = frames.GetFrameTexture(WalkAnimation, 0);
+		if (texture == null)
+		{
+			return Vector2.Zero;
+		}
+		return texture.GetSize();
+	}
 
-    private static SpriteFrames BuildBernardFrames(string sheetPath)
-    {
-        var sheet = Image.LoadFromFile(sheetPath);
-        if (sheet == null)
-        {
-            GD.PushError($"Missing Bernard sheet: {sheetPath}");
-            return new SpriteFrames();
-        }
+	private void UpdateRoomLayout()
+	{
+		if (_roomView == null || _roomTextureSize == Vector2.Zero)
+		{
+			return;
+		}
 
-        var components = ExtractComponents(sheet);
-        if (components.Count == 0)
-        {
-            GD.PushError($"No Bernard frames were detected in: {sheetPath}");
-            return new SpriteFrames();
-        }
+		var viewportSize = GetViewportRect().Size;
+		_roomScale = Mathf.Min(viewportSize.X / _roomTextureSize.X, viewportSize.Y / _roomTextureSize.Y);
+		var displaySize = _roomTextureSize * _roomScale;
+		_roomDisplayOffset = (viewportSize - displaySize) * 0.5f;
 
-        var maxArea = 0;
-        foreach (var component in components)
-        {
-            maxArea = Math.Max(maxArea, component.Area);
-        }
+		_roomView.AnchorLeft = 0f;
+		_roomView.AnchorTop = 0f;
+		_roomView.AnchorRight = 1f;
+		_roomView.AnchorBottom = 1f;
+		_roomView.OffsetLeft = 0f;
+		_roomView.OffsetTop = 0f;
+		_roomView.OffsetRight = 0f;
+		_roomView.OffsetBottom = 0f;
+		_roomView.StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered;
+	}
 
-        var minArea = Math.Max(1000, (int)(maxArea * 0.75f));
-        var frameComponents = components.FindAll(component => component.Area >= minArea);
-        if (frameComponents.Count > 0)
-        {
-            components = frameComponents;
-        }
+	private Rect2 GetRoomDisplayRect()
+	{
+		var viewportSize = GetViewportRect().Size;
+		var scale = _roomTextureSize == Vector2.Zero
+			? 1f
+			: Mathf.Min(viewportSize.X / _roomTextureSize.X, viewportSize.Y / _roomTextureSize.Y);
+		var displaySize = _roomTextureSize * scale;
+		var position = (viewportSize - displaySize) * 0.5f;
+		return new Rect2(position, displaySize);
+	}
 
-        var maxWidth = 0;
-        var maxHeight = 0;
-        foreach (var component in components)
-        {
-            maxWidth = Math.Max(maxWidth, component.Rect.Size.X);
-            maxHeight = Math.Max(maxHeight, component.Rect.Size.Y);
-        }
+	private static SpriteFrames BuildBernardFrames(string sheetPath)
+	{
+		var sheet = Image.LoadFromFile(sheetPath);
+		if (sheet == null)
+		{
+			GD.PushError($"Missing Bernard sheet: {sheetPath}");
+			return new SpriteFrames();
+		}
 
-        var frames = new SpriteFrames();
-        frames.AddAnimation(WalkAnimation);
+		// This sheet is authored as a fixed grid (8x2). We only use the top row for the side-walk cycle.
+		const int columns = 8;
+		const int rows = 2;
+		const int walkRow = 0;
 
-        foreach (var component in components)
-        {
-            var padded = Image.CreateEmpty(maxWidth, maxHeight, false, Image.Format.Rgba8);
-            padded.Fill(Colors.Transparent);
+		if (sheet.GetWidth() % columns != 0 || sheet.GetHeight() % rows != 0)
+		{
+			GD.PushError($"Unexpected Bernard sheet dimensions: {sheet.GetWidth()}x{sheet.GetHeight()} (expected divisible by {columns}x{rows}).");
+			return new SpriteFrames();
+		}
 
-            var crop = sheet.GetRegion(component.Rect);
-            var x = (maxWidth - crop.GetWidth()) / 2;
-            var y = maxHeight - crop.GetHeight();
-            padded.BlitRect(crop, new Rect2I(0, 0, crop.GetWidth(), crop.GetHeight()), new Vector2I(x, y));
+		var cellWidth = sheet.GetWidth() / columns;
+		var cellHeight = sheet.GetHeight() / rows;
 
-            var texture = ImageTexture.CreateFromImage(padded);
-            frames.AddFrame(WalkAnimation, texture);
-        }
+		var frameRects = new List<Rect2I>(columns);
+		for (var col = 0; col < columns; col++)
+		{
+			var cell = new Rect2I(col * cellWidth, walkRow * cellHeight, cellWidth, cellHeight);
+			if (TryGetTightAlphaRect(sheet, cell, out var tight))
+			{
+				frameRects.Add(tight);
+			}
+		}
 
-        frames.SetAnimationSpeed(WalkAnimation, 10f);
-        return frames;
-    }
+		if (frameRects.Count == 0)
+		{
+			GD.PushError($"No Bernard frames were detected in: {sheetPath}");
+			return new SpriteFrames();
+		}
 
-    private static List<ComponentBounds> ExtractComponents(Image image)
-    {
-        var width = image.GetWidth();
-        var height = image.GetHeight();
-        var visited = new bool[width * height];
-        var components = new List<ComponentBounds>();
-        var queue = new Queue<Vector2I>();
+		var maxWidth = 0;
+		var maxHeight = 0;
+		foreach (var rect in frameRects)
+		{
+			maxWidth = Math.Max(maxWidth, rect.Size.X);
+			maxHeight = Math.Max(maxHeight, rect.Size.Y);
+		}
 
-        bool IsForeground(int x, int y)
-        {
-            var color = image.GetPixel(x, y);
-            return color.A > 0 && (color.R < 0.96f || color.G < 0.96f || color.B < 0.96f);
-        }
+		var frames = new SpriteFrames();
+		frames.AddAnimation(WalkAnimation);
 
-        for (var y = 0; y < height; y++)
-        {
-            for (var x = 0; x < width; x++)
-            {
-                var index = y * width + x;
-                if (visited[index] || !IsForeground(x, y))
-                {
-                    continue;
-                }
+		foreach (var rect in frameRects)
+		{
+			var padded = Image.CreateEmpty(maxWidth, maxHeight, false, Image.Format.Rgba8);
+			padded.Fill(Colors.Transparent);
 
-                visited[index] = true;
-                queue.Enqueue(new Vector2I(x, y));
+			var crop = sheet.GetRegion(rect);
+			var x = (maxWidth - crop.GetWidth()) / 2;
+			var y = maxHeight - crop.GetHeight();
+			padded.BlitRect(crop, new Rect2I(0, 0, crop.GetWidth(), crop.GetHeight()), new Vector2I(x, y));
 
-                var minX = x;
-                var maxX = x;
-                var minY = y;
-                var maxY = y;
-                var area = 0;
+			var texture = ImageTexture.CreateFromImage(padded);
+			frames.AddFrame(WalkAnimation, texture);
+		}
 
-                while (queue.Count > 0)
-                {
-                    var point = queue.Dequeue();
-                    area++;
-                    minX = Math.Min(minX, point.X);
-                    maxX = Math.Max(maxX, point.X);
-                    minY = Math.Min(minY, point.Y);
-                    maxY = Math.Max(maxY, point.Y);
+		frames.SetAnimationSpeed(WalkAnimation, 10f);
+		return frames;
+	}
 
-                    var neighbors = new[]
-                    {
-                        new Vector2I(point.X - 1, point.Y),
-                        new Vector2I(point.X + 1, point.Y),
-                        new Vector2I(point.X, point.Y - 1),
-                        new Vector2I(point.X, point.Y + 1)
-                    };
+	private void OnRoomGuiInput(InputEvent @event)
+	{
+		if (@event is InputEventMouseButton mouseButton
+			&& mouseButton.Pressed
+			&& mouseButton.ButtonIndex == MouseButton.Left)
+		{
+			// In GUI callbacks, Position can be local to the Control; use the viewport mouse position.
+			HandleRoomClick(GetViewport().GetMousePosition());
+		}
+	}
 
-                    foreach (var neighbor in neighbors)
-                    {
-                        if (neighbor.X < 0 || neighbor.X >= width || neighbor.Y < 0 || neighbor.Y >= height)
-                        {
-                            continue;
-                        }
+	private void HandleRoomClick(Vector2 click)
+	{
+		if (_roomTextureSize == Vector2.Zero)
+		{
+			return;
+		}
 
-                        var neighborIndex = neighbor.Y * width + neighbor.X;
-                        if (visited[neighborIndex] || !IsForeground(neighbor.X, neighbor.Y))
-                        {
-                            continue;
-                        }
+		var roomRect = GetRoomDisplayRect();
+		if (!roomRect.HasPoint(click))
+		{
+			return;
+		}
 
-                        visited[neighborIndex] = true;
-                        queue.Enqueue(neighbor);
-                    }
-                }
+		// Convert click (display space) to room-texture space, clamp, then convert back.
+		var scale = roomRect.Size.X / _roomTextureSize.X;
+		if (scale <= 0.0001f)
+		{
+			return;
+		}
 
-                components.Add(new ComponentBounds(
-                    new Rect2I(minX, minY, maxX - minX + 1, maxY - minY + 1),
-                    area));
-            }
-        }
+		var roomX = (click.X - roomRect.Position.X) / scale;
+		roomX = Mathf.Clamp(roomX, 24f, _roomTextureSize.X - 24f);
 
-        components.Sort((left, right) =>
-        {
-            var yCompare = left.Rect.Position.Y.CompareTo(right.Rect.Position.Y);
-            return yCompare != 0 ? yCompare : left.Rect.Position.X.CompareTo(right.Rect.Position.X);
-        });
+		var targetX = roomRect.Position.X + (roomX * scale);
+		_targetFeetPosition = new Vector2(targetX, _groundY);
 
-        return components;
-    }
+		if (!_isWalking)
+		{
+			StartWalking();
+		}
+	}
 
-    private readonly record struct ComponentBounds(Rect2I Rect, int Area);
+	private static bool TryGetTightAlphaRect(Image sheet, Rect2I bounds, out Rect2I rect)
+	{
+		const float alphaThreshold = 0.01f;
+		var minX = int.MaxValue;
+		var maxX = int.MinValue;
+		var minY = int.MaxValue;
+		var maxY = int.MinValue;
+		var count = 0;
+
+		var xStart = Math.Max(0, bounds.Position.X);
+		var yStart = Math.Max(0, bounds.Position.Y);
+		var xEnd = Math.Min(sheet.GetWidth() - 1, bounds.Position.X + bounds.Size.X - 1);
+		var yEnd = Math.Min(sheet.GetHeight() - 1, bounds.Position.Y + bounds.Size.Y - 1);
+
+		for (var y = yStart; y <= yEnd; y++)
+		{
+			for (var x = xStart; x <= xEnd; x++)
+			{
+				if (sheet.GetPixel(x, y).A <= alphaThreshold)
+				{
+					continue;
+				}
+
+				count++;
+				minX = Math.Min(minX, x);
+				maxX = Math.Max(maxX, x);
+				minY = Math.Min(minY, y);
+				maxY = Math.Max(maxY, y);
+			}
+		}
+
+		if (count < 50 || minX > maxX || minY > maxY)
+		{
+			rect = default;
+			return false;
+		}
+
+		rect = new Rect2I(minX, minY, maxX - minX + 1, maxY - minY + 1);
+		return true;
+	}
 }
