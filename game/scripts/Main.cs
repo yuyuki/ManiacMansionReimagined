@@ -10,10 +10,6 @@ public partial class Main : Control
 	private const string RoomTexturePath = "res://assets/rooms/room_07.png";
 	private const string BernardSheetPath = "res://assets/sprites/bernard/bernard_walk_cycle_44_58.png";
 	private const string WalkAnimation = "walk";
-	private const int BernardSheetColumns = 8;
-	private const int BernardSheetRows = 2;
-	private const int WalkRow = 0;
-	private const float MinValidFrameWidthRatio = 0.75f;
 
 	private TextureRect? _roomView;
 	private AnimatedSprite2D? _bernard;
@@ -54,8 +50,7 @@ public partial class Main : Control
 
 		_bernard.SpriteFrames = BuildBernardFrames(BernardSheetPath);
 		_bernard.Animation = WalkAnimation;
-		_bernard.Stop();
-		_bernard.Frame = 0;
+		_bernard.Play();
 
 		UpdateRoomLayout();
 
@@ -135,10 +130,6 @@ public partial class Main : Control
 	private void StartWalking()
 	{
 		_isWalking = true;
-		if (_bernard != null && _bernard.SpriteFrames != null && _bernard.SpriteFrames.GetFrameCount(WalkAnimation) > 0)
-		{
-			_bernard.Frame = Mathf.Clamp(_bernard.Frame, 0, _bernard.SpriteFrames.GetFrameCount(WalkAnimation) - 1);
-		}
 		_bernard?.Play(WalkAnimation);
 	}
 
@@ -222,34 +213,31 @@ public partial class Main : Control
 
 	private static SpriteFrames BuildBernardFrames(string sheetPath)
 	{
-		var sheetTexture = GD.Load<Texture2D>(sheetPath);
-		if (sheetTexture == null)
+		var sheet = Image.LoadFromFile(sheetPath);
+		if (sheet == null)
 		{
 			GD.PushError($"Missing Bernard sheet: {sheetPath}");
 			return new SpriteFrames();
 		}
 
-		var sheet = sheetTexture.GetImage();
-		if (sheet == null || sheet.IsEmpty())
-		{
-			GD.PushError($"Failed to read Bernard sheet image data from imported texture: {sheetPath}");
-			return new SpriteFrames();
-		}
-
 		// This sheet is authored as a fixed grid (8x2). We only use the top row for the side-walk cycle.
-		if (sheet.GetWidth() % BernardSheetColumns != 0 || sheet.GetHeight() % BernardSheetRows != 0)
+		const int columns = 8;
+		const int rows = 2;
+		const int walkRow = 0;
+
+		if (sheet.GetWidth() % columns != 0 || sheet.GetHeight() % rows != 0)
 		{
-			GD.PushError($"Unexpected Bernard sheet dimensions: {sheet.GetWidth()}x{sheet.GetHeight()} (expected divisible by {BernardSheetColumns}x{BernardSheetRows}).");
+			GD.PushError($"Unexpected Bernard sheet dimensions: {sheet.GetWidth()}x{sheet.GetHeight()} (expected divisible by {columns}x{rows}).");
 			return new SpriteFrames();
 		}
 
-		var cellWidth = sheet.GetWidth() / BernardSheetColumns;
-		var cellHeight = sheet.GetHeight() / BernardSheetRows;
+		var cellWidth = sheet.GetWidth() / columns;
+		var cellHeight = sheet.GetHeight() / rows;
 
-		var frameRects = new List<Rect2I>(BernardSheetColumns);
-		for (var col = 0; col < BernardSheetColumns; col++)
+		var frameRects = new List<Rect2I>(columns);
+		for (var col = 0; col < columns; col++)
 		{
-			var cell = new Rect2I(col * cellWidth, WalkRow * cellHeight, cellWidth, cellHeight);
+			var cell = new Rect2I(col * cellWidth, walkRow * cellHeight, cellWidth, cellHeight);
 			if (TryGetTightAlphaRect(sheet, cell, out var tight))
 			{
 				frameRects.Add(tight);
@@ -262,26 +250,11 @@ public partial class Main : Control
 			return new SpriteFrames();
 		}
 
-		// The first cell in this generated sheet can contain a partial/corrupted silhouette.
-		// Keep only frames wide enough to represent a full body pose.
-		var filteredFrameRects = new List<Rect2I>(frameRects.Count);
-		var minValidWidth = Mathf.CeilToInt(cellWidth * MinValidFrameWidthRatio);
-		foreach (var rect in frameRects)
-		{
-			if (rect.Size.X >= minValidWidth)
-			{
-				filteredFrameRects.Add(rect);
-			}
-		}
-
-		if (filteredFrameRects.Count >= 2)
-		{
-			frameRects = filteredFrameRects;
-		}
-
+		var maxWidth = 0;
 		var maxHeight = 0;
 		foreach (var rect in frameRects)
 		{
+			maxWidth = Math.Max(maxWidth, rect.Size.X);
 			maxHeight = Math.Max(maxHeight, rect.Size.Y);
 		}
 
@@ -290,12 +263,11 @@ public partial class Main : Control
 
 		foreach (var rect in frameRects)
 		{
-			var padded = Image.CreateEmpty(cellWidth, maxHeight, false, Image.Format.Rgba8);
+			var padded = Image.CreateEmpty(maxWidth, maxHeight, false, Image.Format.Rgba8);
 			padded.Fill(Colors.Transparent);
 
 			var crop = sheet.GetRegion(rect);
-			// Keep the crop's original horizontal offset inside the cell so the walk cycle does not snap sideways.
-			var x = rect.Position.X % cellWidth;
+			var x = (maxWidth - crop.GetWidth()) / 2;
 			var y = maxHeight - crop.GetHeight();
 			padded.BlitRect(crop, new Rect2I(0, 0, crop.GetWidth(), crop.GetHeight()), new Vector2I(x, y));
 
@@ -303,8 +275,7 @@ public partial class Main : Control
 			frames.AddFrame(WalkAnimation, texture);
 		}
 
-		frames.SetAnimationLoop(WalkAnimation, true);
-		frames.SetAnimationSpeed(WalkAnimation, 12f);
+		frames.SetAnimationSpeed(WalkAnimation, 10f);
 		return frames;
 	}
 
