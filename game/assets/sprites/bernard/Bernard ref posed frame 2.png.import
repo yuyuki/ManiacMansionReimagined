@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://eyh81t8e8wo"
-path="res://.godot/imported/bernard_walk_cycle_44_58.png-16ae642e8ad5b4f034c735d200cf89eb.ctex"
+uid="uid://ccm0fbiqavxad"
+path="res://.godot/imported/Bernard ref posed frame 2.png-f0a35c657d9474b4555b1ba831a8f30a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/bernard/bernard_walk_cycle_44_58.png"
-dest_files=["res://.godot/imported/bernard_walk_cycle_44_58.png-16ae642e8ad5b4f034c735d200cf89eb.ctex"]
+source_file="res://assets/sprites/bernard/Bernard ref posed frame 2.png"
+dest_files=["res://.godot/imported/Bernard ref posed frame 2.png-f0a35c657d9474b4555b1ba831a8f30a.ctex"]
 
 [params]
 

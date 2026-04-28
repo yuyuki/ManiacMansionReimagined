@@ -1,0 +1,41 @@
+[gd_scene format=3 uid="uid://cfwb2rhgq5063"]
+
+[ext_resource type="Texture2D" uid="uid://b867vpxf5js77" path="res://assets/sprites/bernard/Bernard ref posed frame 1.png" id="1_ntevf"]
+
+[node name="Node2D" type="Node2D" unique_id=1582070880]
+
+[node name="BernardRefPosedFrame1" type="Sprite2D" parent="." unique_id=460413582]
+position = Vector2(453, 436.00003)
+scale = Vector2(1.6148325, 1.6148325)
+texture = ExtResource("1_ntevf")
+offset = Vector2(-4.7992554, 6.316284)
+metadata/_edit_lock_ = true
+
+[node name="Skeleton2D" type="Skeleton2D" parent="." unique_id=1116308537]
+position = Vector2(471, 401.00006)
+scale = Vector2(1.6148325, 1.6148325)
+
+[node name="Base" type="Bone2D" parent="Skeleton2D" unique_id=271770509]
+position = Vector2(-1.2385185, 10.5273695)
+rotation = -1.5361058
+scale = Vector2(3.430781, 1.8757796)
+
+[node name="leg r" type="Bone2D" parent="Skeleton2D/Base" unique_id=2110155436]
+position = Vector2(-15.307146, 11.872601)
+rotation = 2.6069036
+scale = Vector2(0.41380498, 702520.44)
+
+[node name="Bone2D" type="Bone2D" parent="Skeleton2D/Base/leg r" unique_id=888366293]
+position = Vector2(62.01214, 1.7602397e-06)
+
+[node name="Bone2D" type="Bone2D" parent="Skeleton2D/Base/leg r/Bone2D" unique_id=791890765]
+position = Vector2(23.186985, -2.2007735e-05)
+
+[node name="leg l" type="Bone2D" parent="Skeleton2D/Base" unique_id=174546039]
+position = Vector2(-17.37517, -11.449782)
+
+[node name="Bone2D" type="Bone2D" parent="Skeleton2D/Base/leg l" unique_id=155610143]
+position = Vector2(-15.517222, -27.754036)
+
+[node name="Bone2D" type="Bone2D" parent="Skeleton2D/Base/leg l/Bone2D" unique_id=11877469]
+position = Vector2(-7.283399, 6.4083033)
