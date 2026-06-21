@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Dr. Fred",
+    "role": "Savant fou",
+    "personality": "Arrogant, absent-minded, obsédé par des expériences folles.",
+    "lore": "Le savant du manoir, responsable du Zom-B-Matic et des machines étranges."
+  },
+  {
+    "name": "Edna",
+    "role": "Infirmière sarcastique",
+    "personality": "Sèche, méfiante, mais efficace quand elle veut bien répondre.",
+    "lore": "Elle connaît le manoir mieux que personne et n'aime pas qu'on la dérange."
+  },
+  {
+    "name": "Bernard",
+    "role": "Héros moderne",
+    "personality": "Calme, débrouillard et prêt à aider le joueur avec humour.",
+    "lore": "Un personnage moderne inspiré de la version réimaginée du jeu."
+  }
+]
